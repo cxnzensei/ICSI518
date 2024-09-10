@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    org:
+      hibernate: DEBUG
+      springframework:
+        security: DEBUG
+
+info:
+  application:
+    name: WealthWise
+    description: Spring Boot Backend Application for WealthWise
+    author: Team8
+
+spring:
+  profiles:
+    active: dev
+  jpa:
+    open-in-view: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: "env,beans"
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: backend
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      connection:
+        autocommit: false
+      ddl-auto: update
+    show-sql: true
