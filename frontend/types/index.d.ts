@@ -326,3 +326,9 @@ declare interface getBankProps {
 declare interface getBankByAccountIdProps {
   accountId: string;
 }
+
+declare interface FamilyMember {
+  name: { title: string, first: string, last: string };
+  email: string;
+  picture: { large: string, medium: string, thumbnail: string };
+}
