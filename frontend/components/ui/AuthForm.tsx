@@ -1,5 +1,5 @@
 'use client';
-import React, { use, useState } from 'react'
+import React, { useState } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -14,9 +14,9 @@ import { authformSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
 const AuthForm = ({ type }: { type: string }) => {
+
     const [user, setUser] = useState(null)
     const [isLoading, setIsLoading] = useState(false);
-
 
     //define form
     const form = useForm<z.infer<typeof authformSchema>>({
@@ -39,7 +39,7 @@ const AuthForm = ({ type }: { type: string }) => {
             <header className='flex flex-col gap-5 md:gap-8'>
                 <Link className="cursor-pointer flex items-center gap-1" href="/">
                     <Image
-                        src="/icons/logo.svg" 
+                        src="/icons/logo.svg"
                         width={72}
                         height={72}
                         alt="WealthWise logo"
@@ -77,11 +77,11 @@ const AuthForm = ({ type }: { type: string }) => {
                                 <Button type="submit" disabled={isLoading} className='form-btn'>
                                     {isLoading ? (
                                         <>
-                                            <Loader2 size={20} className='animate-spin'/> &nbsp:
+                                            <Loader2 size={20} className='animate-spin' /> &nbsp:
                                             Loading...
                                         </>
                                     ) : type === 'log-in' ? 'Log In' : 'Sign Up'
-                                }
+                                    }
                                 </Button>
                             </div>
                         </form>
