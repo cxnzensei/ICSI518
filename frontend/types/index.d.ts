@@ -26,19 +26,19 @@ declare type LoginUser = {
 };
 
 declare type User = {
-  $id: string;
+  // $id: string;
   email: string;
   userId: string;
-  dwollaCustomerUrl: string;
-  dwollaCustomerId: string;
+  // dwollaCustomerUrl: string;
+  // dwollaCustomerId: string;
   firstName: string;
   lastName: string;
-  address1: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  dateOfBirth: string;
-  ssn: string;
+  // address1: string;
+  // city: string;
+  // state: string;
+  // postalCode: string;
+  // dateOfBirth: string;
+  // ssn: string;
 };
 
 declare type NewUserParams = {
@@ -325,10 +325,4 @@ declare interface getBankProps {
 
 declare interface getBankByAccountIdProps {
   accountId: string;
-}
-
-declare interface FamilyMember {
-  name: { title: string, first: string, last: string };
-  email: string;
-  picture: { large: string, medium: string, thumbnail: string };
 }
