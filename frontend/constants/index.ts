@@ -15,10 +15,10 @@ export const sidebarLinks = [
     label: "Transaction History",
   },
   {
-    imgURL: "/icons/money-send.svg",
-    route: "/payment-transfer",
-    label: "Transfer Funds",
-  },
+    imgURL: "/icons/family.svg",
+    route: "/family",
+    label: "Family"
+  }
 ];
 
 // good_user / good_password - Bank of America
