@@ -2,6 +2,7 @@
 /* eslint-disable no-prototype-builtins */
 
 import { type ClassValue, clsx } from "clsx";
+import { staticGenerationAsyncStorage } from "next/dist/client/components/static-generation-async-storage-instance";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
@@ -197,7 +198,15 @@ export const getTransactionStatus = (date: Date) => {
   return date > twoDaysAgo ? "Processing" : "Success";
 };
 
-export const authformSchema = z.object({
+export const authformSchema = (type: string) => z.object({
   email: z.string().email(),
   password: z.string().min(8),
+  firstName: type === 'log-in' ? z.string().optional : z.string().min(3),
+  lastName: type === 'log-in' ? z.string().optional : z.string().min(3),
+  address1: type === 'log-in' ? z.string().optional : z.string().max(50),
+  city: type === 'log-in' ? z.string().optional : z.string().max(50),
+  state: type === 'log-in' ? z.string().optional : z.string().min(2).max(2), 
+  postalCode: type === 'log-in' ? z.string().optional : z.string().min(3).max(6),
+  dateOfBirth: type === 'log-in' ? z.string().optional : z.string().min(3),
+  ssn: type === 'log-in' ? z.string().optional : z.string().min(3)
 })
