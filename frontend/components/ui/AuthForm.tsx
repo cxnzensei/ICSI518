@@ -71,6 +71,24 @@ const AuthForm = ({ type }: { type: string }) => {
                 <>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                            {type === 'register' && (
+                                <>
+                                    <CustomInput control={form.control} name='firstName'
+                                    lable='First Name' placeholder='Enter Your First Name'/>
+                                    <CustomInput control={form.control} name='lastName'
+                                    lable='Last Name' placeholder='Enter Your Last Name'/>
+                                    <CustomInput control={form.control} name='address'
+                                    lable='Address' placeholder='Enter Your Street Address'/>
+                                    <CustomInput control={form.control} name='state'
+                                    lable='State' placeholder='ex. TX'/>
+                                    <CustomInput control={form.control} name='postalCode'
+                                    lable='ZIP Code' placeholder='ex. 20500'/>
+                                    <CustomInput control={form.control} name='dateOfBirth'
+                                    lable='Date of Birth' placeholder='YYYY-MM-DD'/>
+                                    <CustomInput control={form.control} name='ssn'
+                                    lable='SSN' placeholder='XXXX'/>
+                                </>
+                            )}
                             <CustomInput control={form.control} name="email" lable="Email" placeholder="Enter your email" />
                             <CustomInput control={form.control} name="password" lable="Password" placeholder="Enter your password" />
                             <div className='flex flex-col gap-4'>
@@ -88,10 +106,10 @@ const AuthForm = ({ type }: { type: string }) => {
                     </Form>
                     <footer className='flex justify-center gap-1'>
                         <p className='text-14 font-normal text-gray-600'>
-                            {type === 'login' ? 'Dont have an account?' : 'Already have an account?'}
+                            {type === 'log-in' ? 'Dont have an account?' : 'Already have an account?'}
                         </p>
-                        <Link href={type === 'login' ? '/signup' : '/login'} className='form-link'>
-                            {type === 'login' ? 'Sign up' : 'Log in'}
+                        <Link href={type === 'log-in' ? '/register' : '/login'} className='form-link'>
+                            {type === 'log-in' ? 'Sign up' : 'Log in'}
                         </Link>
                     </footer>
                 </>
