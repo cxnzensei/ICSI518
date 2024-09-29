@@ -68,6 +68,10 @@ const config = {
           700: "#344054",
           900: "#101828",
         },
+        green: {
+          500: "#01797A",
+          600: "#489399",
+        },
       },
       backgroundImage: {
         "bank-gradient": "linear-gradient(90deg, #0179FE 0%, #4893FF 100%)",
