@@ -9,22 +9,24 @@ import { authformSchema } from "@/lib/utils"
 import { Control, FieldPath, FieldPathValue } from "react-hook-form"
 import { z } from "zod"
 
+const formSchema = authformSchema('register')
+
 interface CustomInput {
-    control: Control<z.infer<typeof authformSchema>>,
-    name: FieldPath<z.infer<typeof authformSchema>>,
-    lable: string,
+    control: Control<z.infer<typeof formSchema>>,
+    name: FieldPath<z.infer<typeof formSchema>>,
+    label: string,
     placeholder: string
 }
 
-const CustomInput = ({control, name, lable, placeholder}: CustomInput) => {
+const CustomInput = ({control, name, label, placeholder}: CustomInput) => {
   return (
     <FormField
         control={control}
         name={name}
         render={({ field }) => (
             <div className='form-item'>
-                <FormLabel className='form-lable'>
-                    {lable}
+                <FormLabel className='form-label'>
+                    {label}
                 </FormLabel>
                 <div className='flex w-full flex-col'>
                     <FormControl>
