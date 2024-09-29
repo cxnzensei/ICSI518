@@ -1,5 +1,5 @@
-import HeaderBox from "@/components/ui/HeaderBox"
-import FamilyMembers from "@/components/ui/FamilyMembers";
+import HeaderBox from "@/components/HeaderBox"
+import FamilyMembers from "@/components/FamilyMembers";
 import { getFamily } from "@/lib/actions/family.actions"
 
 const Family = async () => {

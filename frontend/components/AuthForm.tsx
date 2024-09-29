@@ -1,5 +1,6 @@
 'use client';
-import React, { useState } from 'react'
+
+import React, { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -9,14 +10,25 @@ import {
 } from "@/components/ui/form"
 import Link from 'next/link';
 import Image from "next/image"
-import CustomInput from './CustomInput';
-import { authformSchema } from '@/lib/utils';
+import CustomInput from './ui/CustomInput';
+import { authformSchema, request } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { getLoggedInUser, setLoggedInUser } from '@/lib/utils';
 
 const AuthForm = ({ type }: { type: string }) => {
 
     const [user, setUser] = useState(null)
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+    const pathname = usePathname();
+
+    useEffect(() => {
+        const user = getLoggedInUser();
+        if (user?.emailId && (pathname === '/login' || pathname === '/register')) {
+            router.push('/')
+        }
+    })
 
     //define form
     const form = useForm<z.infer<typeof authformSchema>>({
@@ -30,7 +42,13 @@ const AuthForm = ({ type }: { type: string }) => {
     //submit handler
     function onSubmit(values: z.infer<typeof authformSchema>) {
         setIsLoading(true)
-        console.log(values)
+        const modifiedValues = { ...values, emailId: values.email }
+        request("POST", `/api/v1/auth/${type}`, modifiedValues).then((response: any) => {
+            setLoggedInUser(response.data);
+            router.push('/')
+        }).catch((error: any) => {
+            console.error(error)
+        })
         setIsLoading(false);
     }
 
@@ -43,6 +61,7 @@ const AuthForm = ({ type }: { type: string }) => {
                         width={72}
                         height={72}
                         alt="WealthWise logo"
+                        priority
                     />
                     <h1 className="text-26 font-bold text-black-1">WealthWise</h1>
                 </Link>
@@ -50,7 +69,7 @@ const AuthForm = ({ type }: { type: string }) => {
                     <h1 className='text-24 lg:text36 font-semibold text-gray-900'>
                         {user
                             ? 'Link Account'
-                            : type === 'log-in'
+                            : type === 'login'
                                 ? 'Log In'
                                 : 'Sign Up'
                         }
@@ -80,7 +99,7 @@ const AuthForm = ({ type }: { type: string }) => {
                                             <Loader2 size={20} className='animate-spin' /> &nbsp:
                                             Loading...
                                         </>
-                                    ) : type === 'log-in' ? 'Log In' : 'Sign Up'
+                                    ) : type === 'login' ? 'Log In' : 'Sign Up'
                                     }
                                 </Button>
                             </div>
@@ -90,7 +109,7 @@ const AuthForm = ({ type }: { type: string }) => {
                         <p className='text-14 font-normal text-gray-600'>
                             {type === 'login' ? 'Dont have an account?' : 'Already have an account?'}
                         </p>
-                        <Link href={type === 'login' ? '/signup' : '/login'} className='form-link'>
+                        <Link href={type === 'login' ? '/register' : '/login'} className='form-link'>
                             {type === 'login' ? 'Sign up' : 'Log in'}
                         </Link>
                     </footer>

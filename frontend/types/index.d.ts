@@ -25,6 +25,14 @@ declare type LoginUser = {
   password: string;
 };
 
+declare type loginResponse = {
+  emailId: string;
+  firstName: string;
+  lastName: string;
+  photo: string;
+  userId: string;
+}
+
 declare type User = {
   // $id: string;
   email: string;
@@ -156,7 +164,7 @@ declare interface HeaderBoxProps {
 }
 
 declare interface MobileNavProps {
-  user: User;
+  user: loginResponse;
 }
 
 declare interface PageHeaderProps {
@@ -188,7 +196,7 @@ declare interface PlaidLinkProps {
 // };
 
 declare interface AuthFormProps {
-  type: "sign-in" | "sign-up";
+  type: "login" | "register";
 }
 
 declare interface BankDropdownProps {
@@ -209,7 +217,8 @@ declare interface TotalBalanceBoxProps {
 }
 
 declare interface FooterProps {
-  user: User;
+  user: loginResponse;
+  type: string;
 }
 
 declare interface RightSidebarProps {
@@ -219,7 +228,7 @@ declare interface RightSidebarProps {
 }
 
 declare interface SidebarProps {
-  user: User;
+  user: loginResponse;
 }
 
 declare interface RecentTransactionsProps {

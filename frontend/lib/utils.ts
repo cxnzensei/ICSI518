@@ -5,6 +5,7 @@ import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
+import axios from 'axios';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -201,3 +202,43 @@ export const authformSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
 })
+
+axios.defaults.baseURL = 'http://localhost:8080'
+axios.defaults.headers.post["Content-Type"] = 'application/json'
+
+export const getLoggedInUser = () => {
+  const cookies = document.cookie.split(';');
+  const cookieObj: { [key: string]: string } = {};
+
+  cookies.forEach(cookie => {
+    const [name, value] = cookie.trim().split('=');
+    cookieObj[name] = value;
+  });
+
+  const user = cookieObj['user'] ? JSON.parse(decodeURIComponent(cookieObj['user'])) : null;
+
+  return user;
+}
+
+export const setLoggedInUser = (data: loginResponse) => {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + 24 * 60 * 60 * 1000);
+
+  const cookieValue = encodeURIComponent(JSON.stringify(data));
+
+  document.cookie = `user=${cookieValue};expires=${expires.toUTCString()};path=/`;
+}
+
+export const logoutUser = () => {
+  // Set the user cookie to expire in the past
+  document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+};
+
+export const request = (method: string, url: string, data: object = {}) => {
+  return axios({
+    method: method,
+    url: url,
+    data: data,
+    withCredentials: true
+  })
+}
