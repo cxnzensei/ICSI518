@@ -1,12 +1,28 @@
 
 
  // /app/goals/page.js
+import HeaderBox from '@/components/ui/HeaderBox';
 import Link from 'next/link';
 
 export default function Goals() {
+  const loggedIn = { firstName: "Team8" }
+
   return (
+
+
     <div style={{ padding: '20px' }}>
-      <h1>To adjust a goal, please select one of the following options. </h1>
+          <section className="home">
+      <div className="home-content">
+          <header className="home-header">
+              <HeaderBox
+                  type="greeting"
+                  title="Welcome to your goals page,"
+                  user={loggedIn?.firstName || 'Guest'}
+                  subtext="To adjust a goal, please select one of the following options."
+              />
+            </header>
+      </div>
+    </section>
 
       <div>
         <Link href="/setting-budgets">
