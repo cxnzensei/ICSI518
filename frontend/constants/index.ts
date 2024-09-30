@@ -18,6 +18,11 @@ export const sidebarLinks = [
     imgURL: "/icons/family.svg",
     route: "/family",
     label: "Family"
+  },
+  {
+    imgURL:"/icons/goal.svg",
+    route: "/goals",
+    label: "Goals"
   }
 ];
 
