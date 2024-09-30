@@ -1,6 +1,10 @@
-import MobileNav from "@/components/ui/MobileNav";
-import Sidebar from "@/components/ui/Sidebar";
+"use client";
+
+import MobileNav from "@/components/MobileNav";
+import Sidebar from "@/components/Sidebar";
+import { getLoggedInUser } from "@/lib/utils";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function RootLayout({
   children,
@@ -8,11 +12,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const loggedIn = { firstName: "Team8", lastName: "User", email: "team8@icsi518.com", userId: "8" }
+  const [loggedInUser, setLoggedInUser] = useState<loginResponse | null>(null);
+
+  useEffect(() => {
+    const user = getLoggedInUser();
+    setLoggedInUser(user);
+  }, [])
 
   return (
     <main className="flex h-screen w-full font-inter">
-      <Sidebar user={loggedIn} />
+      <Sidebar user={loggedInUser} />
       <div className="flex size-full flex-col">
         <div className="root-layout">
           <Image
@@ -22,7 +31,7 @@ export default function RootLayout({
             alt="menu icon"
           />
           <div>
-            <MobileNav user={loggedIn} />
+            <MobileNav user={loggedInUser} />
           </div>
         </div>
         {children}

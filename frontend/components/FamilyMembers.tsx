@@ -4,6 +4,20 @@ type FamilyMembers = {
     members: FamilyMember[];
 }
 
+type FamilyMember = {
+    name: {
+        first: string,
+        last: string,
+        title: string
+    }
+    email: string,
+    picture: {
+        large: string,
+        medium: string,
+        thumbnail: string
+    }
+}
+
 const FamilyMembers = ({ members }: FamilyMembers) => {
     return (
         <section className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2'>

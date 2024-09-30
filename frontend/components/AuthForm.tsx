@@ -1,5 +1,6 @@
 'use client';
-import React, { useState } from 'react'
+
+import React, { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -12,11 +13,23 @@ import Image from "next/image"
 import CustomInput from './CustomInput';
 import { authformSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { getLoggedInUser, setLoggedInUser, request } from '@/lib/utils';
 
 const AuthForm = ({ type }: { type: string }) => {
 
     const [user, setUser] = useState(null)
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+    const pathname = usePathname();
+
+    useEffect(() => {
+        const loggedInUser = getLoggedInUser();
+        setUser(loggedInUser);
+        if (loggedInUser?.emailId && (pathname === '/login' || pathname === '/register')) {
+            router.push('/')
+        }
+    }, [pathname, router])
 
     const formSchema = authformSchema(type);
 
@@ -25,48 +38,53 @@ const AuthForm = ({ type }: { type: string }) => {
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: '',
-            password: ''
+            password: '',
+            firstName: '',
+            lastName: ''
         }
     })
 
     //submit handler
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        setIsLoading(true)
 
-        try {
+        let modifiedValues;
 
-            if(type === 'register'){
-                //register code
-            }
-
-            if(type === 'log-in'){
-                //login code
-            }
-
-        } catch(error) {
-            console.error(error)
-        } finally {
-            setIsLoading(false);
+        if (type === 'register') {
+            modifiedValues = { ...data, emailId: data.email }
         }
+
+        if (type === 'login') {
+            modifiedValues = { emailId: data.email, password: data.password }
+        }
+
+        request("POST", `/api/v1/auth/${type}`, modifiedValues).then((response: any) => {
+            setLoggedInUser(response.data);
+        }).catch((error: any) => {
+            console.error(error)
+        }).finally(() => {
+            setIsLoading(false);
+            router.push('/')
+        })
     }
 
     return (
         <section className='auth-form'>
             <header className='flex flex-col gap-5 md:gap-8'>
-                <Link className="cursor-pointer flex items-center gap-1" href="/">
+                <div className="cursor-pointer flex items-center gap-1">
                     <Image
                         src="/icons/logo.svg"
                         width={72}
                         height={72}
                         alt="WealthWise logo"
+                        priority
                     />
                     <h1 className="text-26 font-bold text-black-1">WealthWise</h1>
-                </Link>
+                </div>
                 <div className='flex flex-col gap-1 md:gap-3'>
                     <h1 className='text-24 lg:text36 font-semibold text-gray-900'>
                         {user
                             ? 'Link Account'
-                            : type === 'log-in'
+                            : type === 'login'
                                 ? 'Log In'
                                 : 'Sign Up'
                         }
@@ -88,44 +106,21 @@ const AuthForm = ({ type }: { type: string }) => {
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                             {type === 'register' && (
-                                <>
-                                    <div className="flex gap-4">
-                                        <CustomInput control={form.control} name='firstName'
-                                        label='First Name' placeholder='Enter Your First Name'/>
-                                        <CustomInput control={form.control} name='lastName'
-                                        label='Last Name' placeholder='Enter Your Last Name'/>
-                                    </div>
-
-                                    <CustomInput control={form.control} name='address1'
-                                    label='Address' placeholder='Enter Your Street Address'/>
-                                    <CustomInput control={form.control} name='city'
-                                    label='City' placeholder='Enter Your City'/>
-
-                                    <div className="flex gap-4">
-                                        <CustomInput control={form.control} name='state'
-                                        label='State' placeholder='ex. TX'/>
-                                        <CustomInput control={form.control} name='postalCode'
-                                        label='ZIP Code' placeholder='ex. 20500'/>
-                                    </div>
-
-                                    <div className="flex gap-4">
-                                        <CustomInput control={form.control} name='dateOfBirth'
-                                        label='Date of Birth' placeholder='YYYY-MM-DD'/>
-                                        <CustomInput control={form.control} name='ssn'
-                                        label='SSN' placeholder='XXXX'/>
-                                    </div>
-                                </>
+                                <div className="flex gap-4">
+                                    <CustomInput control={form.control} name="firstName" label="First Name" placeholder='Enter Your First Name' />
+                                    <CustomInput control={form.control} name="lastName" label="Last Name" placeholder='Enter Your Last Name' />
+                                </div>
                             )}
                             <CustomInput control={form.control} name="email" label="Email" placeholder="Enter your email" />
                             <CustomInput control={form.control} name="password" label="Password" placeholder="Enter your password" />
                             <div className='flex flex-col gap-4'>
-                                <Button type="submit" disabled={isLoading} className='form-btn'>
+                                <Button type="submit" className='form-btn'>
                                     {isLoading ? (
-                                        <>
-                                            <Loader2 size={20} className='animate-spin' /> &nbsp:
-                                            Loading...
-                                        </>
-                                    ) : type === 'log-in' ? 'Log In' : 'Sign Up'
+                                        <div className='flex gap-1'>
+                                            <Loader2 size={20} className='animate-spin' />
+                                            <div>Loading...</div>
+                                        </div>
+                                    ) : type === 'login' ? 'Log In' : 'Sign Up'
                                     }
                                 </Button>
                             </div>
@@ -133,16 +128,15 @@ const AuthForm = ({ type }: { type: string }) => {
                     </Form>
                     <footer className='flex justify-center gap-1'>
                         <p className='text-14 font-normal text-gray-600'>
-                            {type === 'log-in' ? 'Dont have an account?' : 'Already have an account?'}
+                            {type === 'login' ? 'Dont have an account?' : 'Already have an account?'}
                         </p>
-                        <Link href={type === 'log-in' ? '/register' : '/login'} className='form-link'>
-                            {type === 'log-in' ? 'Sign up' : 'Log in'}
+                        <Link href={type === 'login' ? '/register' : '/login'} className='form-link'>
+                            {type === 'login' ? 'Sign up' : 'Log in'}
                         </Link>
                     </footer>
                 </>
-            )
-            }
-        </section>
+            )}
+        </section >
     )
 }
 

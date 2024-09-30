@@ -15,7 +15,7 @@ const RecentTransactions = ({
 }: RecentTransactionsProps) => {
     const [activeTab, setActiveTab] = useState(appwriteItemId); // useState to dynamically update id
     const handleTabChange = (newId: React.SetStateAction<string>) => {
-      setActiveTab(newId);
+        setActiveTab(newId);
     };
 
     return (
@@ -32,7 +32,7 @@ const RecentTransactions = ({
                 <TabsList className='recent-transactions-tablist'>
                     {accounts.map((account) => (
                         <TabsTrigger key={account.id} value={account.appwriteItemId}>
-                            <BankTabItem 
+                            <BankTabItem
                                 key={account.id}
                                 account={account}
                                 appwriteItemId={activeTab}
@@ -46,7 +46,7 @@ const RecentTransactions = ({
                         key={account.id}
                         className='space-y-4'
                     >
-                        <BankInfo 
+                        <BankInfo
                             account={account}
                             appwriteItemId={activeTab}
                             type='full'

@@ -4,6 +4,9 @@ import {
     Sheet,
     SheetClose,
     SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { sidebarLinks } from "@/constants"
@@ -11,14 +14,14 @@ import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import Footer from "./Footer";
+import Footer from "./Footer"
 
 const MobileNav = ({ user }: MobileNavProps) => {
 
-    const pathName = usePathname()
+    const pathname = usePathname();
 
     return (
-        <section className="w-full max-w-[264px]">
+        <section className="w-full max-w-[250px]">
             <Sheet>
                 <SheetTrigger>
                     <Image
@@ -30,28 +33,31 @@ const MobileNav = ({ user }: MobileNavProps) => {
                     />
                 </SheetTrigger>
                 <SheetContent side="left" className="border-none bg-white">
-                    <Link className="cursor-pointer flex items-center gap-1 px-4" href="/">
+                    <SheetTitle className="hidden">
+                        Mobile Navbar
+                    </SheetTitle>
+                    <SheetDescription className="hidden">
+                        Mobile Navbar
+                    </SheetDescription>
+                    <Link href="/" className="cursor-pointer flex items-center gap-1">
                         <Image
                             src="/icons/logo.svg"
-                            width={72}
-                            height={72}
-                            alt="WealthWise logo"
+                            width={45}
+                            height={45}
+                            alt="Wealthwise logo"
                         />
                         <h1 className="text-26 font-bold text-black-1">WealthWise</h1>
                     </Link>
                     <div className="mobilenav-sheet">
                         <SheetClose asChild>
-                            <nav className="flex h-4 flex-col gap-6 pt-16 text-white">
+                            <nav className="flex h-full flex-col gap-6 pt-16 text-white">
                                 {sidebarLinks.map((item) => {
-                                    const isActive = pathName === item.route || pathName.startsWith(`${item.route}/`)
+                                    const isActive = pathname === item.route || pathname.startsWith(`${item.route}/`)
+
                                     return (
                                         <SheetClose asChild key={item.route}>
-                                            <Link
-                                                className={cn('mobilenav-sheet_close w-full', {
-                                                    'bg-bankGradient': isActive
-                                                })}
-                                                href={item.route}
-                                                key={item.label}
+                                            <Link href={item.route} key={item.label}
+                                                className={cn('mobilenav-sheet_close w-full', { 'bg-bankGradient': isActive })}
                                             >
                                                 <Image
                                                     src={item.imgURL}
@@ -62,24 +68,19 @@ const MobileNav = ({ user }: MobileNavProps) => {
                                                         'brightness-[3] invert-0': isActive
                                                     })}
                                                 />
-                                                <p className={cn
-                                                    ("text-16 font-semibold text-black-2", {
-                                                        "!text-white": isActive
-                                                    })}>
+                                                <p className={cn("text-16 font-semibold text-black-2", { "text-white": isActive })}>
                                                     {item.label}
                                                 </p>
                                             </Link>
                                         </SheetClose>
                                     )
                                 })}
-                                USER
                             </nav>
                         </SheetClose>
-                        <Footer user={user} type='mobile'/>
+                        <Footer user={user} type="mobile" />
                     </div>
                 </SheetContent>
             </Sheet>
-
         </section>
     )
 }

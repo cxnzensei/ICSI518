@@ -1,4 +1,4 @@
-import AuthForm from '@/components/ui/AuthForm'
+import AuthForm from '@/components/AuthForm'
 import React from 'react'
 
 const Register = () => {
@@ -6,7 +6,7 @@ const Register = () => {
     <section className="flex-center size-full max-sm:px-6">
       <AuthForm type="register" />
     </section>
-    
+
   )
 }
 

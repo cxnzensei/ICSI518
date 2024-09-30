@@ -12,4 +12,9 @@ public class HomeController {
     public ResponseEntity<String> homeController() {
         return new ResponseEntity<>("Spring Boot Backend for WealthWise!", HttpStatus.OK);
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> testController() {
+        return new ResponseEntity<>("Spring Boot Backend for WealthWise!", HttpStatus.OK);
+    }
 }

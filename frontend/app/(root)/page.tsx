@@ -1,11 +1,21 @@
-import HeaderBox from '@/components/ui/HeaderBox'
-import RecentTransactions from '@/components/ui/RecentTransactions';
-import RightSidebar from '@/components/ui/RightSidebar';
-import TotalBalanceBox from '@/components/ui/TotalBalanceBox'
+"use client";
+
+import HeaderBox from '@/components/HeaderBox'
+import RecentTransactions from '@/components/RecentTransactions';
+import RightSidebar from '@/components/RightSidebar';
+import TotalBalanceBox from '@/components/TotalBalanceBox'
+import { getLoggedInUser } from '@/lib/utils';
+
+import { Suspense, useEffect, useState } from 'react';
 
 const Home = () => {
 
-  const loggedIn = { firstName: "Team8", lastName: "User", email: "team8@icsi518.com", userId: '1' }
+  const [loggedInUser, setLoggedInUser] = useState<loginResponse | null>(null);
+
+  useEffect(() => {
+    const user = getLoggedInUser();
+    setLoggedInUser(user);
+  }, [])
 
   const accounts = [
     {
@@ -91,34 +101,37 @@ const Home = () => {
   ];
 
   return (
-    <section className='home'>
-      <div className='home-content'>
-        <header className='home-header'>
-          <HeaderBox
-            type="greeting"
-            title="Welcome"
-            user={loggedIn?.firstName || 'Guest'}
-            subtext="Manage your funds wisely. Access your transactions, goals and get insights towards them."
+    <Suspense fallback={<div>Loading...</div>}>
+      <section className='home'>
+        <div className='home-content'>
+          <header className='home-header'>
+            <HeaderBox
+              type="greeting"
+              title="Welcome"
+              user={loggedInUser?.firstName || 'Guest'}
+              subtext="Manage your funds wisely. Access your transactions, goals and get insights towards them."
+            />
+            <TotalBalanceBox
+              accounts={[]}
+              totalBanks={1}
+              totalCurrentBalance={1250.35}
+            />
+          </header>
+          <RecentTransactions
+            accounts={accounts}
+            transactions={transactions}
+            appwriteItemId={'1'}
+            page={1}
           />
-          <TotalBalanceBox
-            accounts={[]}
-            totalBanks={1}
-            totalCurrentBalance={1250.35}
-          />
-        </header>
-        <RecentTransactions
-          accounts={accounts}
-          transactions={transactions}
-          appwriteItemId = {'1'}
-          page = {1}
+        </div>
+        <RightSidebar
+          user={loggedInUser}
+          transactions={[]}
+          // banks={[{ currentBalance: 123.45 }, { currentBalance: 6789.01 }]}
+          banks={[]}
         />
-      </div>
-      <RightSidebar 
-        user={loggedIn}
-        transactions={[]}
-        banks={[{ currentBalance: 123.45 }, { currentBalance: 6789.01 }]}
-      />
-    </section>
+      </section>
+    </Suspense>
   )
 }
 
