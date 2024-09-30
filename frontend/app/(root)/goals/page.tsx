@@ -24,19 +24,15 @@ export default function Goals() {
       </div>
     </section>
 
-      <div>
+      <div style={{ display: 'flex', gap: '10px' }}>
         <Link href="/setting-budgets">
           <button style={styles.button}>Setting Budgets</button>
         </Link>
-      </div>
 
-      <div>
         <Link href="/setting-goals">
           <button style={styles.button}>Setting Goals</button>
         </Link>
-      </div>
 
-      <div>
         <Link href="/suggest-spending-changes">
           <button style={styles.button}>Suggest Spending Changes</button>
         </Link>
