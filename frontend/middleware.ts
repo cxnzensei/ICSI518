@@ -4,9 +4,9 @@ import type { NextRequest } from 'next/server';
 export function middleware(req: NextRequest) {
     const jwt = req.cookies.get('jwt');
 
-    if (!jwt && !req.nextUrl.pathname.startsWith('/login') && !req.nextUrl.pathname.startsWith('/register')) {
-        return NextResponse.redirect(new URL('/login', req.url));
-    }
+    // if (!jwt && !req.nextUrl.pathname.startsWith('/login') && !req.nextUrl.pathname.startsWith('/register')) {
+    //     return NextResponse.redirect(new URL('/login', req.url));
+    // }
 
     return NextResponse.next();
 }

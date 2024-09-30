@@ -1,11 +1,27 @@
+"use client";
+
 import HeaderBox from "@/components/HeaderBox"
 import FamilyMembers from "@/components/FamilyMembers";
-import { getFamily } from "@/lib/actions/family.actions"
+import { useEffect, useState } from "react";
+import { getLoggedInUser, request } from "@/lib/utils";
 
-const Family = async () => {
+const Family = () => {
 
-    const family = await getFamily();
-    const loggedIn = { firstName: "Team8" }
+    const [loggedInUser, setLoggedInUser] = useState<loginResponse | null>(null);
+    const [family, setFamily] = useState<FamilyMember[]>([]);
+
+    useEffect(() => {
+        const user = getLoggedInUser()
+        setLoggedInUser(user);
+
+        request("GET", "https://randomuser.me/api/?results=7&inc=name,email,picture&noinfo")
+            .then(res => {
+                setFamily(res.data.results)
+            }).catch(error => {
+                console.error(error)
+            })
+
+    }, [])
 
     return (
         <section className="home">
@@ -14,7 +30,7 @@ const Family = async () => {
                     <HeaderBox
                         type="greeting"
                         title="Welcome to your family page,"
-                        user={loggedIn?.firstName || 'Guest'}
+                        user={loggedInUser?.firstName || 'Guest'}
                         subtext="Manage your family here. Add users by entering their email ID."
                     />
                     <div className="bg-bankGradient w-fit px-4 py-2 text-white cursor-pointer 
@@ -23,7 +39,7 @@ const Family = async () => {
                         + Add a Member
                     </div>
                     <hr />
-                    <FamilyMembers members={family} />
+                    <FamilyMembers members={family} setMembers={setFamily} />
                 </header>
             </div>
         </section>
