@@ -164,7 +164,7 @@ declare interface HeaderBoxProps {
 }
 
 declare interface MobileNavProps {
-  user: loginResponse;
+  user: loginResponse | null;
 }
 
 declare interface PageHeaderProps {
@@ -217,18 +217,18 @@ declare interface TotalBalanceBoxProps {
 }
 
 declare interface FooterProps {
-  user: loginResponse;
-  type: string;
+  user: loginResponse | null;
+  type?: 'mobile' | 'desktop'
 }
 
 declare interface RightSidebarProps {
-  user: User;
+  user: loginResponse | null;
   transactions: Transaction[];
   banks: Bank[] & Account[];
 }
 
 declare interface SidebarProps {
-  user: loginResponse;
+  user: loginResponse | null;
 }
 
 declare interface RecentTransactionsProps {

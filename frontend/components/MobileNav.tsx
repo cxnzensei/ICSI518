@@ -44,7 +44,7 @@ const MobileNav = ({ user }: MobileNavProps) => {
                             src="/icons/logo.svg"
                             width={45}
                             height={45}
-                            alt="Horizon logo"
+                            alt="Wealthwise logo"
                         />
                         <h1 className="text-26 font-bold text-black-1">WealthWise</h1>
                     </Link>

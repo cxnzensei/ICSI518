@@ -1,6 +1,10 @@
+"use client";
+
 import MobileNav from "@/components/MobileNav";
 import Sidebar from "@/components/Sidebar";
+import { getLoggedInUser } from "@/lib/utils";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function RootLayout({
   children,
@@ -8,7 +12,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const loggedInUser = { firstName: "Team8", lastName: "User", emailId: "team8@icsi518.com", userId: "8", photo: "" }
+  const [loggedInUser, setLoggedInUser] = useState<loginResponse | null>(null);
+
+  useEffect(() => {
+    const user = getLoggedInUser();
+    setLoggedInUser(user);
+  }, [])
 
   return (
     <main className="flex h-screen w-full font-inter">

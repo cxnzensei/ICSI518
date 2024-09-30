@@ -1,22 +1,20 @@
-// import { logoutAccount } from '@/lib/actions/user.actions'
-import { logoutUser, request } from '@/lib/utils';
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import { logoutUser, request } from '@/lib/utils'
 
 const Footer = ({ user, type = 'desktop' }: FooterProps) => {
     const router = useRouter();
 
-    const handleLogOut = async () => {
-
+    const handleLogout = async () => {
         request("POST", "/api/v1/auth/logout")
             .then(() => {
                 logoutUser()
-                router.push('/login')
             })
             .catch(error => {
-                console.log(error)
+                console.error(error);
             })
+            .finally(() => router.push("/login"))
     }
 
     return (
@@ -31,13 +29,13 @@ const Footer = ({ user, type = 'desktop' }: FooterProps) => {
                 <h1 className="text-14 truncate text-gray-700 font-semibold">
                     {user?.firstName}
                 </h1>
-                <p className="text-14 truncate font-normal text-gray-600">
+                <p className="text-xs truncate font-normal text-gray-600">
                     {user?.emailId}
                 </p>
             </div>
 
-            <div onClick={handleLogOut}>
-                <Image width={25} height={25} src="icons/logout.svg" alt="jsm" />
+            <div onClick={handleLogout}>
+                <Image width={25} height={25} src="icons/logout.svg" alt="logout" />
             </div>
         </footer>
     )

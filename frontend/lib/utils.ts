@@ -2,6 +2,7 @@
 /* eslint-disable no-prototype-builtins */
 
 import { type ClassValue, clsx } from "clsx";
+import { staticGenerationAsyncStorage } from "next/dist/client/components/static-generation-async-storage-instance";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
@@ -109,10 +110,10 @@ export function getAccountTypeColors(type: AccountTypes) {
   switch (type) {
     case "depository":
       return {
-        bg: "bg-blue-25",
-        lightBg: "bg-blue-100",
-        title: "text-blue-900",
-        subText: "text-blue-700",
+        bg: "bg-green-25",
+        lightBg: "bg-green-100",
+        title: "text-green-900",
+        subText: "text-green-700",
       };
 
     case "credit":
@@ -198,9 +199,11 @@ export const getTransactionStatus = (date: Date) => {
   return date > twoDaysAgo ? "Processing" : "Success";
 };
 
-export const authformSchema = z.object({
+export const authformSchema = (type: string) => z.object({
   email: z.string().email(),
   password: z.string().min(8),
+  firstName: type === 'login' ? z.string().optional() : z.string().min(3),
+  lastName: type === 'login' ? z.string().optional() : z.string().min(3)
 })
 
 axios.defaults.baseURL = 'http://localhost:8080'
