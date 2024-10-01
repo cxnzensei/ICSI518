@@ -10,11 +10,20 @@ const Family = () => {
     const [loggedInUser, setLoggedInUser] = useState<loginResponse | null>(null);
     const [family, setFamily] = useState<FamilyMember[]>([]);
 
+    const addToFamily = () => {
+        request("GET", "https://randomuser.me/api/?results=1&inc=name,email,picture&noinfo")
+            .then(res => {
+                setFamily(family => [...family, res.data?.results[0]])
+            }).catch(error => {
+                console.error(error)
+            })
+    }
+
     useEffect(() => {
         const user = getLoggedInUser()
         setLoggedInUser(user);
 
-        request("GET", "https://randomuser.me/api/?results=7&inc=name,email,picture&noinfo")
+        request("GET", "https://randomuser.me/api/?results=2&inc=name,email,picture&noinfo")
             .then(res => {
                 setFamily(res.data.results)
             }).catch(error => {
@@ -33,11 +42,11 @@ const Family = () => {
                         user={loggedInUser?.firstName || 'Guest'}
                         subtext="Manage your family here. Add users by entering their email ID."
                     />
-                    <div className="bg-bankGradient w-fit px-4 py-2 text-white cursor-pointer 
+                    <button onClick={() => addToFamily()} className="bg-bankGradient w-fit px-4 py-2 text-white cursor-pointer 
                                     hover:scale-105 duration-300 ease-out hover:text-black-1 
                                     rounded-lg">
                         + Add a Member
-                    </div>
+                    </button>
                     <hr />
                     <FamilyMembers members={family} setMembers={setFamily} />
                 </header>
