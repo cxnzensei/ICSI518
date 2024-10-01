@@ -31,9 +31,6 @@ const FamilyMembers: React.FC<FamilyMembers> = ({ members, setMembers }) => {
                             {member.name.title} {member.name.first} {member.name.last}
                         </TableCell>
                         <TableCell className='px-2'>{member.email}</TableCell>
-                        <TableCell className='px-2'>
-                            <button className='bg-blue-500 px-4 py-2 rounded-md text-white'>Promote to Admin</button>
-                        </TableCell>
                         <TableCell>
                             <button onClick={() => removeUserFromFamily(member?.email)} className='bg-red-500 px-4 py-2 rounded-md text-white'>Remove</button>
                         </TableCell>
