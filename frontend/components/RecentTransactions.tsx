@@ -14,6 +14,12 @@ const RecentTransactions = ({
     page = 1
 }: RecentTransactionsProps) => {
     const [activeTab, setActiveTab] = useState(appwriteItemId); // useState to dynamically update id
+
+    // Filter transactions for the currently active account
+    const filterTransactionsForAccount = (accountId: string) => {
+        return transactions.filter(transaction => transaction.accountId === accountId);
+    };
+
     const handleTabChange = (newId: React.SetStateAction<string>) => {
         setActiveTab(newId);
     };
@@ -51,7 +57,7 @@ const RecentTransactions = ({
                             appwriteItemId={activeTab}
                             type='full'
                         />
-                        <TransactionsTable transactions={transactions} />
+                        <TransactionsTable transactions={filterTransactionsForAccount(account.id)} />
                     </TabsContent>
                 ))}
             </Tabs>

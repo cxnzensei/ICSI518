@@ -57,7 +57,7 @@ const Home = () => {
       amount: 150.75,
       pending: false,
       category: 'Food and Drink',
-      date: '2024-09-28',
+      date: '2024-10-01',
       image: 'grocery-image-url',
       $createdAt: '2024-09-28T09:00:00Z',
       channel: 'store',
@@ -127,8 +127,8 @@ const Home = () => {
         <RightSidebar
           user={loggedInUser}
           transactions={[]}
-          // banks={[{ currentBalance: 123.45 }, { currentBalance: 6789.01 }]}
-          banks={[]}
+          banks={[{ currentBalance: 123.45 }, { currentBalance: 6789.01 }]}
+          //banks={[]}
         />
       </section>
     </Suspense>
