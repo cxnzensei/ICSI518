@@ -11,6 +11,6 @@ public class ExceptionController {
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<String> handleApplicationExceptions(ApplicationException e) {
-        return new ResponseEntity<>(e.getMessage(), e.geStatus());
+        return new ResponseEntity<>(e.getMessage(), e.getStatus());
     }
 }
