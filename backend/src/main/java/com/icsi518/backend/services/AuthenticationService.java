@@ -47,7 +47,7 @@ public class AuthenticationService {
 
     public User findByEmailId(String email) {
         return userRepository.findUserByEmailId(email)
-                .orElseThrow(() -> new ApplicationException("User does not exist"));
+                .orElseThrow(() -> new ApplicationException("User does not exist", HttpStatus.NOT_FOUND));
     }
 
     public User getAuthenticatedUser() {
@@ -62,7 +62,7 @@ public class AuthenticationService {
         try {
             Optional<User> existingUser = userRepository.findUserByEmailId(registerDto.getEmailId());
             if (existingUser.isPresent()) {
-                throw new ApplicationException("Email Already Exists");
+                throw new ApplicationException("Email Already Exists", HttpStatus.BAD_REQUEST);
             }
 
             User user = new User();
@@ -85,11 +85,8 @@ public class AuthenticationService {
             userDto = mapperUtil.toUserDto(registeredUser);
 
             return ResponseEntity.ok(userDto);
-
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(userDto);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(userDto);
+            throw new ApplicationException("Could not register, please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -115,9 +112,9 @@ public class AuthenticationService {
             return ResponseEntity.ok(userDto);
 
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(userDto);
+            throw new ApplicationException("Invalid Credentials, please try again.", HttpStatus.EXPECTATION_FAILED);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(userDto);
+            throw new ApplicationException("Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

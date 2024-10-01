@@ -8,6 +8,7 @@ import com.icsi518.backend.utils.MapperUtil;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,7 +53,7 @@ public class UserService implements UserDetailsService {
     public UserDto updateUser(UUID userId, UserDto body) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApplicationException("The user does not exist"));
+                .orElseThrow(() -> new ApplicationException("The user does not exist", HttpStatus.NOT_FOUND));
 
         if (StringUtils.hasText(body.getFirstName())) {
             user.setFirstName(body.getFirstName());

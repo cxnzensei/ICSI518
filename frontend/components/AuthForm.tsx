@@ -15,6 +15,8 @@ import { authformSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { getLoggedInUser, setLoggedInUser, request } from '@/lib/utils';
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const AuthForm = ({ type }: { type: string }) => {
 
@@ -47,6 +49,8 @@ const AuthForm = ({ type }: { type: string }) => {
     //submit handler
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
 
+        setIsLoading(true);
+
         let modifiedValues;
 
         if (type === 'register') {
@@ -59,11 +63,12 @@ const AuthForm = ({ type }: { type: string }) => {
 
         request("POST", `/api/v1/auth/${type}`, modifiedValues).then((response: any) => {
             setLoggedInUser(response.data);
+            toast.success(`Welcome ${type === "login" ? "back" : ""}, ${response.data?.firstName}!`, { autoClose: 3000 })
+            router.push('/')
         }).catch((error: any) => {
-            console.error(error)
+            toast.error(error.response.data, { autoClose: 3000 })
         }).finally(() => {
             setIsLoading(false);
-            router.push('/')
         })
     }
 
@@ -136,6 +141,7 @@ const AuthForm = ({ type }: { type: string }) => {
                     </footer>
                 </>
             )}
+            <ToastContainer />
         </section >
     )
 }
