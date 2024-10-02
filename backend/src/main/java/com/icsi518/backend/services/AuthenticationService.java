@@ -56,14 +56,16 @@ public class AuthenticationService {
         return findByEmailId(jwt.getSubject());
     }
 
-    public ResponseEntity<UserDto> registerUser(RegisterDto registerDto, HttpServletResponse response) {
+    public ResponseEntity<UserDto> registerUser(RegisterDto registerDto, HttpServletResponse response)
+            throws ApplicationException {
         UserDto userDto = new UserDto();
 
+        Optional<User> existingUser = userRepository.findUserByEmailId(registerDto.getEmailId());
+        if (existingUser.isPresent()) {
+            throw new ApplicationException("Email Already Exists", HttpStatus.BAD_REQUEST);
+        }
+
         try {
-            Optional<User> existingUser = userRepository.findUserByEmailId(registerDto.getEmailId());
-            if (existingUser.isPresent()) {
-                throw new ApplicationException("Email Already Exists", HttpStatus.BAD_REQUEST);
-            }
 
             User user = new User();
             user.setEmailId(registerDto.getEmailId());
@@ -86,7 +88,7 @@ public class AuthenticationService {
 
             return ResponseEntity.ok(userDto);
         } catch (Exception e) {
-            throw new ApplicationException("Could not register, please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ApplicationException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
