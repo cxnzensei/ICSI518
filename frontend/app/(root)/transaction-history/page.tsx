@@ -10,7 +10,7 @@ import TransactionsTable from '@/components/TransactionsTable';
 import { BankTabItem } from '@/components/BankTabItem';
 import BankInfo from '@/components/BankInfo';
 
-const page = ({ appwriteItemId }: RecentTransactionsProps) => {
+const TransactionHistory = ({ appwriteItemId }: RecentTransactionsProps) => {
     const [activeTab, setActiveTab] = useState('1'); // useState to dynamically update id
 
     const filterTransactionsForAccount = (accountId: string) => {
@@ -177,7 +177,7 @@ const page = ({ appwriteItemId }: RecentTransactionsProps) => {
             receiverBankId: 'merchant_01',
         }
     ];
-    
+
     return (
         <div className="transactions">
             <div className="transactions-header">
@@ -192,13 +192,13 @@ const page = ({ appwriteItemId }: RecentTransactionsProps) => {
                 <TabsList className='recent-transactions-tablist'>
                     {accounts.map((account: Account) => (
                         <TabsTrigger key={account.id} value={account.appwriteItemId}>
-                            <BankTabItem key={account.id} account={account} appwriteItemId={appwriteItemId}/>
+                            <BankTabItem key={account.id} account={account} appwriteItemId={appwriteItemId} />
                         </TabsTrigger>
                     ))}
                 </TabsList>
 
                 {accounts.map((account: Account) => (
-                    <TabsContent 
+                    <TabsContent
                         value={account.appwriteItemId}
                         key={account.id}
                         className='space-y-4'
@@ -212,4 +212,4 @@ const page = ({ appwriteItemId }: RecentTransactionsProps) => {
     )
 }
 
-export default page
+export default TransactionHistory;

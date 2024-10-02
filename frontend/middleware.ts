@@ -6,9 +6,9 @@ export function middleware(req: NextRequest) {
 
     // uncomment this later.
 
-    // if (!jwt && !req.nextUrl.pathname.startsWith('/login') && !req.nextUrl.pathname.startsWith('/register')) {
-    //     return NextResponse.redirect(new URL('/login', req.url));
-    // }
+    if (!jwt && !req.nextUrl.pathname.startsWith('/login') && !req.nextUrl.pathname.startsWith('/register')) {
+        return NextResponse.redirect(new URL('/login', req.url));
+    }
 
     return NextResponse.next();
 }
