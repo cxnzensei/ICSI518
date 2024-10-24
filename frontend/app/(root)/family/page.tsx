@@ -8,27 +8,20 @@ import { getLoggedInUser, request } from "@/lib/utils";
 const Family = () => {
 
     const [loggedInUser, setLoggedInUser] = useState<loginResponse | null>(null);
-    const [family, setFamily] = useState<FamilyMember[]>([]);
+    // const [family, setFamily] = useState<FamilyMember[]>([]);
 
-    const addToFamily = () => {
-        request("GET", "https://randomuser.me/api/?results=1&inc=name,email,picture&noinfo")
-            .then(res => {
-                setFamily(family => [...family, res.data?.results[0]])
-            }).catch(error => {
-                console.error(error)
-            })
-    }
+    const [message, setMessage] = useState("nothing")
 
     useEffect(() => {
         const user = getLoggedInUser()
         setLoggedInUser(user);
 
-        request("GET", "https://randomuser.me/api/?results=2&inc=name,email,picture&noinfo")
-            .then(res => {
-                setFamily(res.data.results)
-            }).catch(error => {
-                console.error(error)
-            })
+        request('GET', '/messages', {}).then((response) => {
+            console.log(response)
+            setMessage(response.data)
+        }).catch((e) => {
+            console.error(e)
+        })
 
     }, [])
 
@@ -42,14 +35,8 @@ const Family = () => {
                         user={loggedInUser?.firstName || 'Guest'}
                         subtext="Manage your family here. Add users by entering their email ID."
                     />
-                    <button onClick={() => addToFamily()} className="bg-bankGradient w-fit px-4 py-2 text-white cursor-pointer 
-                                    hover:scale-105 duration-300 ease-out hover:text-black-1 
-                                    rounded-lg">
-                        + Add a Member
-                    </button>
-                    <hr />
-                    <FamilyMembers members={family} setMembers={setFamily} />
                 </header>
+                <div>{message}</div>
             </div>
         </section>
     )

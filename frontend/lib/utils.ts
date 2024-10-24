@@ -242,6 +242,5 @@ export const request = (method: string, url: string, data: object = {}) => {
     method: method,
     url: url,
     data: data,
-    withCredentials: method !== 'GET' && true // temporary, change it later
   })
 }
