@@ -11,7 +11,7 @@ import {
 import Link from 'next/link';
 import Image from "next/image"
 import CustomInput from './CustomInput';
-import { authformSchema } from '@/lib/utils';
+import { authformSchema, setAuthToken } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { getLoggedInUser, setLoggedInUser, request } from '@/lib/utils';
@@ -63,6 +63,7 @@ const AuthForm = ({ type }: { type: string }) => {
 
         request("POST", `/api/v1/auth/${type}`, modifiedValues).then((response: any) => {
             setLoggedInUser(response.data);
+            setAuthToken(response.data.token)
             toast.success(`Welcome ${type === "login" ? "back" : ""}, ${response.data?.firstName}!`, { autoClose: 3000 })
             router.push('/')
         }).catch((error: any) => {
