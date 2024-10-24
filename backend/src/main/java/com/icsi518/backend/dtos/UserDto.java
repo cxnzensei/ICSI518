@@ -2,6 +2,8 @@ package com.icsi518.backend.dtos;
 
 import java.util.UUID;
 
+import com.icsi518.backend.enums.Role;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +20,5 @@ public class UserDto {
     private String lastName;
     private String emailId;
     private String token;
+    private Role role;
 }

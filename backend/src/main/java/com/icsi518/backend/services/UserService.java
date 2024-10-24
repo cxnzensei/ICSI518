@@ -11,6 +11,7 @@ import com.icsi518.backend.dtos.CredentialsDto;
 import com.icsi518.backend.dtos.SignupDto;
 import com.icsi518.backend.dtos.UserDto;
 import com.icsi518.backend.entities.User;
+import com.icsi518.backend.enums.Role;
 import com.icsi518.backend.exceptions.ApplicationException;
 import com.icsi518.backend.mappers.UserMapper;
 import com.icsi518.backend.repositories.UserRepository;
@@ -51,6 +52,7 @@ public class UserService {
         }
 
         User user = userMapper.toUserEntity(userDto);
+        user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
         User savedUser = userRepository.save(user);
         return userMapper.toUserDto(savedUser);

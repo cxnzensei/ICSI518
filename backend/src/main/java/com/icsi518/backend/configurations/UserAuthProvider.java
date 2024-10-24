@@ -1,7 +1,7 @@
 package com.icsi518.backend.configurations;
 
+import java.util.Arrays;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -35,15 +35,16 @@ public class UserAuthProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String emailId) {
+    public String createToken(UserDto user) {
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + 3600000);
 
         return JWT.create()
-                .withIssuer(emailId)
+                .withIssuer(user.getEmailId())
                 .withIssuedAt(now)
                 .withExpiresAt(validity)
+                .withClaim("role", user.getRole().name())
                 .sign(Algorithm.HMAC256(secretKey));
     }
 
@@ -51,7 +52,7 @@ public class UserAuthProvider {
         JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(secretKey)).build();
         DecodedJWT decodedJWT = jwtVerifier.verify(token);
         UserDto user = userService.findByEmailId(decodedJWT.getIssuer());
-        return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+        return new UsernamePasswordAuthenticationToken(user, null, Arrays.asList(user.getRole()));
     }
 
 }

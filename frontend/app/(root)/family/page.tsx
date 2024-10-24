@@ -3,24 +3,40 @@
 import HeaderBox from "@/components/HeaderBox"
 import FamilyMembers from "@/components/FamilyMembers";
 import { useEffect, useState } from "react";
-import { getLoggedInUser, request } from "@/lib/utils";
+import { getAuthToken, getLoggedInUser, request } from "@/lib/utils";
+import { CustomJwtPayload, loginResponse } from "@/types";
+import { jwtDecode } from "jwt-decode";
 
 const Family = () => {
 
     const [loggedInUser, setLoggedInUser] = useState<loginResponse | null>(null);
+    const [role, setRole] = useState("USER");
     // const [family, setFamily] = useState<FamilyMember[]>([]);
 
-    const [message, setMessage] = useState("nothing")
+    const [userMessage, setUserMessage] = useState("nothing")
+    const [adminMessage, setAdminMessage] = useState("nothing")
 
     useEffect(() => {
-        const user = getLoggedInUser()
+        const user = getLoggedInUser();
         setLoggedInUser(user);
 
+        const token = getAuthToken();
+
+        if (token !== null) {
+            const decoded = jwtDecode<CustomJwtPayload>(token);
+            setRole(decoded?.role);
+        }
+
         request('GET', '/messages', {}).then((response) => {
-            console.log(response)
-            setMessage(response.data)
+            setUserMessage(response.data)
         }).catch((e) => {
             console.error(e)
+        })
+
+        request('GET', '/admin', {}).then((response) => {
+            setAdminMessage(response.data)
+        }).catch((e) => {
+            console.error(e.response.data.message)
         })
 
     }, [])
@@ -36,7 +52,8 @@ const Family = () => {
                         subtext="Manage your family here. Add users by entering their email ID."
                     />
                 </header>
-                <div>{message}</div>
+                <div>{userMessage}</div>
+                {role === 'ADMIN' && <div>{adminMessage}</div>}
             </div>
         </section>
     )
