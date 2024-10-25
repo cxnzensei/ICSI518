@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { logoutUser, request } from '@/lib/utils'
+import { FooterProps } from '@/types'
 
 const Footer = ({ user, type = 'desktop' }: FooterProps) => {
     const router = useRouter();
@@ -34,7 +35,7 @@ const Footer = ({ user, type = 'desktop' }: FooterProps) => {
                 </p>
             </div>
 
-            <div onClick={handleLogout}>
+            <div className='ml-5' onClick={handleLogout}>
                 <Image width={25} height={25} src="icons/logout.svg" alt="logout" />
             </div>
         </footer>

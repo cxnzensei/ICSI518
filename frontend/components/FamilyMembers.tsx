@@ -6,6 +6,7 @@ import {
     TableCell,
     TableRow,
 } from "@/components/ui/table"
+import { FamilyMember } from '@/types';
 
 type FamilyMembers = {
     members: FamilyMember[] | null;
