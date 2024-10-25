@@ -7,6 +7,7 @@ import qs from "query-string";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import axios from 'axios';
+import { AccountTypes, CategoryCount, loginResponse, Transaction } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -232,32 +233,16 @@ export const setLoggedInUser = (data: loginResponse) => {
   document.cookie = `user=${cookieValue};expires=${expires.toUTCString()};path=/`;
 }
 
-export const getAuthToken = () => {
-  return window.localStorage.getItem('jwt');
-}
-
-export const setAuthToken = (token: string) => {
-  window.localStorage.setItem('jwt', token);
-}
-
 export const logoutUser = () => {
-  // Set the user cookie to expire in the past
   document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 };
 
 export const request = (method: string, url: string, data: object = {}) => {
 
-  let headers = {};
-  const jwt = getAuthToken();
-
-  if (jwt !== null && jwt !== "null") {
-    headers = { "Authorization": `Bearer ${jwt}` }
-  }
-
   return axios({
     method: method,
-    headers: headers,
     url: url,
     data: data,
+    withCredentials: true
   })
 }

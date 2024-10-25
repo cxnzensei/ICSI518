@@ -3,7 +3,7 @@
 import HeaderBox from "@/components/HeaderBox"
 import FamilyMembers from "@/components/FamilyMembers";
 import { useEffect, useState } from "react";
-import { getAuthToken, getLoggedInUser, request } from "@/lib/utils";
+import { getLoggedInUser, request } from "@/lib/utils";
 import { CustomJwtPayload, loginResponse } from "@/types";
 import { jwtDecode } from "jwt-decode";
 
@@ -19,13 +19,6 @@ const Family = () => {
     useEffect(() => {
         const user = getLoggedInUser();
         setLoggedInUser(user);
-
-        const token = getAuthToken();
-
-        if (token !== null) {
-            const decoded = jwtDecode<CustomJwtPayload>(token);
-            setRole(decoded?.role);
-        }
 
         request('GET', '/messages', {}).then((response) => {
             setUserMessage(response.data)

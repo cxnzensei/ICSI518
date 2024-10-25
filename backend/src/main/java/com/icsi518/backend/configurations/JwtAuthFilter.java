@@ -2,13 +2,16 @@ package com.icsi518.backend.configurations;
 
 import java.io.IOException;
 
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.icsi518.backend.exceptions.ApplicationException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,18 +27,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        Cookie[] cookies = request.getCookies();
 
-        if (header != null) {
-            String[] elements = header.split(" ");
-
-            if (elements.length == 2 && "Bearer".equals(elements[0])) {
-                try {
-                    SecurityContextHolder.getContext().setAuthentication(
-                            userAuthProvider.validateToken(elements[1]));
-                } catch (RuntimeException e) {
-                    SecurityContextHolder.clearContext();
-                    throw e;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("jwt".equals(cookie.getName())) {
+                    try {
+                        SecurityContextHolder.getContext()
+                                .setAuthentication(userAuthProvider.validateToken(cookie.getValue()));
+                    } catch (Exception e) {
+                        SecurityContextHolder.clearContext();
+                        throw new ApplicationException("Unauthorized token", HttpStatus.UNAUTHORIZED);
+                    }
                 }
             }
         }
