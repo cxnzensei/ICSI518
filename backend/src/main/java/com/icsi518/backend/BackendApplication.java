@@ -1,6 +1,6 @@
 package com.icsi518.backend;
 
-import com.icsi518.backend.entities.Role;
+import com.icsi518.backend.enums.Role;
 import com.icsi518.backend.entities.User;
 import com.icsi518.backend.repositories.UserRepository;
 
@@ -23,7 +23,7 @@ public class BackendApplication {
 	CommandLineRunner run(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		return args -> {
 
-			Optional<User> presentUser = userRepository.findUserByEmailId("team8@albany.edu");
+			Optional<User> presentUser = userRepository.findByEmailId("team8@albany.edu");
 
 			if (presentUser.isPresent()) {
 				return;
@@ -32,12 +32,10 @@ public class BackendApplication {
 			User user = new User();
 			user.setEmailId("team8@albany.edu");
 			user.setPassword(passwordEncoder.encode("password"));
-			user.setFirstName("Team");
-			user.setLastName("8");
+			user.setFirstName("Admin");
+			user.setLastName("User");
 			user.setRole(Role.valueOf("ADMIN"));
-			user.setIsEnabled(true);
 			userRepository.save(user);
 		};
 	}
-
 }

@@ -7,6 +7,7 @@ import qs from "query-string";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import axios from 'axios';
+import { AccountTypes, CategoryCount, loginResponse, Transaction } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -233,15 +234,15 @@ export const setLoggedInUser = (data: loginResponse) => {
 }
 
 export const logoutUser = () => {
-  // Set the user cookie to expire in the past
   document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 };
 
 export const request = (method: string, url: string, data: object = {}) => {
+
   return axios({
     method: method,
     url: url,
     data: data,
-    withCredentials: method !== 'GET' && true // temporary, change it later
+    withCredentials: true
   })
 }

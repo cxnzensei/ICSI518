@@ -1,70 +1,48 @@
 package com.icsi518.backend.configurations;
 
-import com.icsi518.backend.services.TokenService;
-import com.icsi518.backend.services.UserService;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.jwt.JwtException;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
-import jakarta.servlet.http.Cookie;
-
 import java.io.IOException;
 
-@Component
-@Slf4j
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.icsi518.backend.exceptions.ApplicationException;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private TokenService tokenService;
+    private final UserAuthProvider userAuthProvider;
 
-    @Autowired
-    private UserService userService;
+    @Override
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-    private String getJwtFromRequest(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
+
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("jwt".equals(cookie.getName())) {
-                    return cookie.getValue();
+                    try {
+                        SecurityContextHolder.getContext()
+                                .setAuthentication(userAuthProvider.validateToken(cookie.getValue()));
+                    } catch (Exception e) {
+                        SecurityContextHolder.clearContext();
+                        throw new ApplicationException("Unauthorized token", HttpStatus.UNAUTHORIZED);
+                    }
                 }
             }
         }
-        return null;
-    }
-
-    @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain) throws ServletException, IOException {
-        try {
-            String jwt = getJwtFromRequest(request);
-            if (StringUtils.hasText(jwt)) {
-                String email = tokenService.getUserNameFromToken(jwt);
-                UserDetails userDetails = userService.loadUserByUsername(email);
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            }
-        } catch (JwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(e.getMessage() + " : Invalid login token. Please login again.");
-            return;
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write(e.getMessage());
-            return;
-        }
         filterChain.doFilter(request, response);
     }
+
 }

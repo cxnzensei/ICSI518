@@ -1,18 +1,23 @@
 package com.icsi518.backend.dtos;
 
+import java.util.UUID;
+
+import com.icsi518.backend.enums.Role;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Data
 public class UserDto {
-    private UUID userId;
-    private String emailId;
-    private String photo;
+
+    private UUID id;
     private String firstName;
     private String lastName;
+    private String emailId;
+    private Role role;
 }
