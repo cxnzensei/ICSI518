@@ -2,6 +2,7 @@
 
 import HeaderBox from '@/components/HeaderBox';
 import { getLoggedInUser } from '@/lib/utils';
+import { loginResponse } from '@/types';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 

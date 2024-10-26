@@ -5,6 +5,7 @@ import RecentTransactions from '@/components/RecentTransactions';
 import RightSidebar from '@/components/RightSidebar';
 import TotalBalanceBox from '@/components/TotalBalanceBox'
 import { getLoggedInUser } from '@/lib/utils';
+import { loginResponse } from '@/types';
 
 import { Suspense, useEffect, useState } from 'react';
 
