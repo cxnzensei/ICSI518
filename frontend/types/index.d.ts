@@ -38,7 +38,7 @@ declare type loginResponse = {
   lastName: string;
   membershipStatus: string;
   role: string;
-  familyId: string;
+  familyId?: string | null;
 }
 
 declare type User = {

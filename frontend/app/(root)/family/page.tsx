@@ -28,6 +28,9 @@ const Family = () => {
             const loggedInUser = getLoggedInUser();
             setUser(getLoggedInUser)
 
+            const userResponse = await request("GET", `/api/v1/users/${loggedInUser?.id}`);
+            setLoggedInUser(userResponse?.data)
+
             if (loggedInUser?.familyId) {
                 const response = (await request('GET', `/api/v1/families/${loggedInUser?.familyId}`)).data;
                 setCreatedFamily({ name: response?.familyName, createdOn: response?.creationDate });
@@ -70,7 +73,7 @@ const Family = () => {
                         user={user?.firstName || 'Guest'}
                         subtext="Manage your family here. Add users by entering their email ID."
                     />
-                    {user?.familyId ? (
+                    {user.familyId ? (
                         <div className="flex flex-col gap-4">
                             <div>
                                 <div className="bold text-xl uppercase">
@@ -111,7 +114,7 @@ const Family = () => {
                             )}
                         </div>
                     )}
-                    <FamilyMembers members={family} setMembers={setFamily} />
+                    <FamilyMembers members={family} setMembers={setFamily} setCreatedFamily={setCreatedFamily} user={user} setUser={setUser} />
                 </header>
             </div>
         </section>

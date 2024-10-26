@@ -112,6 +112,8 @@ public class FamilyService {
 
         Family family = user.getFamily();
         user.setFamily(null);
+        user.setMembershipStatus(MembershipStatus.NOT_A_MEMBER);
+        user.setRole(Role.USER);
         userRepository.save(user);
 
         family.getMembers().remove(user);
