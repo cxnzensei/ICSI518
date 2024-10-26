@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.icsi518.backend.dtos.FamilyDto;
@@ -98,6 +99,25 @@ public class FamilyService {
         userRepository.save(user);
 
         return familyMapper.toFamilyMinimalDto(savedFamily);
+    }
+
+    @Transactional
+    public ResponseEntity<String> removeUserFromFamily(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException("The user does not exist", HttpStatus.NOT_FOUND));
+
+        if (user.getFamily() == null) {
+            throw new ApplicationException("The user is not a part of any family", HttpStatus.PRECONDITION_FAILED);
+        }
+
+        Family family = user.getFamily();
+        user.setFamily(null);
+        userRepository.save(user);
+
+        family.getMembers().remove(user);
+        familyRepository.save(family);
+
+        return ResponseEntity.ok("User removed successfully");
     }
 
 }

@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import React from 'react';
 import {
     Table,
@@ -7,6 +6,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { FamilyMember } from '@/types';
+import { request } from '@/lib/utils';
 
 type FamilyMembers = {
     members: FamilyMember[] | null;
@@ -15,9 +15,14 @@ type FamilyMembers = {
 
 const FamilyMembers: React.FC<FamilyMembers> = ({ members, setMembers }) => {
 
-    const removeUserFromFamily = (id: string) => {
+    const removeUserFromFamily = async (id: string) => {
         const updatedFamily = members?.filter(member => member.id !== id) || []
-        setMembers(updatedFamily);
+        try {
+            const response = await request("DELETE", "/api/v1/families/remove-user-from-family", { "userId": id });
+            setMembers(updatedFamily)
+        } catch (error: any) {
+            console.error(error)
+        }
     }
 
     return (

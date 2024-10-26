@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,5 +56,11 @@ public class FamilyController {
         UUID familyId = UUID.fromString(addUserMap.get("familyId"));
         UserMinimalDto addedUser = familyService.addUserToFamily(userEmail, familyId);
         return ResponseEntity.ok(addedUser);
+    }
+
+    @DeleteMapping(value = "/remove-user-from-family", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> removeUserFromFamily(@RequestBody Map<String, String> request) {
+        UUID userId = UUID.fromString(request.get("userId"));
+        return familyService.removeUserFromFamily(userId);
     }
 }
