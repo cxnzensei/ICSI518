@@ -3,6 +3,7 @@
 import MobileNav from "@/components/MobileNav";
 import Sidebar from "@/components/Sidebar";
 import { getLoggedInUser } from "@/lib/utils";
+import { loginResponse } from "@/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
