@@ -16,11 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.icsi518.backend.dtos.FamilyDto;
 import com.icsi518.backend.dtos.FamilyMinimalDto;
+import com.icsi518.backend.dtos.UserMinimalDto;
 import com.icsi518.backend.services.FamilyService;
 import com.icsi518.backend.services.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api/v1/families")
+@Slf4j
 public class FamilyController {
 
     private final FamilyService familyService;
@@ -43,5 +47,13 @@ public class FamilyController {
     public ResponseEntity<FamilyDto> getFamilyById(@PathVariable UUID familyId) {
         FamilyDto familyDto = familyService.getFamilyById(familyId);
         return ResponseEntity.ok(familyDto);
+    }
+
+    @PostMapping(value = "/add-user-to-family", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserMinimalDto> addUserToFamily(@RequestBody Map<String, String> addUserMap) {
+        String userEmail = addUserMap.get("userEmail");
+        UUID familyId = UUID.fromString(addUserMap.get("familyId"));
+        UserMinimalDto addedUser = familyService.addUserToFamily(userEmail, familyId);
+        return ResponseEntity.ok(addedUser);
     }
 }

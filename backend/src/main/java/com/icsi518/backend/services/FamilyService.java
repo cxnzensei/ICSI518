@@ -43,6 +43,30 @@ public class FamilyService {
     }
 
     @Transactional
+    public UserMinimalDto addUserToFamily(String userEmail, UUID familyId) {
+        User user = userRepository.findByEmailId(userEmail)
+                .orElseThrow(() -> new ApplicationException("User not found", HttpStatus.NOT_FOUND));
+
+        if (user.getFamily() != null) {
+            throw new ApplicationException("User is already part of another family", HttpStatus.PRECONDITION_FAILED);
+        }
+
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new ApplicationException("Family not found", HttpStatus.NOT_FOUND));
+
+        user.setMembershipStatus(MembershipStatus.PENDING);
+        user.setFamily(family);
+        User savedUser = userRepository.save(user);
+
+        List<User> members = family.getMembers();
+        members.add(savedUser);
+        family.setMembers(members);
+        familyRepository.save(family);
+
+        return userMapper.toUserMinimalDto(savedUser);
+    }
+
+    @Transactional
     public FamilyDto getFamilyById(UUID familyId) {
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new ApplicationException("Family not found", HttpStatus.NOT_FOUND));

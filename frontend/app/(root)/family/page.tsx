@@ -30,7 +30,6 @@ const Family = () => {
 
             if (loggedInUser?.familyId) {
                 const response = (await request('GET', `/api/v1/families/${loggedInUser?.familyId}`)).data;
-                console.log(response)
                 setCreatedFamily({ name: response?.familyName, createdOn: response?.creationDate });
                 setFamily(response?.members)
             }
@@ -49,6 +48,15 @@ const Family = () => {
             setFamilyName('')
         } catch (error: any) {
             console.error(error);
+        }
+    }
+
+    const addUserToFamily = async (userEmail: string) => {
+        try {
+            const res = await request("POST", "/api/v1/families/add-user-to-family", { "userEmail": userEmail, "familyId": user?.familyId });
+            setFamily([...family, res?.data])
+        } catch (error: any) {
+            console.error(error)
         }
     }
 
@@ -74,7 +82,7 @@ const Family = () => {
                             </div>
                             <div className="flex gap-2">
                                 <input type="search" value={emailSearch} onChange={(e) => setEmailSearch(e.target.value)} placeholder="Enter email ID here" className="border p-2 rounded-lg outline-none"></input>
-                                <button disabled={emailSearch.length < 7} className={`${emailSearch.length < 7 ? "bg-gray-500" : "bg-bankGradient hover:scale-105 duration-300 ease-out hover:text-black-1 cursor-pointer"} w-fit px-4 py-2 text-white rounded-lg`}>
+                                <button onClick={() => addUserToFamily(emailSearch)} disabled={emailSearch.length < 7} className={`${emailSearch.length < 7 ? "bg-gray-500" : "bg-bankGradient hover:scale-105 duration-300 ease-out hover:text-black-1 cursor-pointer"} w-fit px-4 py-2 text-white rounded-lg`}>
                                     Request
                                 </button>
                             </div>
