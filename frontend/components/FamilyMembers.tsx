@@ -16,7 +16,7 @@ type FamilyMembers = {
 const FamilyMembers: React.FC<FamilyMembers> = ({ members, setMembers }) => {
 
     const removeUserFromFamily = (id: string) => {
-        const updatedFamily = members?.filter(member => member.email !== id) || []
+        const updatedFamily = members?.filter(member => member.id !== id) || []
         setMembers(updatedFamily);
     }
 
@@ -24,16 +24,13 @@ const FamilyMembers: React.FC<FamilyMembers> = ({ members, setMembers }) => {
         <Table>
             <TableBody>
                 {members?.map((member: FamilyMember) => (
-                    <TableRow key={member.email} className='border'>
-                        <TableCell className='px-2'>
-                            <Image className='rounded-full p-1 border hover:scale-105 duration-300 ease-out bg-gray-400 hover:bg-white hover:border-black-1' src={member.picture.large} alt={member.email} width={100} height={100} />
-                        </TableCell>
-                        <TableCell className='px-2'>
-                            {member.name.title} {member.name.first} {member.name.last}
-                        </TableCell>
-                        <TableCell className='px-2'>{member.email}</TableCell>
+                    <TableRow key={member.id} className='border'>
+                        <TableCell className='px-2'>{member.firstName} {member.lastName}</TableCell>
+                        <TableCell className='px-2'>{member.emailId}</TableCell>
+                        <TableCell className='px-2'>{member.role}</TableCell>
+                        <TableCell className='px-2'>{member.membershipStatus}</TableCell>
                         <TableCell>
-                            <button onClick={() => removeUserFromFamily(member?.email)} className='bg-red-500 px-4 py-2 rounded-md text-white'>Remove</button>
+                            <button onClick={() => removeUserFromFamily(member?.id)} className='bg-red-500 px-4 py-2 rounded-md text-white'>Remove</button>
                         </TableCell>
                     </TableRow>
                 ))}

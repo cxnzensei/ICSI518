@@ -8,14 +8,14 @@ const Footer = ({ user, type = 'desktop' }: FooterProps) => {
     const router = useRouter();
 
     const handleLogout = async () => {
-        request("POST", "/api/v1/auth/logout")
-            .then(() => {
-                logoutUser()
-            })
-            .catch(error => {
-                console.error(error);
-            })
-            .finally(() => router.push("/login"))
+        try {
+            const res = await request("POST", "/api/v1/auth/logout");
+            logoutUser();
+        } catch (error: any) {
+
+        } finally {
+            router.push("/login")
+        }
     }
 
     return (

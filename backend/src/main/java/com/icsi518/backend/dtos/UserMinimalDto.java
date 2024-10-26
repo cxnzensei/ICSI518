@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class UserDto {
+public class UserMinimalDto {
 
     private UUID id;
     private String firstName;
@@ -22,5 +22,4 @@ public class UserDto {
     private String emailId;
     private Role role;
     private MembershipStatus membershipStatus;
-    private UUID familyId;
 }
