@@ -115,7 +115,12 @@ public class FamilyService {
         userRepository.save(user);
 
         family.getMembers().remove(user);
-        familyRepository.save(family);
+
+        if (family.getMembers().isEmpty()) {
+            familyRepository.delete(family);
+        } else {
+            familyRepository.save(family);
+        }
 
         return ResponseEntity.ok("User removed successfully");
     }
