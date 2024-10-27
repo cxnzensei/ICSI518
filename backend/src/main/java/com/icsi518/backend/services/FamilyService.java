@@ -3,6 +3,7 @@ package com.icsi518.backend.services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -73,7 +74,7 @@ public class FamilyService {
 
     @Transactional
     public FamilyDto getFamilyById(UUID familyId) {
-        Family family = familyRepository.findById(familyId)
+        Family family = familyRepository.findByIdWithMembersSorted(familyId)
                 .orElseThrow(() -> new ApplicationException("Family not found", HttpStatus.NOT_FOUND));
 
         FamilyDto familyDto = familyMapper.toFamilyDto(family);
@@ -153,5 +154,25 @@ public class FamilyService {
             return ResponseEntity.ok("left successfully");
         }
         return ResponseEntity.ok("User removed successfully");
+    }
+
+    public ResponseEntity<String> toggleAdmin(UUID userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            Role currentRole = user.getRole();
+            if (currentRole == Role.ADMIN) {
+                user.setRole(Role.USER);
+                userRepository.save(user);
+                return ResponseEntity.ok("Demoted to User");
+            } else {
+                user.setRole(Role.ADMIN);
+                userRepository.save(user);
+                return ResponseEntity.ok("Promoted to Admin");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
     }
 }

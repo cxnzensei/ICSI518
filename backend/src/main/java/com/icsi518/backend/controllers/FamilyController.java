@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,7 +46,7 @@ public class FamilyController {
     }
 
     @GetMapping(value = "/{familyId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FamilyDto> getFamilyById(@PathVariable UUID familyId) {
+    public ResponseEntity<FamilyDto> getFamilyById(@PathVariable("familyId") UUID familyId) {
         FamilyDto familyDto = familyService.getFamilyById(familyId);
         return ResponseEntity.ok(familyDto);
     }
@@ -62,5 +63,10 @@ public class FamilyController {
     public ResponseEntity<String> removeUserFromFamily(@RequestBody Map<String, String> request) {
         UUID userId = UUID.fromString(request.get("userId"));
         return familyService.removeUserFromFamily(userId);
+    }
+
+    @PutMapping(value = "/toggle-admin/{id}")
+    public ResponseEntity<String> toggleAdmin(@PathVariable("id") UUID userId) {
+        return familyService.toggleAdmin(userId);
     }
 }
