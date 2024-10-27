@@ -1,11 +1,4 @@
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableRow,
-} from "@/components/ui/table"
-
-import {
     Accordion,
     AccordionContent,
     AccordionItem,
