@@ -24,7 +24,6 @@ const FamilyMembers: React.FC<FamilyMembers> = ({ members, setMembers, setCreate
             await request("DELETE", "/api/v1/families/remove-user-from-family", { "userId": id });
             const updatedFamily = members?.filter(member => member.id !== id)
             if (action === 'DECLINE' || action === 'LEAVE') {
-                console.log("should set to empty")
                 setMembers([])
             } else {
                 setMembers(updatedFamily)
