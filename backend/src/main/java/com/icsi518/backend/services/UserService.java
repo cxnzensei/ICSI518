@@ -80,4 +80,13 @@ public class UserService {
         return userMapper.toUserDto(savedUser);
     }
 
+    public String acceptFamilyInvite(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException("User does not exist", HttpStatus.NOT_FOUND));
+
+        user.setMembershipStatus(MembershipStatus.ACCEPTED);
+        userRepository.save(user);
+        return "Invite Accepted";
+    }
+
 }

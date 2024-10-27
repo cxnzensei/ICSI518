@@ -25,22 +25,26 @@ import com.icsi518.backend.repositories.FamilyRepository;
 import com.icsi518.backend.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class FamilyService {
 
     private final FamilyRepository familyRepository;
     private final UserRepository userRepository;
     private final FamilyMapper familyMapper;
     private final UserMapper userMapper;
+    private final UserService userService;
 
     @Autowired
     public FamilyService(FamilyRepository familyRepository, UserRepository userRepository, FamilyMapper familyMapper,
-            UserMapper userMapper) {
+            UserMapper userMapper, UserService userService) {
         this.familyRepository = familyRepository;
         this.userRepository = userRepository;
         this.familyMapper = familyMapper;
         this.userMapper = userMapper;
+        this.userService = userService;
     }
 
     @Transactional
@@ -111,6 +115,24 @@ public class FamilyService {
         }
 
         Family family = user.getFamily();
+
+        if (user.getRole() == Role.ADMIN) {
+            long otherUsersCount = family.getMembers().stream()
+                    .filter(member -> !member.equals(user))
+                    .count();
+
+            if (otherUsersCount > 0) {
+                boolean hasOtherAdmins = family.getMembers().stream()
+                        .filter(member -> !member.equals(user))
+                        .anyMatch(member -> member.getRole() == Role.ADMIN);
+                if (!hasOtherAdmins) {
+                    throw new ApplicationException(
+                            "No other Admins found. Please assign someone else as an admin first.",
+                            HttpStatus.CONFLICT);
+                }
+            }
+        }
+
         user.setFamily(null);
         user.setMembershipStatus(MembershipStatus.NOT_A_MEMBER);
         user.setRole(Role.USER);
@@ -124,7 +146,12 @@ public class FamilyService {
             familyRepository.save(family);
         }
 
+        log.info("userId: " + userId.toString());
+        log.info("loggedInUser: " + userService.getLoggedInUser().toString());
+
+        if (userId.equals(userService.getLoggedInUser())) {
+            return ResponseEntity.ok("left successfully");
+        }
         return ResponseEntity.ok("User removed successfully");
     }
-
 }

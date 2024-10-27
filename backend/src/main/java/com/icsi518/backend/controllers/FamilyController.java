@@ -58,7 +58,7 @@ public class FamilyController {
         return ResponseEntity.ok(addedUser);
     }
 
-    @DeleteMapping(value = "/remove-user-from-family", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/remove-user-from-family")
     public ResponseEntity<String> removeUserFromFamily(@RequestBody Map<String, String> request) {
         UUID userId = UUID.fromString(request.get("userId"));
         return familyService.removeUserFromFamily(userId);

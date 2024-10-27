@@ -58,6 +58,7 @@ const Family = () => {
         try {
             const res = await request("POST", "/api/v1/families/add-user-to-family", { "userEmail": userEmail, "familyId": user?.familyId });
             setFamily([...family, res?.data])
+            setEmailSearch('')
         } catch (error: any) {
             console.error(error)
         }

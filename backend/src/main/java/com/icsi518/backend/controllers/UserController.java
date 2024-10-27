@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +24,11 @@ public class UserController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDto> updateUser(@PathVariable("id") UUID userId) {
         return ResponseEntity.ok(userService.findById(userId));
+    }
+
+    @PutMapping(value = "/accept-invite/{id}")
+    public ResponseEntity<String> acceptFamilyInvite(@PathVariable("id") UUID userId) {
+        return ResponseEntity.ok(userService.acceptFamilyInvite(userId));
     }
 
 }

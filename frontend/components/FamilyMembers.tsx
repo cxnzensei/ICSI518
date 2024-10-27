@@ -5,10 +5,10 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { FamilyMember, loginResponse } from '@/types';
-import { request, setLoggedInUser } from '@/lib/utils';
+import { convertToFamilyMember, request, setLoggedInUser } from '@/lib/utils';
 
 type FamilyMembers = {
-    members: FamilyMember[] | null;
+    members: FamilyMember[];
     setMembers: React.Dispatch<React.SetStateAction<FamilyMember[]>>
     setCreatedFamily: React.Dispatch<React.SetStateAction<{ name: string, createdOn: string }>>
     user: loginResponse,
@@ -17,16 +17,34 @@ type FamilyMembers = {
 
 const FamilyMembers: React.FC<FamilyMembers> = ({ members, setMembers, setCreatedFamily, user, setUser }) => {
 
-    const removeUserFromFamily = async (id: string) => {
-        if (id === user?.id) {
-            setUser({ ...user, role: "USER", familyId: null, membershipStatus: 'NOT_A_MEMBER' });
-            setLoggedInUser({ ...user, role: "USER", familyId: null, membershipStatus: 'NOT_A_MEMBER' });
-            setCreatedFamily({ name: "", createdOn: "" });
-        }
-        const updatedFamily = members?.filter(member => member.id !== id) || []
+    const removeUserFromFamily = async (id: string, action: string) => {
         try {
-            const response = await request("DELETE", "/api/v1/families/remove-user-from-family", { "userId": id });
-            setMembers(updatedFamily)
+            await request("DELETE", "/api/v1/families/remove-user-from-family", { "userId": id });
+            if (id === user?.id) {
+                setUser({ ...user, role: "USER", familyId: null, membershipStatus: 'NOT_A_MEMBER' });
+                setLoggedInUser({ ...user, role: "USER", familyId: null, membershipStatus: 'NOT_A_MEMBER' });
+                setCreatedFamily({ name: "", createdOn: "" });
+            }
+            const updatedFamily = members?.filter(member => member.id !== id)
+            if (action === 'DECLINED' || action === 'LEAVE') {
+                setMembers([])
+            } else {
+                setMembers(updatedFamily)
+            }
+        } catch (error: any) {
+            console.error(error)
+        }
+    }
+
+    const acceptInvite = async (id: string) => {
+        try {
+            const response = await request("PUT", `/api/v1/users/accept-invite/${id}`);
+            console.log(response?.data)
+            setUser({ ...user, membershipStatus: 'ACCEPTED' });
+            setLoggedInUser({ ...user, membershipStatus: 'ACCEPTED' });
+            const restFamily = members?.filter(member => member.id !== id)
+            const acceptedMember = convertToFamilyMember(user);
+            setMembers([...restFamily, acceptedMember])
         } catch (error: any) {
             console.error(error)
         }
@@ -41,9 +59,22 @@ const FamilyMembers: React.FC<FamilyMembers> = ({ members, setMembers, setCreate
                         <TableCell className='px-2'>{member.emailId}</TableCell>
                         <TableCell className='px-2'>{member.role}</TableCell>
                         <TableCell className='px-2'>{member.membershipStatus}</TableCell>
-                        <TableCell>
-                            <button onClick={() => removeUserFromFamily(member?.id)} className='bg-red-500 px-4 py-2 rounded-md text-white'>{member?.id === user.id ? "Leave" : "Remove"}</button>
-                        </TableCell>
+                        {(member.membershipStatus === 'PENDING' && member.id === user.id) && (
+                            <TableCell className="flex gap-2">
+                                <button onClick={() => acceptInvite(member?.id)} className="bg-green-500 px-4 py-2 rounded-md text-white">Accept</button>
+                                <button onClick={() => removeUserFromFamily(member?.id, 'DECLINE')} className="bg-red-500 px-4 py-2 rounded-md text-white">Decline</button>
+                            </TableCell>
+                        )}
+                        {user.role === 'ADMIN' && (
+                            <TableCell>
+                                <button onClick={() => removeUserFromFamily(member?.id, 'REMOVE')} className='bg-red-500 px-4 py-2 rounded-md text-white'>{member?.id === user.id ? "Leave" : "Remove"}</button>
+                            </TableCell>
+                        )}
+                        {(user.role !== 'ADMIN' && user.id === member.id && member.membershipStatus !== 'PENDING') && (
+                            <TableCell>
+                                <button onClick={() => removeUserFromFamily(member?.id, 'LEAVE')} className='bg-red-500 px-4 py-2 rounded-md text-white'>Leave</button>
+                            </TableCell>
+                        )}
                     </TableRow>
                 ))}
             </TableBody>

@@ -199,6 +199,7 @@ export const convertToFamilyMember = (loginResponse: loginResponse): FamilyMembe
     lastName: loginResponse.lastName,
     emailId: loginResponse.emailId,
     role: loginResponse.role,
+    membershipStatus: loginResponse.membershipStatus
   }
 }
 
