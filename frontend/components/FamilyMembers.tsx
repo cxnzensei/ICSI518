@@ -41,24 +41,21 @@ const FamilyMembers: React.FC<FamilyMembers> = ({ members, setMembers, setCreate
 
     const acceptInvite = async (id: string) => {
         try {
-            console.log('accepting')
-            const response = await request("PUT", `/api/v1/users/accept-invite/${id}`);
-            console.log(response?.data)
-            console.log("changing membership status")
+            await request("PUT", `/api/v1/users/accept-invite/${id}`);
             setUser({ ...user, membershipStatus: 'ACCEPTED' });
             setLoggedInUser({ ...user, membershipStatus: 'ACCEPTED' });
-            const restFamily = members?.filter(member => member.id !== id)
-            const acceptedMember = convertToFamilyMember(user);
-            acceptedMember.membershipStatus = 'ACCEPTED'
-            setMembers([...restFamily, acceptedMember])
+            const updatedMembers = members.map(member =>
+                member.id === id ? { ...member, membershipStatus: 'ACCEPTED' } : member
+            );
+            setMembers(updatedMembers);
         } catch (error: any) {
-            console.error(error)
+            console.error(error);
         }
-    }
+    };
 
     const toggleAdmin = async (id: string) => {
         try {
-            const response = await request("PUT", `/api/v1/families/toggle-admin/${id}`);
+            await request("PUT", `/api/v1/families/toggle-admin/${id}`);
             const updatedFamily = members.map(member => {
                 if (member.id === id) {
                     return { ...member, role: member.role === 'ADMIN' ? 'USER' : 'ADMIN' };
@@ -112,7 +109,7 @@ const FamilyMembers: React.FC<FamilyMembers> = ({ members, setMembers, setCreate
                                     </div>
                                 )}
                                 {(user.role === 'ADMIN' && member.role === 'USER' && member.membershipStatus === 'ACCEPTED') && (
-                                    <div className="italic">Financial Settings (Admin Privilege)</div>
+                                    <div className="italic">Financial Settings (Admin Privilege over a user)</div>
                                 )}
                             </AccordionContent>
                         </AccordionItem>

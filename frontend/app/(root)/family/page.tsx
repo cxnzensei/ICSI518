@@ -57,7 +57,9 @@ const Family = () => {
     const addUserToFamily = async (userEmail: string) => {
         try {
             const res = await request("POST", "/api/v1/families/add-user-to-family", { "userEmail": userEmail, "familyId": user?.familyId });
-            setFamily([...family, res?.data])
+            const updatedFamily = [...family, res?.data]
+            updatedFamily.sort((a, b) => a.firstName.localeCompare(b.firstName));
+            setFamily(updatedFamily);
             setEmailSearch('')
         } catch (error: any) {
             console.error(error)
