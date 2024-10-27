@@ -3,6 +3,7 @@
 import BankCard from '@/components/BankCard';
 import HeaderBox from '@/components/HeaderBox';
 import { getLoggedInUser } from '@/lib/utils';
+import { loginResponse, Account } from '@/types';
 import React, { useState, useEffect } from 'react';
 
 const MyBanks = () => {

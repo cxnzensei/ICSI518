@@ -9,6 +9,7 @@ import { useEffect, useState, Suspense } from 'react';
 import TransactionsTable from '@/components/TransactionsTable';
 import { BankTabItem } from '@/components/BankTabItem';
 import BankInfo from '@/components/BankInfo';
+import { loginResponse, Account } from '@/types';
 
 const TransactionHistory = () => {
     const [activeTab, setActiveTab] = useState('1'); // useState to dynamically update id
