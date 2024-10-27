@@ -82,44 +82,38 @@ const FamilyMembers: React.FC<FamilyMembers> = ({ members, setMembers, setCreate
                                     {member.firstName} {member.lastName} <span className="text-sm">{(member.membershipStatus === 'PENDING' && member.id === user.id) && "(Pending Action)"}</span>
                                 </div>
                             </AccordionTrigger>
-                            <AccordionContent className="flex flex-col gap-2">
-                                <div>Email: {member.emailId}</div>
-                                <div>Role: {member.role}</div>
-                                <div>Membership Status: {member.membershipStatus}</div>
-                                <div>
-                                    {(member.membershipStatus === 'PENDING' && member.id === user.id) && (
-                                        <div className="flex gap-2">
-                                            <button onClick={() => acceptInvite(member?.id)} className="bg-green-500 px-4 py-2 rounded-md text-white">Accept</button>
-                                            <button onClick={() => removeUserFromFamily(member?.id, 'DECLINE')} className="bg-red-500 px-4 py-2 rounded-md text-white">Decline</button>
-                                        </div>
-                                    )}
+                            <AccordionContent className="flex flex-col gap-4">
+                                <div className="flex flex-col gap-2">
+                                    <div>Email: {member.emailId}</div>
+                                    <div>Role: {member.role}</div>
+                                    <div>Membership Status: {member.membershipStatus}</div>
                                 </div>
-                                <div>
-                                    {(user.role === 'ADMIN' && member.membershipStatus === 'ACCEPTED') && (
-                                        <div className="flex gap-2">
-                                            {member.id !== user.id && (
-                                                <button onClick={() => toggleAdmin(member?.id)} className='bg-blue-500 px-4 py-2 rounded-md text-white'>{member.role === 'ADMIN' ? "Remove Admin" : "Add Admin"}</button>
-                                            )}
-                                            {member?.id === user.id ? (
-                                                <button onClick={() => removeUserFromFamily(member?.id, 'LEAVE')} className='bg-red-500 px-4 py-2 rounded-md text-white'>Leave</button>
-                                            ) : (
-                                                <button onClick={() => removeUserFromFamily(member?.id, 'REMOVE')} className='bg-red-500 px-4 py-2 rounded-md text-white'>Remove</button>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                                <div>
-                                    {(user.role !== 'ADMIN' && user.id === member.id && member.membershipStatus !== 'PENDING') && (
-                                        <div>
-                                            <button onClick={() => removeUserFromFamily(member?.id, 'LEAVE')} className='bg-red-500 px-4 py-1 rounded-md text-white'>Leave</button>
-                                        </div>
-                                    )}
-                                </div>
-                                <div>
-                                    {(user.role === 'ADMIN' && member.role === 'USER') && (
-                                        <div className="italic">Financial Settings (Admin Privilege)</div>
-                                    )}
-                                </div>
+                                {(member.membershipStatus === 'PENDING' && member.id === user.id) && (
+                                    <div className="flex gap-2">
+                                        <button onClick={() => acceptInvite(member?.id)} className="bg-green-500 px-4 py-2 rounded-md text-white">Accept</button>
+                                        <button onClick={() => removeUserFromFamily(member?.id, 'DECLINE')} className="bg-red-500 px-4 py-2 rounded-md text-white">Decline</button>
+                                    </div>
+                                )}
+                                {(user.role === 'ADMIN' && member.membershipStatus === 'ACCEPTED') && (
+                                    <div className="flex gap-2">
+                                        {member.id !== user.id && (
+                                            <button onClick={() => toggleAdmin(member?.id)} className='bg-blue-500 px-4 py-2 rounded-md text-white'>{member.role === 'ADMIN' ? "Remove Admin" : "Add Admin"}</button>
+                                        )}
+                                        {member?.id === user.id ? (
+                                            <button onClick={() => removeUserFromFamily(member?.id, 'LEAVE')} className='bg-red-500 px-4 py-2 rounded-md text-white'>Leave</button>
+                                        ) : (
+                                            <button onClick={() => removeUserFromFamily(member?.id, 'REMOVE')} className='bg-red-500 px-4 py-2 rounded-md text-white'>Remove</button>
+                                        )}
+                                    </div>
+                                )}
+                                {(user.role !== 'ADMIN' && user.id === member.id && member.membershipStatus !== 'PENDING') && (
+                                    <div>
+                                        <button onClick={() => removeUserFromFamily(member?.id, 'LEAVE')} className='bg-red-500 px-4 py-1 rounded-md text-white'>Leave</button>
+                                    </div>
+                                )}
+                                {(user.role === 'ADMIN' && member.role === 'USER' && member.membershipStatus === 'ACCEPTED') && (
+                                    <div className="italic">Financial Settings (Admin Privilege)</div>
+                                )}
                             </AccordionContent>
                         </AccordionItem>
                     </Accordion>
