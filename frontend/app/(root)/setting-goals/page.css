@@ -23,16 +23,16 @@ button:hover {
     background: #333;
 }
 
-.budgets-list {
+.goals-list {
     margin-top: 20px;
 }
 
-.budgets-list ul {
+.goals-list ul {
     list-style-type: none;
     padding: 0;
 }
 
-.budgets-list li {
+.goals-list li {
     margin-bottom: 10px;
     padding: 10px;
     border: 1px solid #000;
