@@ -2,19 +2,20 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { logoutUser, request } from '@/lib/utils'
+import { FooterProps } from '@/types'
 
 const Footer = ({ user, type = 'desktop' }: FooterProps) => {
     const router = useRouter();
 
     const handleLogout = async () => {
-        request("POST", "/api/v1/auth/logout")
-            .then(() => {
-                logoutUser()
-            })
-            .catch(error => {
-                console.error(error);
-            })
-            .finally(() => router.push("/login"))
+        try {
+            const res = await request("POST", "/api/v1/auth/logout");
+            logoutUser();
+        } catch (error: any) {
+
+        } finally {
+            router.push("/login")
+        }
     }
 
     return (
@@ -34,7 +35,7 @@ const Footer = ({ user, type = 'desktop' }: FooterProps) => {
                 </p>
             </div>
 
-            <div onClick={handleLogout}>
+            <div className='ml-5' onClick={handleLogout}>
                 <Image width={25} height={25} src="icons/logout.svg" alt="logout" />
             </div>
         </footer>

@@ -61,15 +61,16 @@ const AuthForm = ({ type }: { type: string }) => {
             modifiedValues = { emailId: data.email, password: data.password }
         }
 
-        request("POST", `/api/v1/auth/${type}`, modifiedValues).then((response: any) => {
-            setLoggedInUser(response.data);
-            toast.success(`Welcome ${type === "login" ? "back" : ""}, ${response.data?.firstName}!`, { autoClose: 3000 })
+        try {
+            const response = await request("POST", `/api/v1/auth/${type}`, modifiedValues);
+            setLoggedInUser(response?.data)
+            toast.success(`Welcome${type === "login" ? "back" : ""}, ${response.data?.firstName}!`, { autoClose: 3000 })
             router.push('/')
-        }).catch((error: any) => {
+        } catch (error: any) {
             toast.error(error.response.data, { autoClose: 3000 })
-        }).finally(() => {
-            setIsLoading(false);
-        })
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (

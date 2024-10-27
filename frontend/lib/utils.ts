@@ -7,6 +7,7 @@ import qs from "query-string";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import axios from 'axios';
+import { AccountTypes, CategoryCount, FamilyMember, loginResponse, Transaction } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -191,6 +192,17 @@ export function decryptId(id: string) {
   return atob(id);
 }
 
+export const convertToFamilyMember = (loginResponse: loginResponse): FamilyMember => {
+  return {
+    id: loginResponse.id,
+    firstName: loginResponse.firstName,
+    lastName: loginResponse.lastName,
+    emailId: loginResponse.emailId,
+    role: loginResponse.role,
+    membershipStatus: loginResponse.membershipStatus
+  }
+}
+
 export const getTransactionStatus = (date: Date) => {
   const today = new Date();
   const twoDaysAgo = new Date(today);
@@ -210,38 +222,25 @@ axios.defaults.baseURL = 'http://localhost:8080'
 axios.defaults.headers.post["Content-Type"] = 'application/json'
 
 export const getLoggedInUser = () => {
-  const cookies = document.cookie.split(';');
-  const cookieObj: { [key: string]: string } = {};
-
-  cookies.forEach(cookie => {
-    const [name, value] = cookie.trim().split('=');
-    cookieObj[name] = value;
-  });
-
-  const user = cookieObj['user'] ? JSON.parse(decodeURIComponent(cookieObj['user'])) : null;
-
-  return user;
-}
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
+};
 
 export const setLoggedInUser = (data: loginResponse) => {
-  const expires = new Date();
-  expires.setTime(expires.getTime() + 24 * 60 * 60 * 1000);
-
-  const cookieValue = encodeURIComponent(JSON.stringify(data));
-
-  document.cookie = `user=${cookieValue};expires=${expires.toUTCString()};path=/`;
-}
+  const user = JSON.stringify(data);
+  localStorage.setItem('user', user);
+};
 
 export const logoutUser = () => {
-  // Set the user cookie to expire in the past
-  document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  localStorage.removeItem('user');
 };
 
 export const request = (method: string, url: string, data: object = {}) => {
+
   return axios({
     method: method,
     url: url,
     data: data,
-    withCredentials: method !== 'GET' && true // temporary, change it later
+    withCredentials: true
   })
 }

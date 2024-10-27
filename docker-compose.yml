@@ -50,28 +50,28 @@ services:
     networks:
       - wealthwise
 
-  frontend:
-    container_name: frontend
-    image: nextjs:latest
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    develop:
-      watch:
-        - action: sync+restart
-          path: ./frontend
-          target: /app
-          ignore:
-            - node_modules
-        - action: rebuild
-          path: package.json
-          target: /app/package.json
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-    networks:
-      - wealthwise
+  # frontend:
+  #   container_name: frontend
+  #   image: nextjs:latest
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   develop:
+  #     watch:
+  #       - action: sync+restart
+  #         path: ./frontend
+  #         target: /app
+  #         ignore:
+  #           - node_modules
+  #       - action: rebuild
+  #         path: package.json
+  #         target: /app/package.json
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - wealthwise
 
 volumes:
   pgdata:
