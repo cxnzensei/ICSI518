@@ -246,6 +246,11 @@ declare interface RecentTransactionsProps {
   page: number;
 }
 
+declare interface MakeTransactionProps {
+  addTransaction: (transaction: Transaction) => void;
+  accounts: Account[];
+}
+
 declare interface TransactionHistoryTableProps {
   transactions: Transaction[];
   page: number;

@@ -9,6 +9,8 @@ import { loginResponse } from '@/types';
 
 import { Suspense, useEffect, useState } from 'react';
 
+import MakeTransaction from '@/components/MakeTransaction';
+
 const Home = () => {
 
   const [loggedInUser, setLoggedInUser] = useState<loginResponse | null>(null);
@@ -47,7 +49,7 @@ const Home = () => {
     },
   ];
 
-  const transactions = [
+  const [transactions, setTransactions] = useState([
     {
       id: 't1',
       $id: 't1',
@@ -99,7 +101,13 @@ const Home = () => {
       senderBankId: 'employer_bank',
       receiverBankId: 'bank_02',
     },
-  ];
+  ]);
+
+
+  const addTransaction = (transaction: { id: string; $id: string; name: string; paymentChannel: string; type: string; accountId: string; amount: number; pending: boolean; category: string; date: string; image: string; $createdAt: string; channel: string; senderBankId: string; receiverBankId: string; }) => {
+    setTransactions((prev) => [...prev, transaction]);
+  };
+
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -124,6 +132,7 @@ const Home = () => {
             appwriteItemId={'1'}
             page={1}
           />
+          <MakeTransaction addTransaction={addTransaction} accounts={accounts} />
         </div>
         <RightSidebar
           user={loggedInUser}
