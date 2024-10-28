@@ -18,7 +18,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class AccountService {
-    
+
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
 
@@ -37,8 +37,10 @@ public class AccountService {
     }
 
     public List<Account> getAllAccountsByUserId(UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApplicationException("User not found", HttpStatus.NOT_FOUND));
-        return user.getAccounts();
+        // User user = userRepository.findById(userId).orElseThrow(() -> new
+        // ApplicationException("User not found", HttpStatus.NOT_FOUND));
+        // return user.getAccounts();
+        return null;
     }
 
     public Account updateAccount(UUID accountId, Account accountDetails) {

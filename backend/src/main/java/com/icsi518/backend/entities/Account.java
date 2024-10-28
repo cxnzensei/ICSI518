@@ -12,10 +12,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID accountId;
 
     @Column(nullable = false)
     private String name;

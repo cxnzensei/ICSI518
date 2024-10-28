@@ -28,7 +28,7 @@ public class Family {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID familyId;
 
     @Column(nullable = false, unique = true)
     private String familyName;

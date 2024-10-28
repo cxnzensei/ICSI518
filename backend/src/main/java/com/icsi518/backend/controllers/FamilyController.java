@@ -42,7 +42,7 @@ public class FamilyController {
     public ResponseEntity<FamilyMinimalDto> createFamily(@RequestBody Map<String, String> familyMap) {
         String familyName = familyMap.get("familyName");
         FamilyMinimalDto family = familyService.createFamily(familyName, userService.getLoggedInUser());
-        return ResponseEntity.created(URI.create("/users/" + family.getId())).body(family);
+        return ResponseEntity.created(URI.create("/users/" + family.getFamilyId())).body(family);
     }
 
     @GetMapping(value = "/{familyId}", produces = MediaType.APPLICATION_JSON_VALUE)

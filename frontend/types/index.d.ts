@@ -34,7 +34,7 @@ declare type LoginUser = {
 declare type loginResponse = {
   emailId: string;
   firstName: string;
-  id: string;
+  userId: string;
   lastName: string;
   membershipStatus: string;
   role: string;
@@ -350,7 +350,7 @@ declare interface getBankByAccountIdProps {
 }
 
 declare interface FamilyMember {
-  id: string;
+  userId: string;
   firstName: string;
   lastName: string;
   emailId: string;

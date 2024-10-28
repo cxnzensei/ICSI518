@@ -36,7 +36,7 @@ public class UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             UserDto user = (UserDto) authentication.getPrincipal();
-            return user.getId();
+            return user.getUserId();
         }
         return null;
     }

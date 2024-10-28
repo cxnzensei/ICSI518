@@ -1,6 +1,5 @@
 package com.icsi518.backend.entities;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -17,7 +16,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,7 +30,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID userId;
 
     @Column(nullable = false)
     private String firstName;
@@ -54,10 +52,6 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "family_id")
     private Family family;
-
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<Account> accounts;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -194,7 +194,7 @@ export function decryptId(id: string) {
 
 export const convertToFamilyMember = (loginResponse: loginResponse): FamilyMember => {
   return {
-    id: loginResponse.id,
+    userId: loginResponse.userId,
     firstName: loginResponse.firstName,
     lastName: loginResponse.lastName,
     emailId: loginResponse.emailId,
