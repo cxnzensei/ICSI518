@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import './Page.css';
+import './page.css';
 
 const Page = () => {
   const [budget, setBudget] = useState('');
