@@ -6,6 +6,7 @@ import RightSidebar from '@/components/RightSidebar';
 import TotalBalanceBox from '@/components/TotalBalanceBox'
 import { getLoggedInUser } from '@/lib/utils';
 import { loginResponse } from '@/types';
+import BalanceSheet from '@/components/BalanceSheet';
 
 import { Suspense, useEffect, useState } from 'react';
 
@@ -110,7 +111,7 @@ const Home = () => {
               type="greeting"
               title="Welcome"
               user={loggedInUser?.firstName || 'Guest'}
-              subtext="Manage your funds wisely. Access your transactions, goals and get insights towards them."
+              subtext="Manag your funds wisely. Access your transactions, goals and get insights towards them."
             />
             <TotalBalanceBox
               accounts={[]}
@@ -124,6 +125,7 @@ const Home = () => {
             appwriteItemId={'1'}
             page={1}
           />
+          <BalanceSheet />
         </div>
         <RightSidebar
           user={loggedInUser}
