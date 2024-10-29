@@ -15,7 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
-    
+
     @Autowired
     private AccountService accountService;
 
@@ -26,8 +26,8 @@ public class AccountController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Account>> getAllAccountsByUserId(@PathVariable("userId") UUID userId) {
-        log.info("userId for this GET request is " + userId.toString());
-        return ResponseEntity.ok(accountService.getAllAccountsByUserId(userId));
+        List<Account> accounts = accountService.getAllAccountsByUserId(userId);
+        return ResponseEntity.ok(accounts);
     }
 
     @PutMapping("/{accountId}")

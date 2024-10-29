@@ -10,6 +10,7 @@ import com.icsi518.backend.exceptions.ApplicationException;
 import com.icsi518.backend.repositories.AccountRepository;
 import com.icsi518.backend.repositories.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -28,19 +29,23 @@ public class AccountService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public Account createAccount(UUID userId, Account account) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApplicationException("User not found", HttpStatus.NOT_FOUND));
 
-        account.setUser(user);
-        return accountRepository.save(account);
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new ApplicationException("User not found", HttpStatus.NOT_FOUND));
+
+            account.setUser(user);
+            return accountRepository.save(account);
+        } catch (Exception e) {
+            throw new ApplicationException(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+        }
     }
 
+    @Transactional
     public List<Account> getAllAccountsByUserId(UUID userId) {
-        // User user = userRepository.findById(userId).orElseThrow(() -> new
-        // ApplicationException("User not found", HttpStatus.NOT_FOUND));
-        // return user.getAccounts();
-        return null;
+        return accountRepository.findByUser_UserId(userId);
     }
 
     public Account updateAccount(UUID accountId, Account accountDetails) {
@@ -60,7 +65,12 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
+    @Transactional
     public void deleteAccount(UUID accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ApplicationException("The account does not exist", HttpStatus.NOT_FOUND));
+
+        account.setUser(null);
         accountRepository.deleteById(accountId);
     }
 }

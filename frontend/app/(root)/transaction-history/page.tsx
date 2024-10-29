@@ -2,7 +2,7 @@
 
 import HeaderBox from '@/components/HeaderBox'
 import React from 'react'
-import { getLoggedInUser } from '@/lib/utils';
+import { getLoggedInUser, request } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { useEffect, useState, Suspense } from 'react';
@@ -12,7 +12,7 @@ import BankInfo from '@/components/BankInfo';
 import { loginResponse, Account } from '@/types';
 
 const TransactionHistory = () => {
-    const [activeTab, setActiveTab] = useState('1'); // useState to dynamically update id
+    const [activeTab, setActiveTab] = useState('unique-appwrite-id'); // useState to dynamically update id
 
     const filterTransactionsForAccount = (accountId: string) => {
         return transactions.filter(transaction => transaction.accountId === accountId);
@@ -21,41 +21,35 @@ const TransactionHistory = () => {
     const handleTabChange = (newId: React.SetStateAction<string>) => {
         setActiveTab(newId);
     };
-    const [loggedInUser, setLoggedInUser] = useState<loginResponse | null>(null);
+
+    const [user, setUser] = useState<loginResponse>({
+        emailId: "",
+        firstName: "",
+        userId: "",
+        lastName: "",
+        membershipStatus: "",
+        role: "",
+        familyId: ""
+    });
+
+    const [accounts, setAccounts] = useState<Account[]>([]);
 
     useEffect(() => {
-        const user = getLoggedInUser();
-        setLoggedInUser(user);
-    }, [])
+        const loggedInUser = getLoggedInUser();
+        setUser(loggedInUser);
 
-    const accounts = [
-        {
-            id: '1',
-            name: 'Savings Account',
-            appwriteItemId: '1',
-            availableBalance: 5000.00,
-            currentBalance: 5500.00,
-            officialName: 'Personal Savings',
-            mask: '1234',
-            institutionId: 'bank_01',
-            type: 'depository',
-            subtype: 'savings',
-            sharableId: 'share_1',
-        },
-        {
-            id: '2',
-            name: 'Checking Account',
-            appwriteItemId: '2',
-            availableBalance: 3000.00,
-            currentBalance: 3500.00,
-            officialName: 'Personal Checking',
-            mask: '5678',
-            institutionId: 'bank_02',
-            type: 'depository',
-            subtype: 'checking',
-            sharableId: 'share_2',
-        },
-    ];
+        const fetchAccountsForUser = async () => {
+            try {
+                const response = await request('GET', `/api/v1/accounts/user/${loggedInUser.userId}`);
+                setAccounts(response?.data)
+            } catch (error: any) {
+                console.error(error)
+            }
+        }
+
+        fetchAccountsForUser();
+
+    }, [])
 
     const transactions = [
         {
@@ -64,7 +58,7 @@ const TransactionHistory = () => {
             name: 'Groceries',
             paymentChannel: 'in-store',
             type: 'debit',
-            accountId: '1',
+            accountId: '22c2ed34-1858-42b4-a7ed-ffc5886928b2',
             amount: 150.75,
             pending: false,
             category: 'Food and Drink',
@@ -81,7 +75,7 @@ const TransactionHistory = () => {
             name: 'Electricity Bill',
             paymentChannel: 'online',
             type: 'debit',
-            accountId: '2',
+            accountId: '22c2ed34-1858-42b4-a7ed-ffc5886928b2',
             amount: 75.50,
             pending: false,
             category: 'Utilities',
@@ -98,7 +92,7 @@ const TransactionHistory = () => {
             name: 'Salary',
             paymentChannel: 'direct-deposit',
             type: 'credit',
-            accountId: '2',
+            accountId: '22c2ed34-1858-42b4-a7ed-ffc5886928b2',
             amount: 3000.00,
             pending: false,
             category: 'Payment',
@@ -115,7 +109,7 @@ const TransactionHistory = () => {
             name: 'Amazon Orders',
             paymentChannel: 'online',
             type: 'debit',
-            accountId: '1',
+            accountId: '22c2ed34-1858-42b4-a7ed-ffc5886928b2',
             amount: 161.68,
             pending: false,
             category: 'Shopping',
@@ -132,7 +126,7 @@ const TransactionHistory = () => {
             name: 'Netflix',
             paymentChannel: 'online',
             type: 'debit',
-            accountId: '1',
+            accountId: '22c2ed34-1858-42b4-a7ed-ffc5886928b2',
             amount: 150.75,
             pending: false,
             category: 'Subscription',
@@ -149,7 +143,7 @@ const TransactionHistory = () => {
             name: 'Zelle John',
             paymentChannel: 'online',
             type: 'credit',
-            accountId: '1',
+            accountId: 'ef420591-12be-43bf-a2ec-dba7b25f38aa',
             amount: 150.75,
             pending: true,
             category: 'Payment',
@@ -166,7 +160,7 @@ const TransactionHistory = () => {
             name: 'Dinner',
             paymentChannel: 'in-store',
             type: 'debit',
-            accountId: '1',
+            accountId: 'ef420591-12be-43bf-a2ec-dba7b25f38aa',
             amount: 150.75,
             pending: false,
             category: 'Food and Drink',
@@ -179,6 +173,39 @@ const TransactionHistory = () => {
         }
     ];
 
+    const addAccountForUser = async (userId: string) => {
+        try {
+            const response = await request('POST', `/api/v1/accounts/${userId}`,
+                {
+                    "name": "Personal Savings",
+                    "appwriteItemId": "unique-appwrite-id4",
+                    "availableBalance": 1500.00,
+                    "currentBalance": 1500.00,
+                    "officialName": "My Personal Savings Account",
+                    "mask": "1234",
+                    "institutionId": "bank-001",
+                    "type": "savings",
+                    "subtype": "personal",
+                    "sharableId": "sharable-unique-id4"
+                }
+            )
+            setAccounts([...accounts, response?.data])
+            console.log(response?.data)
+        } catch (error: any) {
+            console.error(error)
+        }
+    }
+
+    const deleteAccount = async (accountId: string) => {
+        try {
+            const response = await request('DELETE', `/api/v1/accounts/${accountId}`);
+            const tempAccounts = accounts.filter((account) => account.accountId !== accountId);
+            setAccounts(tempAccounts);
+        } catch (error: any) {
+            console.error(error)
+        }
+    }
+
     return (
         <Suspense fallback={<div>Loading ...</div>}>
             <div className="transactions">
@@ -186,27 +213,31 @@ const TransactionHistory = () => {
                     <HeaderBox
                         type="greeting"
                         title="Welcome to your Transaction History,"
-                        user={loggedInUser?.firstName || 'Guest'}
+                        user={user?.firstName || 'Guest'}
                         subtext="See your bank details and Transactions."
                     />
                 </div>
-                <Tabs value={activeTab} onValueChange={handleTabChange} defaultValue={'1'} className="w-full">
+                <button onClick={() => addAccountForUser(user?.userId)}>Add account</button>
+                <Tabs value={activeTab} onValueChange={handleTabChange} defaultValue={'unique-appwrite-id'} className="w-full">
                     <TabsList className='recent-transactions-tablist'>
                         {accounts.map((account: Account) => (
-                            <TabsTrigger key={account.id} value={account.appwriteItemId}>
-                                <BankTabItem key={account.id} account={account} appwriteItemId={account.appwriteItemId} />
-                            </TabsTrigger>
+                            <div key={account.accountId}>
+                                <TabsTrigger value={account.appwriteItemId}>
+                                    <BankTabItem key={account.accountId} account={account} appwriteItemId={account.appwriteItemId} />
+                                </TabsTrigger>
+                                <button onClick={() => deleteAccount(account.accountId)}>Delete</button>
+                            </div>
                         ))}
                     </TabsList>
 
                     {accounts.map((account: Account) => (
                         <TabsContent
                             value={account.appwriteItemId}
-                            key={account.id}
+                            key={account.accountId}
                             className='space-y-4'
                         >
                             <BankInfo account={account} appwriteItemId={account.appwriteItemId} type='full' />
-                            <TransactionsTable transactions={filterTransactionsForAccount(account.id)} />
+                            <TransactionsTable transactions={filterTransactionsForAccount(account.accountId)} />
                         </TabsContent>
                     ))}
                 </Tabs>
