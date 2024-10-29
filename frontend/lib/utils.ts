@@ -215,7 +215,8 @@ export const authformSchema = (type: string) => z.object({
   email: z.string().email(),
   password: z.string().min(8),
   firstName: type === 'login' ? z.string().optional() : z.string().min(3),
-  lastName: type === 'login' ? z.string().optional() : z.string().min(3)
+  lastName: type === 'login' ? z.string().optional() : z.string().min(3),
+  conPassword: type === 'login' ? z.string().optional() : z.string().min(8)
 })
 
 axios.defaults.baseURL = 'http://localhost:8080'
