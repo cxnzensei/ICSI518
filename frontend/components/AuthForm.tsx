@@ -54,7 +54,13 @@ const AuthForm = ({ type }: { type: string }) => {
         let modifiedValues;
 
         if (type === 'register') {
-            modifiedValues = { ...data, emailId: data.email }
+            if (data.password === data.conPassword){
+                modifiedValues = { ...data, emailId: data.email }
+            } else {
+                toast.error("Password does not match", { autoClose: 3000 })
+                setIsLoading(false)
+                return
+            }
         }
 
         if (type === 'login') {
@@ -119,6 +125,9 @@ const AuthForm = ({ type }: { type: string }) => {
                             )}
                             <CustomInput control={form.control} name="email" label="Email" placeholder="Enter your email" />
                             <CustomInput control={form.control} name="password" label="Password" placeholder="Enter your password" />
+                            {type === 'register' && (
+                                <CustomInput control={form.control} name="conPassword" label="Confirm Password" placeholder="Renter your password" />
+                            )}
                             <div className='flex flex-col gap-4'>
                                 <Button type="submit" className='form-btn'>
                                     {isLoading ? (
