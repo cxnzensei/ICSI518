@@ -1,40 +1,64 @@
 .container {
-    text-align: left;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(to bottom right, #3b82f6, #34d399);
+    color: black; /* Default text color */
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
   
-input, textarea {
-    padding: 10px;
-    border: 2px solid #000;
-    border-radius: 4px;
-    margin: 10px 0;
-    box-sizing: border-box;
-}
+  h1, h2 {
+    text-align: center;
+    color: black; /* Heading color */
+  }
   
-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    background: #000;
-    color: #fff;
-    cursor: pointer;
-}
-  
-button:hover {
-    background: #333;
-}
-
-.goals-list {
+  form {
     margin-top: 20px;
-}
-
-.goals-list ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.goals-list li {
-    margin-bottom: 10px;
+  }
+  
+  label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+    color: black; /* Label color */
+  }
+  
+  input[type="number"],
+  textarea {
+    width: 100%;
     padding: 10px;
-    border: 1px solid #000;
-    border-radius: 4px;
-}
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: black; /* Text color while typing */
+    background-color: white; /* Optional: Set background to white for better contrast */
+  }
+  
+  button {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    color: white;
+    background: linear-gradient(to right, #16a34a, #34d399);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .spendings-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .spendings-list li {
+    background: #1e3a8a;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 10px;
+    color: black; /* List item color */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  

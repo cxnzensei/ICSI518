@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from 'react';
-import './Page.css';
+import './GoalsPage.css'; // Updated CSS file name
 
 interface Goal {
   goal: string;
   notes: string;
-  dueDate: string; // Due date for the goal
+  dueDate: string;
 }
 
 const Page = () => {
@@ -55,7 +55,7 @@ const Page = () => {
     <div className="container">
       <h1 className="title">Set Family Goals</h1>
       <form onSubmit={handleSubmit} className="goal-form">
-        <div>
+        <div className="input-container">
           <label className="label">Yearly Goal ($):</label>
           <input 
             type="number" 
@@ -64,16 +64,12 @@ const Page = () => {
             className="input"
             required
           />
-        </div>
-        <div>
           <label className="label">Notes:</label>
           <textarea 
             value={notes} 
             onChange={(e) => setNotes(e.target.value)} 
             className="textarea"
           />
-        </div>
-        <div>
           <label className="label">Due Date:</label>
           <input 
             type="date" 
@@ -81,8 +77,8 @@ const Page = () => {
             onChange={(e) => setDueDate(e.target.value)} 
             className="input"
           />
+          <button type="submit" className="button">Add Goal</button>
         </div>
-        <button type="submit" className="button">Add Goal</button>
       </form>
       <div className="goals-list">
         <h2 className="goals-title">Your Family's Goals</h2>
