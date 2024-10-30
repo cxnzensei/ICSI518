@@ -79,22 +79,21 @@ declare type Account = {
 };
 
 declare type Transaction = {
-  id: string;
-  $id: string;
+  transactionId: string;
+  appwriteId: string;
   name: string;
   paymentChannel: string;
   type: string;
-  accountId: string;
   amount: number;
   pending: boolean;
   category: string;
   date: string;
   image: string;
-  type: string;
-  $createdAt: string;
+  createdAt: string;
   channel: string;
   senderBankId: string;
   receiverBankId: string;
+  accountId: string;
 };
 
 declare type Bank = {
@@ -215,7 +214,7 @@ declare interface BankDropdownProps {
 
 declare interface BankTabItemProps {
   account: Account;
-  appwriteItemId?: string;
+  accountId?: string;
 }
 
 declare interface TotalBalanceBoxProps {
@@ -231,8 +230,9 @@ declare interface FooterProps {
 
 declare interface RightSidebarProps {
   user: loginResponse | null;
-  transactions: Transaction[];
-  banks: Bank[] & Account[];
+  // transactions: Transaction[];
+  // banks: Bank[] & Account[];
+  banks: Account[];
 }
 
 declare interface SidebarProps {
@@ -247,8 +247,8 @@ declare interface RecentTransactionsProps {
 }
 
 declare interface MakeTransactionProps {
-  addTransaction: (transaction: Transaction) => void;
   accounts: Account[];
+  onTransactionAdded: () => void;
 }
 
 declare interface TransactionHistoryTableProps {

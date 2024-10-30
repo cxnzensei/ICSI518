@@ -8,11 +8,11 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity
-@Table(name = "accounts")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "accounts")
 public class Account {
 
     @Id

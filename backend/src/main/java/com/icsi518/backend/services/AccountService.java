@@ -31,7 +31,6 @@ public class AccountService {
 
     @Transactional
     public Account createAccount(UUID userId, Account account) {
-
         try {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new ApplicationException("User not found", HttpStatus.NOT_FOUND));

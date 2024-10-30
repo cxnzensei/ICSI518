@@ -1,34 +1,69 @@
 package com.icsi518.backend.entities;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "transactions")
 public class Transaction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID transactionId;
 
     @Column(nullable = false)
-    private BigDecimal amount;
+    private String appwriteId;
 
     @Column(nullable = false)
-    private String type; // e.g., "deposit" or "withdrawal"
+    private String name;
 
     @Column(nullable = false)
-    private LocalDateTime timestamp;
+    private String paymentChannel;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
+    @Column(nullable = false)
+    private String type;
+
+    @Column(nullable = false)
+    private Double amount;
+
+    @Column(nullable = false)
+    private Boolean pending;
+
+    @Column(nullable = false)
+    private String category;
+
+    private String date;
+
+    private String image;
+
+    private String createdAt;
+
+    private String channel;
+
+    private String senderBankId;
+
+    private String receiverBankId;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id", referencedColumnName = "accountId")
+    @JsonIgnore
     private Account account;
+
+    @Transient
+    private UUID accountId;
+
+    @PostLoad
+    private void setAccountId() {
+        if (account != null) {
+            this.accountId = account.getAccountId();
+        }
+    }
 }

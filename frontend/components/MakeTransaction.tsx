@@ -1,37 +1,42 @@
 import { MakeTransactionProps } from '@/types';
 import { useState } from 'react';
+import { request } from '@/lib/utils';
 
-const MakeTransaction = ({ addTransaction, accounts }: MakeTransactionProps) => {
+const MakeTransaction = ({ accounts, onTransactionAdded }: MakeTransactionProps) => {
   const [name, setName] = useState('');
   const [paymentChannel, setPaymentChannel] = useState('in-store');
   const [type, setType] = useState('debit');
-  const [accountId, setAccountId] = useState(accounts[0]?.id || '');
+  const [accountId, setAccountId] = useState(accounts[0]?.accountId || '');
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    addTransaction({
-      id: `t${Date.now()}`,
-      $id: `t${Date.now()}`,
-      name,
-      paymentChannel,
-      type,
-      accountId,
-      amount,
-      pending: false,
-      category,
-      date,
-      image: 'url',
-      $createdAt: new Date().toISOString(),
-      channel: paymentChannel,
-      senderBankId: accountId, 
-      receiverBankId: 'some_receiver_id',
-    });
+    const newTransaction = {
+      "appwriteId": "unique-appwrite-id",
+      "name": String(name),
+      "paymentChannel": String(paymentChannel),
+      "type": String(type),
+      "amount": Number(amount),
+      "pending": false,
+      "category": String(category),
+      "date": String(date),
+      "image": "url",
+      "createdAt": new Date().toISOString(),
+      "channel": String(paymentChannel),
+      "senderBankId": accountId,
+      "receiverBankId": "some_receiver_id"
+    };
 
-    // Clear form after submission
+    try {
+      const response = await request('POST', `/api/v1/transactions/${accountId}`, newTransaction);
+      onTransactionAdded();
+    } catch (error) {
+      console.error('Failed to add transaction:', error);
+    }
+
     setName('');
     setAmount(0);
     setCategory('');
@@ -61,7 +66,7 @@ const MakeTransaction = ({ addTransaction, accounts }: MakeTransactionProps) => 
         </select>
         <select value={accountId} onChange={(e) => setAccountId(e.target.value)} required>
           {accounts.map((account) => (
-            <option key={account.id} value={account.id}>
+            <option key={account.accountId} value={account.accountId}>
               {account.name}
             </option>
           ))}

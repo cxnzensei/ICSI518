@@ -14,7 +14,7 @@ const RecentTransactions = ({
     appwriteItemId,
     page = 1
 }: RecentTransactionsProps) => {
-    const [activeTab, setActiveTab] = useState(appwriteItemId); // useState to dynamically update id
+    const [activeTab, setActiveTab] = useState(''); // useState to dynamically update id
 
     // Filter transactions for the currently active account
     const filterTransactionsForAccount = (accountId: string) => {
@@ -38,19 +38,19 @@ const RecentTransactions = ({
             <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                 <TabsList className='recent-transactions-tablist'>
                     {accounts.map((account) => (
-                        <TabsTrigger key={account.id} value={account.appwriteItemId}>
+                        <TabsTrigger key={account.accountId} value={account.accountId}>
                             <BankTabItem
-                                key={account.id}
+                                key={account.accountId}
                                 account={account}
-                                appwriteItemId={activeTab}
+                                accountId={activeTab}
                             />
                         </TabsTrigger>
                     ))}
                 </TabsList>
                 {accounts.map((account: Account) => (
                     <TabsContent
-                        value={account.appwriteItemId}
-                        key={account.id}
+                        value={account.accountId}
+                        key={account.accountId}
                         className='space-y-4'
                     >
                         <BankInfo
@@ -58,7 +58,7 @@ const RecentTransactions = ({
                             appwriteItemId={activeTab}
                             type='full'
                         />
-                        <TransactionsTable transactions={filterTransactionsForAccount(account.id)} />
+                        <TransactionsTable transactions={filterTransactionsForAccount(account.accountId)} />
                     </TabsContent>
                 ))}
             </Tabs>
