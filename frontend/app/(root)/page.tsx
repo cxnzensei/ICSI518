@@ -10,6 +10,7 @@ import { Account, loginResponse, Transaction } from '@/types';
 import { Suspense, useEffect, useState } from 'react';
 
 import MakeTransaction from '@/components/MakeTransaction';
+import BalanceSheet from '@/components/BalanceSheet';
 
 const Home = () => {
 
@@ -57,7 +58,7 @@ const Home = () => {
               type="greeting"
               title="Welcome"
               user={loggedInUser?.firstName || 'Guest'}
-              subtext="Manage your funds wisely. Access your transactions, goals and get insights towards them."
+              subtext="Manag your funds wisely. Access your transactions, goals and get insights towards them."
             />
             <TotalBalanceBox
               accounts={accounts}
@@ -81,6 +82,7 @@ const Home = () => {
               }
             }}
           />        
+          <BalanceSheet />
         </div>
         <RightSidebar
           user={loggedInUser}
