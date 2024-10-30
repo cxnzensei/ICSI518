@@ -8,15 +8,16 @@ ChartJS.register(ArcElement, Tooltip, Legend)
 
 const DoughnutChart = ({ accounts }: DoughnutChartProps) => {
 
+
     const data = {
         datasets: [
             {
                 label: 'Banks',
-                data: [1250, 2500, 3750],
-                backgroundColor: ['#355E3B', '#00A36C', '#2AAA8A']
+                data: accounts.map(account => account.availableBalance),
+                // backgroundColor: ['#355E3B', '#00A36C', '#2AAA8A']
             }
         ],
-        labels: ['Chase', 'BOFA', 'Citizens Bank']
+        labels: accounts.map(account => account.name)
     }
 
     return <Doughnut

@@ -11,7 +11,7 @@ const Family = () => {
     const [user, setUser] = useState<loginResponse>({
         emailId: "",
         firstName: "",
-        id: "",
+        userId: "",
         lastName: "",
         membershipStatus: "",
         role: "",
@@ -28,7 +28,7 @@ const Family = () => {
             const loggedInUser = getLoggedInUser();
             setUser(getLoggedInUser)
 
-            const userResponse = await request("GET", `/api/v1/users/${loggedInUser?.id}`);
+            const userResponse = await request("GET", `/api/v1/users/${loggedInUser?.userId}`);
             setLoggedInUser(userResponse?.data)
 
             if (loggedInUser?.familyId) {
@@ -44,7 +44,7 @@ const Family = () => {
         try {
             const res = await request("POST", "/api/v1/families/create", { "familyName": familyName });
             setCreatedFamily({ name: res?.data?.familyName, createdOn: res?.data?.creationDate });
-            const userRes = await request("GET", `/api/v1/users/${user.id}`);
+            const userRes = await request("GET", `/api/v1/users/${user.userId}`);
             setUser(userRes?.data)
             setLoggedInUser(userRes?.data)
             setFamily([...family, convertToFamilyMember(userRes?.data)])

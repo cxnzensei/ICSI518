@@ -11,11 +11,11 @@ import com.icsi518.backend.entities.User;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(target = "familyId", source = "family.id")
+    @Mapping(target = "familyId", source = "family.familyId")
     UserDto toUserDto(User user);
 
     @Mapping(target = "password", ignore = true)
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "userId", ignore = true)
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "membershipStatus", ignore = true)
     @Mapping(target = "family", ignore = true)

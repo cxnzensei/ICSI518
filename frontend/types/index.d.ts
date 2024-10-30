@@ -34,7 +34,7 @@ declare type LoginUser = {
 declare type loginResponse = {
   emailId: string;
   firstName: string;
-  id: string;
+  userId: string;
   lastName: string;
   membershipStatus: string;
   role: string;
@@ -65,7 +65,7 @@ declare type NewUserParams = {
 };
 
 declare type Account = {
-  id: string;
+  accountId: string;
   availableBalance: number;
   currentBalance: number;
   officialName: string;
@@ -79,22 +79,21 @@ declare type Account = {
 };
 
 declare type Transaction = {
-  id: string;
-  $id: string;
+  transactionId: string;
+  appwriteId: string;
   name: string;
   paymentChannel: string;
   type: string;
-  accountId: string;
   amount: number;
   pending: boolean;
   category: string;
   date: string;
   image: string;
-  type: string;
-  $createdAt: string;
+  createdAt: string;
   channel: string;
   senderBankId: string;
   receiverBankId: string;
+  accountId: string;
 };
 
 declare type Bank = {
@@ -215,7 +214,7 @@ declare interface BankDropdownProps {
 
 declare interface BankTabItemProps {
   account: Account;
-  appwriteItemId?: string;
+  accountId?: string;
 }
 
 declare interface TotalBalanceBoxProps {
@@ -231,8 +230,10 @@ declare interface FooterProps {
 
 declare interface RightSidebarProps {
   user: loginResponse | null;
-  transactions: Transaction[];
-  banks: Bank[] & Account[];
+  // transactions: Transaction[];
+  // banks: Bank[] & Account[];
+  banks: Account[];
+  onBankAccountAdded;
 }
 
 declare interface SidebarProps {
@@ -244,6 +245,11 @@ declare interface RecentTransactionsProps {
   transactions: Transaction[];
   appwriteItemId: string;
   page: number;
+}
+
+declare interface MakeTransactionProps {
+  accounts: Account[];
+  onTransactionAdded: () => void;
 }
 
 declare interface TransactionHistoryTableProps {
@@ -345,7 +351,7 @@ declare interface getBankByAccountIdProps {
 }
 
 declare interface FamilyMember {
-  id: string;
+  userId: string;
   firstName: string;
   lastName: string;
   emailId: string;

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserDto {
 
-    private UUID id;
+    private UUID userId;
     private String firstName;
     private String lastName;
     private String emailId;

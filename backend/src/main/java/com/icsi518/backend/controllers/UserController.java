@@ -30,5 +30,4 @@ public class UserController {
     public ResponseEntity<String> acceptFamilyInvite(@PathVariable("id") UUID userId) {
         return ResponseEntity.ok(userService.acceptFamilyInvite(userId));
     }
-
 }

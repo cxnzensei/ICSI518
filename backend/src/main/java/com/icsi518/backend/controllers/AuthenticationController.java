@@ -45,7 +45,7 @@ public class AuthenticationController {
         String token = userAuthProvider.createToken(user);
         String jwtCookie = String.format("jwt=%s; Path=/; HttpOnly; SameSite=Lax; Max-Age=%d", token, 24 * 60 * 60);
         response.setHeader("Set-Cookie", jwtCookie);
-        return ResponseEntity.created(URI.create("/users/" + user.getId())).body(user);
+        return ResponseEntity.created(URI.create("/users/" + user.getUserId())).body(user);
     }
 
     @PostMapping("/logout")
