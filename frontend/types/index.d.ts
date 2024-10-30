@@ -233,6 +233,7 @@ declare interface RightSidebarProps {
   // transactions: Transaction[];
   // banks: Bank[] & Account[];
   banks: Account[];
+  onBankAccountAdded;
 }
 
 declare interface SidebarProps {

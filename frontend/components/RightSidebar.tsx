@@ -18,7 +18,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
   
 
-const RightSidebar = ({ user, banks }: RightSidebarProps) => {
+const RightSidebar = ({ user, banks, onBankAccountAdded }: RightSidebarProps) => {
+    const [open, setOpen] = useState(false);
     const [name, setName] = useState('');
     const [appwriteItemId, setAppwriteItemId] = useState('');
     const [availableBalance, setAvailableBalance] = useState('');
@@ -43,7 +44,13 @@ const RightSidebar = ({ user, banks }: RightSidebarProps) => {
             subtype,
             sharableId
         }
-        const response = await request('POST', `/api/v1/accounts/${user?.userId}`, bankAccountDetails);
+        try {
+            const response = await request('POST', `/api/v1/accounts/${user?.userId}`, bankAccountDetails);
+            onBankAccountAdded();
+          } catch (error) {
+            console.error('Failed to add account:', error);
+        }
+        setOpen(false);
     }
 
     return (
@@ -76,9 +83,9 @@ const RightSidebar = ({ user, banks }: RightSidebarProps) => {
                         />
                         
                         
-                        <Dialog>
+                        <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
-                        <h2 className='text-14 font-semibold text-gray-600'>
+                        <h2 className='text-14 font-semibold text-gray-600' onClick={() => setOpen(true)}>
                             Add Bank
                         </h2>
                         </DialogTrigger>

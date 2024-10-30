@@ -24,6 +24,16 @@ const Home = () => {
     fetchTransactions(loggedInUser.userId);
   }, [])
 
+  const fetchAccounts = async (userId: string) => {
+    try {
+      const response = await request('GET', `/api/v1/accounts/user/${userId}`);
+      const userAccounts = response?.data;
+      setAccounts(userAccounts);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const fetchTransactions = async (userId: string) => {
     try {
       const response = await request('GET', `/api/v1/accounts/user/${userId}`);
@@ -88,6 +98,13 @@ const Home = () => {
           user={loggedInUser}
           // banks={[{ currentBalance: 123.45 }, { currentBalance: 6789.01 }]}
           banks={accounts}
+          onBankAccountAdded={() => {
+            if (loggedInUser?.userId) {
+              fetchAccounts(loggedInUser.userId);
+            } else {
+              console.error("User ID is undefined, cannot fetch accounts.");
+            }
+          }}
         />
       </section>
     </Suspense>
