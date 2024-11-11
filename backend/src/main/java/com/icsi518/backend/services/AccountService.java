@@ -54,12 +54,7 @@ public class AccountService {
         account.setName(accountDetails.getName());
         account.setAvailableBalance(accountDetails.getAvailableBalance());
         account.setCurrentBalance(accountDetails.getCurrentBalance());
-        account.setOfficialName(accountDetails.getOfficialName());
-        account.setMask(accountDetails.getMask());
-        account.setInstitutionId(accountDetails.getInstitutionId());
         account.setType(accountDetails.getType());
-        account.setSubtype(accountDetails.getSubtype());
-        account.setSharableId(accountDetails.getSharableId());
 
         return accountRepository.save(account);
     }

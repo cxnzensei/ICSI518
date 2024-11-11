@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.icsi518.backend.enums.AccountType;
 
 @Data
 @NoArgsConstructor
@@ -22,8 +23,8 @@ public class Account {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
-    private String appwriteItemId;
+    @Column(nullable = false)
+    private AccountType type;
 
     @Column(nullable = false)
     private Double availableBalance;
@@ -32,22 +33,10 @@ public class Account {
     private Double currentBalance;
 
     @Column(nullable = false)
-    private String officialName;
-
-    @Column(nullable = false, length = 4)
-    private String mask;
+    private String institution;
 
     @Column(nullable = false)
-    private String institutionId;
-
-    @Column(nullable = false)
-    private String type;
-
-    @Column(nullable = false)
-    private String subtype;
-
-    @Column(nullable = false, unique = true)
-    private String sharableId;
+    private String accountNumber;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "userId")

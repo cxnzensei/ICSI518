@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.icsi518.backend.enums.TransactionType;
 
 @Data
 @NoArgsConstructor
@@ -20,37 +21,22 @@ public class Transaction {
     private UUID transactionId;
 
     @Column(nullable = false)
-    private String appwriteId;
-
-    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private String paymentChannel;
-
-    @Column(nullable = false)
-    private String type;
+    private String date;
 
     @Column(nullable = false)
     private Double amount;
 
     @Column(nullable = false)
-    private Boolean pending;
+    private TransactionType type;
 
     @Column(nullable = false)
-    private String category;
+    private String category; // if this is enum TransactionCategory then categories will be static (potential problem: if user has multiple goals(or multiple of anything similar) then user will only be able to filter by GOALS rather than specific goal (ex: GOAL 1, GOAL 2, etc))
 
-    private String date;
-
-    private String image;
-
-    private String createdAt;
-
-    private String channel;
-
-    private String senderBankId;
-
-    private String receiverBankId;
+    @Column(nullable = false)
+    private Boolean pending;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", referencedColumnName = "accountId")

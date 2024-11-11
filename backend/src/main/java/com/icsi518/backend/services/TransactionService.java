@@ -47,20 +47,16 @@ public class TransactionService {
         return transactionRepository.findByAccount_AccountId(accountId);
     }
 
+    @Transactional
     public Transaction updateTransaction(UUID transactionId, Transaction transactionDetails) {
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new ApplicationException("Transaction not found", HttpStatus.NOT_FOUND));
 
         transaction.setAmount(transactionDetails.getAmount());
         transaction.setCategory(transactionDetails.getCategory());
-        transaction.setChannel(transactionDetails.getChannel());
         transaction.setDate(transactionDetails.getDate());
-        transaction.setImage(transactionDetails.getImage());
         transaction.setName(transactionDetails.getName());
-        transaction.setPaymentChannel(transactionDetails.getPaymentChannel());
         transaction.setPending(transactionDetails.getPending());
-        transaction.setReceiverBankId(transactionDetails.getReceiverBankId());
-        transaction.setSenderBankId(transactionDetails.getSenderBankId());
         transaction.setType(transactionDetails.getType());
 
         return transactionRepository.save(transaction);

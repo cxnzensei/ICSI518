@@ -1,6 +1,27 @@
 import { MakeTransactionProps } from '@/types';
 import { useState } from 'react';
 import { request } from '@/lib/utils';
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+
+import * as React from "react"
+import { format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+ 
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 const MakeTransaction = ({ accounts, onTransactionAdded }: MakeTransactionProps) => {
   const [name, setName] = useState('');
@@ -10,6 +31,8 @@ const MakeTransaction = ({ accounts, onTransactionAdded }: MakeTransactionProps)
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date2, setDate2] = React.useState<Date>()
+
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -90,6 +113,92 @@ const MakeTransaction = ({ accounts, onTransactionAdded }: MakeTransactionProps)
           <option value="direct-deposit">Direct Deposit</option>
         </select>
         <button type="submit">Add Transaction</button>
+      </form>
+      <div>
+        <h2>Make Transaction Refactor</h2>
+      </div>
+        <form
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "1rem",
+          padding: "1rem",
+        }}
+        >
+        {/* Transaction Name Input */}
+        <Input type="name" placeholder="Transaction Name" style={{ flex: 1 }} />
+
+        {/* Amount Input */}
+        <Input type="amount" placeholder="Amount" style={{ flex: 1 }} />
+
+        {/* Transaction Type Dropdown */}
+        <Select>
+          <SelectTrigger className="w-[180px] bg-white">
+            <SelectValue placeholder="Type" />
+          </SelectTrigger>
+          <SelectContent className='bg-white'>
+            <SelectItem value="debit">Debit</SelectItem>
+            <SelectItem value="credit">Credit</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* Bank Account Dropdown */}
+        <Select
+          value={accountId}
+          onValueChange={(value) => setAccountId(value)}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select Account" />
+          </SelectTrigger>
+          <SelectContent className='bg-white'>
+            {accounts.map((account) => (
+              <SelectItem key={account.accountId} value={account.accountId}>
+                {account.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Date Picker */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={"outline"}
+              className={cn(
+                "w-[280px] justify-start text-left font-normal",
+                !date2 && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {date2 ? format(date2, "PPP") : <span>Pick a date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 bg-white">
+            <Calendar
+              mode="single"
+              selected={date2}
+              onSelect={setDate2}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+
+        {/* Transaction Channel Dropdown */}
+        <Select>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Channel" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="in-store">In-Store</SelectItem>
+            <SelectItem value="online">Online</SelectItem>
+            <SelectItem value="direct-deposit">Direct Deposit</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* Add Transaction Button */}
+        <Button type="submit" style={{ flexShrink: 0 }}>
+          Add Transaction
+        </Button>
       </form>
     </div>
   );
