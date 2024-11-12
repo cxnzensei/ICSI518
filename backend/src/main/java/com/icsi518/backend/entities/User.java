@@ -1,13 +1,11 @@
 package com.icsi518.backend.entities;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.icsi518.backend.enums.MembershipStatus;
 import com.icsi518.backend.enums.Role;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,7 +16,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -59,7 +56,4 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MembershipStatus membershipStatus = MembershipStatus.NOT_A_MEMBER;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<IndividualGoals> goals;
 }
