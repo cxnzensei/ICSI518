@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.icsi518.backend.enums.TransactionCategory;
 import com.icsi518.backend.enums.TransactionType;
 
 @Data
@@ -33,7 +34,7 @@ public class Transaction {
     private TransactionType type;
 
     @Column(nullable = false)
-    private String category; // if this is enum TransactionCategory then categories will be static (potential problem: if user has multiple goals(or multiple of anything similar) then user will only be able to filter by GOALS rather than specific goal (ex: GOAL 1, GOAL 2, etc))
+    private TransactionCategory category; // if this is enum TransactionCategory then categories will be static (potential problem: i`` then user will only be able to filter by GOALS rather than specific goal (ex: GOAL 1, GOAL 2, etc))
 
     @Column(nullable = false)
     private Boolean pending;
