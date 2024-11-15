@@ -27,7 +27,7 @@ public class BalanceSheetItemService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public List<BalanceSheetItem> getBalanceSheetItemByUserId(UUID userId) {
+    public List<BalanceSheetItem> getBalanceSheetItemsByUserId(UUID userId) {
         List<Account> accounts = accountRepository.findByUser_UserId(userId);
         List<UUID> accountIds = accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
 

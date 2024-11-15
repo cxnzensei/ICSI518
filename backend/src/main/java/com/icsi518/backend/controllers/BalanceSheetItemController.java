@@ -28,8 +28,8 @@ public class BalanceSheetItemController {
     private BalanceSheetItemService balanceSheetItemService;
 
     @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<BalanceSheetItem>> getBalanceSheetItemByAccountIDs(@PathVariable UUID userId) {
-        List<BalanceSheetItem> items = balanceSheetItemService.getBalanceSheetItemByUserId(userId);
+    public ResponseEntity<List<BalanceSheetItem>> getBalanceSheetItemsByUserId(@PathVariable UUID userId) {
+        List<BalanceSheetItem> items = balanceSheetItemService.getBalanceSheetItemsByUserId(userId);
         if (items.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
