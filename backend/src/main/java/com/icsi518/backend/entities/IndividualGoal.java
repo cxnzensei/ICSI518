@@ -16,7 +16,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,9 +41,9 @@ public class IndividualGoal {
     @Column(nullable = false)
     private Double amountContributed;
 
-    @OneToOne
-    @JoinColumn(name = "account_id")
-    private Account account; // o2m, m2o //
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id", referencedColumnName = "accountId")
+    private Account account;
 
     @Column(nullable = false)
     private Integer frequencyNumber;
