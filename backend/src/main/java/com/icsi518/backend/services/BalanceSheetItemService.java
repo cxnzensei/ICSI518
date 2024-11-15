@@ -76,7 +76,7 @@ public class BalanceSheetItemService {
         return balanceSheetItemRepository.save(balanceSheetItem);
     }
 
-    public static void validateFrequency(Frequency frequency, int frequencyNumber) {
+    public void validateFrequency(Frequency frequency, int frequencyNumber) {
         switch (frequency) {
             case WEEKLY:
             case BIWEEKLY:
