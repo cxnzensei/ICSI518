@@ -2,6 +2,7 @@ package com.icsi518.backend.entities;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.icsi518.backend.enums.Frequency;
 import com.icsi518.backend.enums.ItemType;
 
@@ -17,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
+@Builder
 @Table(name = "balance_sheet_items")
 public class BalanceSheetItem {
 
@@ -38,6 +41,8 @@ public class BalanceSheetItem {
     @Column(nullable = false)
     private ItemType type;
 
+    private String description;
+
     @Column(nullable = false)
     private Double amount;
 
@@ -49,5 +54,6 @@ public class BalanceSheetItem {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", referencedColumnName = "accountId")
+    @JsonIgnore
     private Account account;
 }
