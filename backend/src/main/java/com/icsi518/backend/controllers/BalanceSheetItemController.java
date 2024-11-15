@@ -62,7 +62,7 @@ public class BalanceSheetItemController {
         }
     }
 
-    @PutMapping(path = "/update/{itemId}")
+    @PutMapping(path = "/update/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BalanceSheetItem> updateBalanceSheetItem(@PathVariable UUID itemId,
             @RequestBody BalanceSheetItem balanceSheetItemDetails) {
         try {
