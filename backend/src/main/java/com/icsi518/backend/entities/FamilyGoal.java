@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.icsi518.backend.dtos.IndividualGoalDto;
 import com.icsi518.backend.enums.Frequency;
 import com.icsi518.backend.enums.GoalStatus;
 
@@ -43,6 +44,8 @@ public class FamilyGoal {
     @Column(nullable = false)
     private Integer frequencyNumber;
 
+    private String description;
+
     @Enumerated(EnumType.STRING)
     private Frequency frequency;
 
@@ -62,4 +65,27 @@ public class FamilyGoal {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "family_goal_id")
     private List<IndividualGoal> individualGoals;
+
+    public interface FamilyGoalView {
+
+        UUID getFamilyGoalId();
+
+        String getName();
+
+        Double getGoalAmount();
+
+        Integer getFrequencyNumber();
+
+        String getDescription();
+
+        Frequency getFrequency();
+
+        GoalStatus getStatus();
+
+        Date getCreatedDate();
+
+        Date getTargetDate();
+
+        List<IndividualGoalDto> getIndividualGoals();
+    }
 }

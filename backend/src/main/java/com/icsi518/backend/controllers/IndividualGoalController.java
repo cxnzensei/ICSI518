@@ -34,9 +34,9 @@ public class IndividualGoalController {
     }
 
     @PostMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IndividualGoalDto> createIndividualGoal(@RequestParam UUID accountId,
+    public ResponseEntity<IndividualGoalDto> createIndividualGoal(@RequestParam UUID userId,
             @RequestBody IndividualGoalDto individualGoalDto) {
-        IndividualGoalDto savedGoal = individualGoalService.createIndividualGoal(accountId, individualGoalDto);
+        IndividualGoalDto savedGoal = individualGoalService.createIndividualGoal(userId, individualGoalDto);
         return ResponseEntity.ok(savedGoal);
     }
 

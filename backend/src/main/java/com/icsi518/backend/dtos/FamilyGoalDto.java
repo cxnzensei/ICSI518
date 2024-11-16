@@ -1,10 +1,10 @@
 package com.icsi518.backend.dtos;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.icsi518.backend.enums.Frequency;
 import com.icsi518.backend.enums.GoalStatus;
@@ -18,21 +18,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class IndividualGoalDto {
+public class FamilyGoalDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private UUID individualGoalId;
+    private UUID familyGoalId;
+
     private String name;
     private Double goalAmount;
-    private Double amountContributed;
-    private String description;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private MinimalAccountDto account;
-
     private Integer frequencyNumber;
     private Frequency frequency;
-    private Boolean autoContribute;
+    private String description;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private GoalStatus status;
@@ -45,6 +40,6 @@ public class IndividualGoalDto {
     private Date targetDate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonIgnore
-    private UUID accountId;
+    private List<IndividualGoalDto> individualGoals;
+
 }

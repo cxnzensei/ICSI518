@@ -15,12 +15,14 @@ import com.icsi518.backend.dtos.IndividualGoalDto;
 import com.icsi518.backend.entities.Account;
 import com.icsi518.backend.entities.IndividualGoal;
 import com.icsi518.backend.entities.IndividualGoal.IndividualGoalView;
+import com.icsi518.backend.entities.User;
 import com.icsi518.backend.enums.Frequency;
 import com.icsi518.backend.enums.GoalStatus;
 import com.icsi518.backend.exceptions.ApplicationException;
 import com.icsi518.backend.mappers.IndividualGoalMapper;
 import com.icsi518.backend.repositories.AccountRepository;
 import com.icsi518.backend.repositories.IndividualGoalRepository;
+import com.icsi518.backend.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -39,6 +41,9 @@ public class IndividualGoalService {
     @Autowired
     private BalanceSheetItemService balanceSheetItemService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public List<IndividualGoalView> getIndividualGoalsByUserId(UUID userId) {
         List<Account> accounts = accountRepository.findByUser_UserId(userId);
         List<UUID> accountIds = accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
@@ -51,15 +56,27 @@ public class IndividualGoalService {
     }
 
     @Transactional
-    public IndividualGoalDto createIndividualGoal(UUID accountId, IndividualGoalDto individualGoalDto) {
+    public IndividualGoalDto createIndividualGoal(UUID userId, IndividualGoalDto individualGoalDto) {
         balanceSheetItemService.validateFrequency(individualGoalDto.getFrequency(),
                 individualGoalDto.getFrequencyNumber());
 
-        Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
+        Account account = null;
+        User user = null;
+
+        if (individualGoalDto.getAccountId() != null) {
+            account = accountRepository.findById(individualGoalDto.getAccountId())
+                    .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
+        } else {
+            user = userRepository.findById(userId)
+                    .orElseThrow(() -> new ApplicationException("User not found", HttpStatus.NOT_FOUND));
+        }
 
         IndividualGoal individualGoal = individualGoalMapper.toEntity(individualGoalDto);
-        individualGoal.setAccount(account);
+        if (account != null) {
+            individualGoal.setAccount(account);
+        } else {
+            individualGoal.setUser(user);
+        }
         individualGoal.setFamilyGoal(null);
         individualGoal.setCreatedDate(new Date());
         individualGoal.setPercentage(100.0);

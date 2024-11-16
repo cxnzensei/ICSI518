@@ -51,6 +51,11 @@ public class IndividualGoal {
     @JoinColumn(name = "account_id", referencedColumnName = "accountId")
     private Account account;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "userId")
+    @JsonIgnore
+    private User user;
+
     @Column(nullable = false)
     private Integer frequencyNumber;
 
