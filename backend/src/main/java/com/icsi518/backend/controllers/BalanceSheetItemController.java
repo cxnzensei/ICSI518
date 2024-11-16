@@ -48,7 +48,7 @@ public class BalanceSheetItemController {
 
     @PatchMapping(path = "/update/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BalanceSheetItemDto> updateBalanceSheetItem(@PathVariable UUID itemId,
-            @RequestBody Map<String, String> updates) {
+            @RequestBody Map<String, Object> updates) {
         BalanceSheetItemDto updatedBalanceSheetItem = balanceSheetItemService.updateBalanceSheetItem(itemId, updates);
         return ResponseEntity.ok(updatedBalanceSheetItem);
     }

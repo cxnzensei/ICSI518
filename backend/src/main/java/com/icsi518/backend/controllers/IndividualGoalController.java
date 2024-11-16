@@ -47,8 +47,8 @@ public class IndividualGoalController {
     }
 
     @PatchMapping(path = "/update/{goalId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IndividualGoalDto> updateBalanceSheetItem(@PathVariable UUID goalId,
-            @RequestBody Map<String, String> updates) {
+    public ResponseEntity<IndividualGoalDto> updateIndividualGoal(@PathVariable UUID goalId,
+            @RequestBody Map<String, Object> updates) {
         IndividualGoalDto updatedGoal = individualGoalService.updateIndividualGoal(goalId, updates);
         return ResponseEntity.ok(updatedGoal);
     }

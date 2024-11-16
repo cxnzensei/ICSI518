@@ -68,31 +68,31 @@ public class BalanceSheetItemService {
     }
 
     @Transactional
-    public BalanceSheetItemDto updateBalanceSheetItem(UUID itemId, Map<String, String> updates) {
+    public BalanceSheetItemDto updateBalanceSheetItem(UUID itemId, Map<String, Object> updates) {
         BalanceSheetItem balanceSheetItem = balanceSheetItemRepository.findById(itemId)
                 .orElseThrow(() -> new ApplicationException("Balance sheet item not found", HttpStatus.NOT_FOUND));
 
+        if (updates.containsKey("accountId")) {
+            UUID accountId = UUID.fromString((String) updates.get("accountId"));
+            Account account = accountRepository.findById(accountId)
+                    .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
+            balanceSheetItem.setAccount(account);
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
         BalanceSheetItemDto balanceSheetItemDto = objectMapper.convertValue(updates, BalanceSheetItemDto.class);
-
         balanceSheetItemMapper.updateEntityFromDto(balanceSheetItemDto, balanceSheetItem);
 
         if (updates.containsKey("frequency") || updates.containsKey("frequencyNumber")) {
-            Frequency frequency = updates.containsKey("frequency") ? Frequency.valueOf(updates.get("frequency"))
+            Frequency frequency = updates.containsKey("frequency")
+                    ? Frequency.valueOf((String) updates.get("frequency"))
                     : balanceSheetItem.getFrequency();
             Integer frequencyNumber = updates.containsKey("frequencyNumber")
-                    ? Integer.valueOf(updates.get("frequencyNumber"))
+                    ? Integer.valueOf((String) updates.get("frequencyNumber"))
                     : balanceSheetItem.getFrequencyNumber();
             validateFrequency(frequency, frequencyNumber);
             balanceSheetItem.setFrequency(frequency);
             balanceSheetItem.setFrequencyNumber(frequencyNumber);
-        }
-
-        if (updates.containsKey("accountId")) {
-            UUID accountId = UUID.fromString(updates.get("accountId"));
-            Account account = accountRepository.findById(accountId)
-                    .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
-            balanceSheetItem.setAccount(account);
         }
 
         BalanceSheetItem updatedItem = balanceSheetItemRepository.save(balanceSheetItem);

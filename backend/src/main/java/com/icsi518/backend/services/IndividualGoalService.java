@@ -77,33 +77,33 @@ public class IndividualGoalService {
     }
 
     @Transactional
-    public IndividualGoalDto updateIndividualGoal(UUID goalId, Map<String, String> updates) {
+    public IndividualGoalDto updateIndividualGoal(UUID goalId, Map<String, Object> updates) {
         IndividualGoal individualGoal = individualGoalRepository.findById(goalId)
                 .orElseThrow(() -> new ApplicationException("Individual goal not found", HttpStatus.NOT_FOUND));
 
+        if (updates.containsKey("accountId")) {
+            UUID accountId = UUID.fromString((String) updates.get("accountId"));
+            Account account = accountRepository.findById(accountId)
+                    .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
+            individualGoal.setAccount(account);
+            updates.remove("accountId");
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
         IndividualGoalDto individualGoalDto = objectMapper.convertValue(updates, IndividualGoalDto.class);
-
         individualGoalMapper.updateEntityFromDto(individualGoalDto, individualGoal);
 
         if (updates.containsKey("frequency") || updates.containsKey("frequencyNumber")) {
-            Frequency frequency = updates.containsKey("frequency") ? Frequency.valueOf(updates.get("frequency"))
+            Frequency frequency = updates.containsKey("frequency")
+                    ? Frequency.valueOf((String) updates.get("frequency"))
                     : individualGoal.getFrequency();
             Integer frequencyNumber = updates.containsKey("frequencyNumber")
-                    ? Integer.valueOf(updates.get("frequencyNumber"))
+                    ? Integer.valueOf((String) updates.get("frequencyNumber"))
                     : individualGoal.getFrequencyNumber();
             balanceSheetItemService.validateFrequency(frequency, frequencyNumber);
             individualGoal.setFrequency(frequency);
             individualGoal.setFrequencyNumber(frequencyNumber);
         }
-
-        if (updates.containsKey("accountId")) {
-            UUID accountId = UUID.fromString(updates.get("accountId"));
-            Account account = accountRepository.findById(accountId)
-                    .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
-            individualGoal.setAccount(account);
-        }
-
         IndividualGoal updatedGoal = individualGoalRepository.save(individualGoal);
         return individualGoalMapper.toDto(updatedGoal);
     }
