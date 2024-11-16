@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.icsi518.backend.entities.BalanceSheetItem;
+import com.icsi518.backend.dtos.BalanceSheetItemDto;
 import com.icsi518.backend.services.BalanceSheetItemService;
 
 @RestController
@@ -26,19 +26,15 @@ public class BalanceSheetItemController {
     private BalanceSheetItemService balanceSheetItemService;
 
     @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<BalanceSheetItem>> getBalanceSheetItemsByUserId(@PathVariable UUID userId) {
-        List<BalanceSheetItem> items = balanceSheetItemService.getBalanceSheetItemsByUserId(userId);
-        if (items.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(items);
-        }
+    public ResponseEntity<List<BalanceSheetItemDto>> getBalanceSheetItemsByUserId(@PathVariable UUID userId) {
+        List<BalanceSheetItemDto> items = balanceSheetItemService.getBalanceSheetItemsByUserId(userId);
+        return ResponseEntity.ok(items);
     }
 
-    @PostMapping(path = "/create/{accountId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BalanceSheetItem> createBalanceSheetItem(@PathVariable UUID accountId,
-            @RequestBody BalanceSheetItem balanceSheetItem) {
-        BalanceSheetItem savedItem = balanceSheetItemService.createBalanceSheetItem(accountId, balanceSheetItem);
+    @PostMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BalanceSheetItemDto> createBalanceSheetItem(
+            @RequestBody BalanceSheetItemDto balanceSheetItemDto) {
+        BalanceSheetItemDto savedItem = balanceSheetItemService.createBalanceSheetItem(balanceSheetItemDto);
         return ResponseEntity.ok(savedItem);
     }
 
@@ -49,10 +45,10 @@ public class BalanceSheetItemController {
     }
 
     @PutMapping(path = "/update/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BalanceSheetItem> updateBalanceSheetItem(@PathVariable UUID itemId,
-            @RequestBody BalanceSheetItem balanceSheetItemDetails) {
-        BalanceSheetItem updatedBalanceSheetItem = balanceSheetItemService.updateBalanceSheetItem(itemId,
-                balanceSheetItemDetails);
+    public ResponseEntity<BalanceSheetItemDto> updateBalanceSheetItem(@PathVariable UUID itemId,
+            @RequestBody BalanceSheetItemDto balanceSheetItemDto) {
+        BalanceSheetItemDto updatedBalanceSheetItem = balanceSheetItemService.updateBalanceSheetItem(itemId,
+                balanceSheetItemDto);
         return ResponseEntity.ok(updatedBalanceSheetItem);
     }
 }
