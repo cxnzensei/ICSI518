@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.icsi518.backend.dtos.BalanceSheetItemDto;
+import com.icsi518.backend.entities.BalanceSheetItem.BalanceSheetItemView;
 import com.icsi518.backend.services.BalanceSheetItemService;
 
 @RestController
@@ -26,16 +28,15 @@ public class BalanceSheetItemController {
     @Autowired
     private BalanceSheetItemService balanceSheetItemService;
 
-    @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<BalanceSheetItemDto>> getBalanceSheetItemsByUserId(@PathVariable UUID userId) {
-        List<BalanceSheetItemDto> items = balanceSheetItemService.getBalanceSheetItemsByUserId(userId);
-        return ResponseEntity.ok(items);
+    @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BalanceSheetItemView>> getBalanceSheetItemsByUserId(@RequestParam UUID userId) {
+        return ResponseEntity.ok(balanceSheetItemService.getBalanceSheetItemsByUserId(userId));
     }
 
     @PostMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BalanceSheetItemDto> createBalanceSheetItem(
+    public ResponseEntity<BalanceSheetItemDto> createBalanceSheetItem(@RequestParam UUID accountId,
             @RequestBody BalanceSheetItemDto balanceSheetItemDto) {
-        BalanceSheetItemDto savedItem = balanceSheetItemService.createBalanceSheetItem(balanceSheetItemDto);
+        BalanceSheetItemDto savedItem = balanceSheetItemService.createBalanceSheetItem(accountId, balanceSheetItemDto);
         return ResponseEntity.ok(savedItem);
     }
 

@@ -56,4 +56,30 @@ public class BalanceSheetItem {
     @JoinColumn(name = "account_id", referencedColumnName = "accountId")
     @JsonIgnore
     private Account account;
+
+    public interface BalanceSheetItemView {
+
+        UUID getItemId();
+
+        String getName();
+
+        ItemType getType();
+
+        String getDescription();
+
+        Double getAmount();
+
+        Integer getFrequencyNumber();
+
+        Frequency getFrequency();
+
+        AccountView getAccount();
+
+        interface AccountView {
+            UUID getAccountId();
+
+            String getName();
+        }
+
+    }
 }

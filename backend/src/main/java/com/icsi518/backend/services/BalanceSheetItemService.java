@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icsi518.backend.dtos.BalanceSheetItemDto;
 import com.icsi518.backend.entities.Account;
 import com.icsi518.backend.entities.BalanceSheetItem;
+import com.icsi518.backend.entities.BalanceSheetItem.BalanceSheetItemView;
 import com.icsi518.backend.enums.Frequency;
 import com.icsi518.backend.exceptions.ApplicationException;
 import com.icsi518.backend.mappers.BalanceSheetItemMapper;
@@ -35,15 +36,14 @@ public class BalanceSheetItemService {
     @Autowired
     private BalanceSheetItemMapper balanceSheetItemMapper;
 
-    public List<BalanceSheetItemDto> getBalanceSheetItemsByUserId(UUID userId) {
+    public List<BalanceSheetItemView> getBalanceSheetItemsByUserId(UUID userId) {
         List<Account> accounts = accountRepository.findByUser_UserId(userId);
         List<UUID> accountIds = accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
 
         if (accounts.isEmpty()) {
             return List.of();
         } else {
-            List<BalanceSheetItem> items = balanceSheetItemRepository.findByAccount_AccountIdIn(accountIds);
-            return items.stream().map(balanceSheetItemMapper::toDto).collect(Collectors.toList());
+            return balanceSheetItemRepository.findByAccount_AccountIdIn(accountIds);
         }
     }
 
@@ -56,9 +56,9 @@ public class BalanceSheetItemService {
     }
 
     @Transactional
-    public BalanceSheetItemDto createBalanceSheetItem(BalanceSheetItemDto balanceSheetItemDto) {
+    public BalanceSheetItemDto createBalanceSheetItem(UUID accountId, BalanceSheetItemDto balanceSheetItemDto) {
         validateFrequency(balanceSheetItemDto.getFrequency(), balanceSheetItemDto.getFrequencyNumber());
-        Account account = accountRepository.findById(balanceSheetItemDto.getAccountId())
+        Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
 
         BalanceSheetItem balanceSheetItem = balanceSheetItemMapper.toEntity(balanceSheetItemDto);

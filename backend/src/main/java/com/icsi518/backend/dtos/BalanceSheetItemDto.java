@@ -25,5 +25,16 @@ public class BalanceSheetItemDto {
     private Double amount;
     private Integer frequencyNumber;
     private Frequency frequency;
-    private UUID accountId;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private AccountDto account;
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @Data
+    public static class AccountDto {
+        private UUID accountId;
+        private String name;
+    }
 }
