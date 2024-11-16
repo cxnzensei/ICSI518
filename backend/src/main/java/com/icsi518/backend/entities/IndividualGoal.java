@@ -100,5 +100,7 @@ public class IndividualGoal {
         Date getCreatedDate();
 
         Date getTargetDate();
+
+        Double getPercentage();
     }
 }

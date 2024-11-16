@@ -42,4 +42,7 @@ public class IndividualGoalDto {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Date targetDate;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Double percentage;
 }
