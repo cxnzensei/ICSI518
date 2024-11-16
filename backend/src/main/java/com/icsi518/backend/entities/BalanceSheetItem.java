@@ -3,6 +3,7 @@ package com.icsi518.backend.entities;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.icsi518.backend.entities.Account.MinimalAccountView;
 import com.icsi518.backend.enums.Frequency;
 import com.icsi518.backend.enums.ItemType;
 
@@ -73,13 +74,7 @@ public class BalanceSheetItem {
 
         Frequency getFrequency();
 
-        AccountView getAccount();
-
-        interface AccountView {
-            UUID getAccountId();
-
-            String getName();
-        }
+        MinimalAccountView getAccount();
 
     }
 }
