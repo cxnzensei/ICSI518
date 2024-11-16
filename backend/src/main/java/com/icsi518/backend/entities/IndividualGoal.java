@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.icsi518.backend.entities.Account.MinimalAccountView;
 import com.icsi518.backend.enums.Frequency;
 import com.icsi518.backend.enums.GoalStatus;
 
@@ -55,7 +56,7 @@ public class IndividualGoal {
     private Frequency frequency;
 
     @Column(nullable = false)
-    private Boolean autoContribute = false;
+    private Boolean autoContribute;
 
     @Enumerated(EnumType.STRING)
     private GoalStatus status;
@@ -73,4 +74,31 @@ public class IndividualGoal {
     @JoinColumn(name = "family_goal_id", referencedColumnName = "familyGoalId")
     @JsonIgnore
     private FamilyGoal familyGoal;
+
+    public interface IndividualGoalView {
+
+        UUID getIndividualGoalId();
+
+        String getName();
+
+        Double getGoalAmount();
+
+        Double getAmountContributed();
+
+        String getDescription();
+
+        MinimalAccountView getAccount();
+
+        Integer getFrequencyNumber();
+
+        Frequency getFrequency();
+
+        Boolean getAutoContribute();
+
+        GoalStatus getStatus();
+
+        Date getCreatedDate();
+
+        Date getTargetDate();
+    }
 }

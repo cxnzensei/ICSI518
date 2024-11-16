@@ -25,17 +25,21 @@ public class IndividualGoalDto {
     private Double goalAmount;
     private Double amountContributed;
     private String description;
-    private UUID accountId;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private MinimalAccountDto account;
+
     private Integer frequencyNumber;
     private Frequency frequency;
     private Boolean autoContribute;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private GoalStatus status;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Date createdDate;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Date targetDate;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Double percentage;
 }

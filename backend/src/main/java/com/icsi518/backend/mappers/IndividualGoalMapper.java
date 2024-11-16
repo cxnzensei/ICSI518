@@ -12,15 +12,18 @@ import com.icsi518.backend.entities.IndividualGoal;
 @Mapper(componentModel = "spring")
 public interface IndividualGoalMapper {
 
-    @Mapping(source = "account.accountId", target = "accountId")
+    @Mapping(source = "account.accountId", target = "account.accountId")
+    @Mapping(source = "account.name", target = "account.name")
     IndividualGoalDto toDto(IndividualGoal individualGoal);
 
     @Mapping(target = "account", ignore = true)
     @Mapping(target = "familyGoal", ignore = true)
+    @Mapping(target = "percentage", ignore = true)
     IndividualGoal toEntity(IndividualGoalDto individualGoalDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "account", ignore = true)
     @Mapping(target = "familyGoal", ignore = true)
+    @Mapping(target = "percentage", ignore = true)
     void updateEntityFromDto(IndividualGoalDto individualGoalDto, @MappingTarget IndividualGoal individualGoal);
 }

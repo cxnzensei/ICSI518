@@ -53,4 +53,11 @@ public class Account {
     @JoinColumn(name = "user_id", referencedColumnName = "userId")
     @JsonIgnore
     private User user;
+
+    public interface MinimalAccountView {
+
+        UUID getAccountId();
+
+        String getName();
+    }
 }

@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.icsi518.backend.dtos.IndividualGoalDto;
+import com.icsi518.backend.entities.IndividualGoal.IndividualGoalView;
 import com.icsi518.backend.services.IndividualGoalService;
 
 @RestController
@@ -26,19 +28,15 @@ public class IndividualGoalController {
     @Autowired
     private IndividualGoalService individualGoalService;
 
-    @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<IndividualGoalDto>> getIndividualGoalsByUserId(@PathVariable UUID userId) {
-        List<IndividualGoalDto> goals = individualGoalService.getIndividualGoalsByUserId(userId);
-        if (goals.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(goals);
-        }
+    @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<IndividualGoalView>> getIndividualGoalsByUserId(@RequestParam UUID userId) {
+        return ResponseEntity.ok(individualGoalService.getIndividualGoalsByUserId(userId));
     }
 
     @PostMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IndividualGoalDto> createIndividualGoal(@RequestBody IndividualGoalDto individualGoalDto) {
-        IndividualGoalDto savedGoal = individualGoalService.createIndividualGoal(individualGoalDto);
+    public ResponseEntity<IndividualGoalDto> createIndividualGoal(@RequestParam UUID accountId,
+            @RequestBody IndividualGoalDto individualGoalDto) {
+        IndividualGoalDto savedGoal = individualGoalService.createIndividualGoal(accountId, individualGoalDto);
         return ResponseEntity.ok(savedGoal);
     }
 

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icsi518.backend.dtos.IndividualGoalDto;
 import com.icsi518.backend.entities.Account;
 import com.icsi518.backend.entities.IndividualGoal;
+import com.icsi518.backend.entities.IndividualGoal.IndividualGoalView;
 import com.icsi518.backend.enums.Frequency;
 import com.icsi518.backend.enums.GoalStatus;
 import com.icsi518.backend.exceptions.ApplicationException;
@@ -38,25 +39,23 @@ public class IndividualGoalService {
     @Autowired
     private BalanceSheetItemService balanceSheetItemService;
 
-    public List<IndividualGoalDto> getIndividualGoalsByUserId(UUID userId) {
+    public List<IndividualGoalView> getIndividualGoalsByUserId(UUID userId) {
         List<Account> accounts = accountRepository.findByUser_UserId(userId);
         List<UUID> accountIds = accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
 
         if (accounts.isEmpty()) {
             return List.of();
         } else {
-            List<IndividualGoal> goals = individualGoalRepository
-                    .findByAccount_AccountIdInAndFamilyGoalIsNull(accountIds);
-            return goals.stream().map(individualGoalMapper::toDto).collect(Collectors.toList());
+            return individualGoalRepository.findByAccount_AccountIdInAndFamilyGoalIsNull(accountIds);
         }
     }
 
     @Transactional
-    public IndividualGoalDto createIndividualGoal(IndividualGoalDto individualGoalDto) {
+    public IndividualGoalDto createIndividualGoal(UUID accountId, IndividualGoalDto individualGoalDto) {
         balanceSheetItemService.validateFrequency(individualGoalDto.getFrequency(),
                 individualGoalDto.getFrequencyNumber());
 
-        Account account = accountRepository.findById(individualGoalDto.getAccountId())
+        Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
 
         IndividualGoal individualGoal = individualGoalMapper.toEntity(individualGoalDto);

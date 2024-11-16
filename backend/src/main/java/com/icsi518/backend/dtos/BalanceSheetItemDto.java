@@ -27,14 +27,5 @@ public class BalanceSheetItemDto {
     private Frequency frequency;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private AccountDto account;
-
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    @Data
-    public static class AccountDto {
-        private UUID accountId;
-        private String name;
-    }
+    private MinimalAccountDto account;
 }
