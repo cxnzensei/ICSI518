@@ -1,6 +1,7 @@
 package com.icsi518.backend.controllers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,11 +45,10 @@ public class BalanceSheetItemController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path = "/update/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/update/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BalanceSheetItemDto> updateBalanceSheetItem(@PathVariable UUID itemId,
-            @RequestBody BalanceSheetItemDto balanceSheetItemDto) {
-        BalanceSheetItemDto updatedBalanceSheetItem = balanceSheetItemService.updateBalanceSheetItem(itemId,
-                balanceSheetItemDto);
+            @RequestBody Map<String, String> updates) {
+        BalanceSheetItemDto updatedBalanceSheetItem = balanceSheetItemService.updateBalanceSheetItem(itemId, updates);
         return ResponseEntity.ok(updatedBalanceSheetItem);
     }
 }

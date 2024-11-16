@@ -1,6 +1,7 @@
 package com.icsi518.backend.services;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icsi518.backend.dtos.BalanceSheetItemDto;
 import com.icsi518.backend.entities.Account;
 import com.icsi518.backend.entities.BalanceSheetItem;
@@ -66,23 +68,34 @@ public class BalanceSheetItemService {
     }
 
     @Transactional
-    public BalanceSheetItemDto updateBalanceSheetItem(UUID itemId, BalanceSheetItemDto balanceSheetItemDto) {
+    public BalanceSheetItemDto updateBalanceSheetItem(UUID itemId, Map<String, String> updates) {
         BalanceSheetItem balanceSheetItem = balanceSheetItemRepository.findById(itemId)
                 .orElseThrow(() -> new ApplicationException("Balance sheet item not found", HttpStatus.NOT_FOUND));
 
-        validateFrequency(balanceSheetItemDto.getFrequency(), balanceSheetItemDto.getFrequencyNumber());
+        ObjectMapper objectMapper = new ObjectMapper();
+        BalanceSheetItemDto balanceSheetItemDto = objectMapper.convertValue(updates, BalanceSheetItemDto.class);
 
         balanceSheetItemMapper.updateEntityFromDto(balanceSheetItemDto, balanceSheetItem);
 
-        balanceSheetItem.setItemId(itemId);
+        if (updates.containsKey("frequency") || updates.containsKey("frequencyNumber")) {
+            Frequency frequency = updates.containsKey("frequency") ? Frequency.valueOf(updates.get("frequency"))
+                    : balanceSheetItem.getFrequency();
+            Integer frequencyNumber = updates.containsKey("frequencyNumber")
+                    ? Integer.valueOf(updates.get("frequencyNumber"))
+                    : balanceSheetItem.getFrequencyNumber();
+            validateFrequency(frequency, frequencyNumber);
+            balanceSheetItem.setFrequency(frequency);
+            balanceSheetItem.setFrequencyNumber(frequencyNumber);
+        }
 
-        Account account = accountRepository.findById(balanceSheetItemDto.getAccountId())
-                .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
-
-        balanceSheetItem.setAccount(account);
+        if (updates.containsKey("accountId")) {
+            UUID accountId = UUID.fromString(updates.get("accountId"));
+            Account account = accountRepository.findById(accountId)
+                    .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
+            balanceSheetItem.setAccount(account);
+        }
 
         BalanceSheetItem updatedItem = balanceSheetItemRepository.save(balanceSheetItem);
-
         return balanceSheetItemMapper.toDto(updatedItem);
     }
 
