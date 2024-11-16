@@ -41,6 +41,8 @@ public class IndividualGoal {
     @Column(nullable = false)
     private Double amountContributed;
 
+    private String description;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", referencedColumnName = "accountId")
     private Account account;
