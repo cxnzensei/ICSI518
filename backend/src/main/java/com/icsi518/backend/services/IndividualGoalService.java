@@ -45,7 +45,8 @@ public class IndividualGoalService {
         if (accounts.isEmpty()) {
             return List.of();
         } else {
-            List<IndividualGoal> goals = individualGoalRepository.findByAccount_AccountIdIn(accountIds);
+            List<IndividualGoal> goals = individualGoalRepository
+                    .findByAccount_AccountIdInAndFamilyGoalIsNull(accountIds);
             return goals.stream().map(individualGoalMapper::toDto).collect(Collectors.toList());
         }
     }

@@ -3,6 +3,7 @@ package com.icsi518.backend.entities;
 import java.util.Date;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.icsi518.backend.enums.Frequency;
 import com.icsi518.backend.enums.GoalStatus;
 
@@ -70,5 +71,6 @@ public class IndividualGoal {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "family_goal_id", referencedColumnName = "familyGoalId")
+    @JsonIgnore
     private FamilyGoal familyGoal;
 }

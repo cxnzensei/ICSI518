@@ -11,6 +11,6 @@ import com.icsi518.backend.entities.IndividualGoal;
 @Repository
 public interface IndividualGoalRepository extends JpaRepository<IndividualGoal, UUID> {
 
-    List<IndividualGoal> findByAccount_AccountIdIn(List<UUID> accountIds);
+    List<IndividualGoal> findByAccount_AccountIdInAndFamilyGoalIsNull(List<UUID> accountIds);
 
 }
