@@ -74,6 +74,8 @@ public class BalanceSheetItemService {
 
         balanceSheetItemMapper.updateEntityFromDto(balanceSheetItemDto, balanceSheetItem);
 
+        balanceSheetItem.setItemId(itemId);
+
         Account account = accountRepository.findById(balanceSheetItemDto.getAccountId())
                 .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
 
