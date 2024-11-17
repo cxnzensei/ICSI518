@@ -41,8 +41,7 @@ const Home = () => {
       const response = await request('GET', `/api/v1/accounts/user/${userId}`);
       const userAccounts = response?.data;
       setAccounts(userAccounts);
-      setCategoryCount(userAccounts);
-
+  
       const allTransactions = await Promise.all(
         userAccounts.map(async (account: Account) => {
           try {
@@ -54,8 +53,22 @@ const Home = () => {
           }
         })
       );
-
-      setTransactions(allTransactions.flat());
+  
+      const transactions = allTransactions.flat();
+      setTransactions(transactions);
+  
+      const categoryCount = transactions.reduce((acc: CategoryCount[], transaction: Transaction) => {
+        const normalizedCategory = transaction.category.toLowerCase();
+        const category = acc.find(cat => cat.name === normalizedCategory);
+        if (category) {
+          category.count += 1;
+        } else {
+          acc.push({ name: normalizedCategory, count: 1, totalCount: 0 });
+        }
+        return acc;
+      }, []);
+  
+      setCategoryCount(categoryCount);
     } catch (error) {
       console.error(error);
     }
@@ -79,9 +92,9 @@ const Home = () => {
               totalCurrentBalance={accounts.reduce((total, account) => total + account.availableBalance, 0)}
             />
             <TotalExpenseBox
-              accounts={accounts}
-              totalExpenses={accounts.length}
-              category={categorycount[0]}
+              category={categorycount}
+              totalExpenses={transactions.length}
+              categoryCount={categorycount}
             />
           </header>
           <RecentTransactions
