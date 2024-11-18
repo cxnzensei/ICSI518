@@ -1,5 +1,6 @@
 package com.icsi518.backend.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,5 +10,7 @@ import com.icsi518.backend.entities.User;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    public Optional<User> findByEmailId(String emailId);
+    Optional<User> findByEmailId(String emailId);
+
+    List<User> findByFamily_FamilyId(UUID familyId);
 }
