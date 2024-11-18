@@ -87,16 +87,16 @@ const BalanceSheet: React.FC = () => {
 
    // Calculate total assets
    const calculateTotalAssets = (): number => {
-    return assets.reduce((total, asset) => total + asset.value, 0);
+    return assets.reduce((total, asset) => total + Number(asset.value), 0);
   }
 
   // Calculate total liabilities
   const calculateTotalLiabilities = (): number => {
-    return liabilities.reduce((total, liability) => total + liability.value, 0);
+    return liabilities.reduce((total, liability) => total + Number(liability.value), 0);
   }
 
   // Calculate net worth
-  const calculateNetWorth = (): number => {
+  const calculateLongTermEquity = (): number => {
     return calculateTotalAssets() - calculateTotalLiabilities();
   }
 
@@ -139,8 +139,8 @@ const BalanceSheet: React.FC = () => {
                     <TableCell>{asset.name}</TableCell>
                     <TableCell>${asset.value}</TableCell>
                     <TableCell>
-                      <Button onClick={() => openForm("asset", index, asset)}>Edit</Button>
-                      <Button onClick={() => deleteItem("asset", index)}>Delete</Button>
+                      <Button style={{ backgroundColor: '#14ECF5', marginRight: '2%' }} onClick={() => openForm("asset", index, asset)}>Edit</Button>
+                      <Button style={{ backgroundColor: '#F52B13' }} onClick={() => deleteItem("asset", index)}>Delete</Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -148,8 +148,8 @@ const BalanceSheet: React.FC = () => {
           </Table>
         </div>
       ))}
-      <p style={{marginBottom: '2%', marginTop: '2%'}}>Total Assets: ${calculateTotalAssets()}</p>
-      <Button onClick={() => openForm('asset')}>Add Asset</Button>
+      <p style={{marginBottom: '2%', marginTop: '2%'}}>Total Assets: ${calculateTotalAssets().toFixed(2)}</p>
+      <Button style={{ backgroundColor: '#14F57F' }} onClick={() => openForm('asset')}>Add Asset</Button>
       </div>
 
 
@@ -175,18 +175,18 @@ const BalanceSheet: React.FC = () => {
               </TableCell>
               <TableCell>${liability.value}</TableCell>
               <TableCell>
-                      <Button onClick={() => openForm("liability", index, liability)}>Edit</Button>
-                      <Button onClick={() => deleteItem("liability", index)}>Delete</Button>
+                      <Button style={{ backgroundColor: '#14ECF5', marginRight: '2%'}} onClick={() => openForm("liability", index, liability)}>Edit</Button>
+                      <Button style={{ backgroundColor: '#F52B13' }} onClick={() => deleteItem("liability", index)}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <p style={{marginBottom: '2%', marginTop: '2%'}}>Total Liabilities: ${calculateTotalLiabilities()}</p>
-      <Button onClick={() => openForm('liability')}>Add Liability</Button>
+      <p style={{marginBottom: '2%', marginTop: '2%'}}>Total Liabilities: ${calculateTotalLiabilities().toFixed(2)}</p>
+      <Button style={{ backgroundColor: '#14F57F' }} onClick={() => openForm('liability')}>Add Liability</Button>
     </div>
       </div>
-      
+      <p style={{marginBottom: '2%', marginTop: '2%'}}>Equity from Long-Term Items: ${calculateLongTermEquity().toFixed(2)}</p>
     </div>
   );
 };
