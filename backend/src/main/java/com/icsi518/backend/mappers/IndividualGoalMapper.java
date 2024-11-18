@@ -14,16 +14,19 @@ public interface IndividualGoalMapper {
 
     @Mapping(source = "account.accountId", target = "account.accountId")
     @Mapping(source = "account.name", target = "account.name")
+    @Mapping(target = "accountId", ignore = true)
     IndividualGoalDto toDto(IndividualGoal individualGoal);
 
     @Mapping(target = "account", ignore = true)
     @Mapping(target = "familyGoal", ignore = true)
     @Mapping(target = "percentage", ignore = true)
+    @Mapping(target = "user", ignore = true)
     IndividualGoal toEntity(IndividualGoalDto individualGoalDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "account", ignore = true)
     @Mapping(target = "familyGoal", ignore = true)
     @Mapping(target = "percentage", ignore = true)
+    @Mapping(target = "user", ignore = true)
     void updateEntityFromDto(IndividualGoalDto individualGoalDto, @MappingTarget IndividualGoal individualGoal);
 }

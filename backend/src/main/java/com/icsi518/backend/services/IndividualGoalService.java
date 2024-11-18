@@ -98,6 +98,11 @@ public class IndividualGoalService {
         IndividualGoal individualGoal = individualGoalRepository.findById(goalId)
                 .orElseThrow(() -> new ApplicationException("Individual goal not found", HttpStatus.NOT_FOUND));
 
+        if (individualGoal.getFamilyGoal().getFamilyGoalId().toString() != null) {
+            throw new ApplicationException("Individual goals belonging to family goals cannot be updated",
+                    HttpStatus.CONFLICT);
+        }
+
         if (updates.containsKey("accountId")) {
             UUID accountId = UUID.fromString((String) updates.get("accountId"));
             Account account = accountRepository.findById(accountId)

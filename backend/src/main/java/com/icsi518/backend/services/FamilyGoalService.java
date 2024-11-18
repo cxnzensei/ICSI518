@@ -93,7 +93,7 @@ public class FamilyGoalService {
                                                 .account(null)
                                                 .frequencyNumber(savedFamilyGoal.getFrequencyNumber())
                                                 .frequency(savedFamilyGoal.getFrequency())
-                                                .autoContribute(true)
+                                                .autoContribute(false)
                                                 .status(savedFamilyGoal.getStatus())
                                                 .createdDate(new Date())
                                                 .targetDate(savedFamilyGoal.getTargetDate())

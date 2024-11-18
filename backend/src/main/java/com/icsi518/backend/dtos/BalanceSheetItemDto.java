@@ -21,7 +21,10 @@ public class BalanceSheetItemDto {
     private UUID itemId;
     private String name;
     private ItemType type;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String description;
+
     private Double amount;
     private Integer frequencyNumber;
     private Frequency frequency;

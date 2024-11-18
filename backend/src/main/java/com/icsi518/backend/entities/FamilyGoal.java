@@ -47,6 +47,7 @@ public class FamilyGoal {
     private String description;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Frequency frequency;
 
     @Enumerated(EnumType.STRING)

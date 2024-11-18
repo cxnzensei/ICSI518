@@ -25,6 +25,8 @@ public class IndividualGoalDto {
     private String name;
     private Double goalAmount;
     private Double amountContributed;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String description;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
