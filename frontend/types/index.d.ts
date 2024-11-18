@@ -223,6 +223,12 @@ declare interface TotalBalanceBoxProps {
   totalCurrentBalance: number;
 }
 
+declare interface TotalExpenseBoxProps {
+  category: CategoryCount[];
+  totalExpenses: number;
+  categoryCount: CategoryCount[];
+}
+
 declare interface FooterProps {
   user: loginResponse | null;
   type?: 'mobile' | 'desktop'
@@ -273,8 +279,13 @@ declare interface DoughnutChartProps {
   accounts: Account[];
 }
 
+declare interface DoughnutChartExpensesProps {
+  categoryCount: CategoryCount[];
+}
+
 declare interface PaymentTransferFormProps {
   accounts: Account[];
+  category: Category[];
 }
 
 // Actions
