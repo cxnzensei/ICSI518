@@ -27,6 +27,10 @@ management:
         include: "*"
         exclude: "env,beans"
 
+plaid:
+  client_id: 673bd095ba8af0001ac2617a
+  secret: 79ac4231fa32f93df25b016605f174
+  environment: sandbox
 ---
 
 spring:
