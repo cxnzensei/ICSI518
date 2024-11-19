@@ -13,4 +13,5 @@ import com.icsi518.backend.entities.Transaction.TransactionView;
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {    
     List<Transaction> findByAccount_AccountIdOrderByDateDesc(UUID accountId);
     List<TransactionView> findByAccount_AccountIdIn(List<UUID> accountIds);
+    List<Transaction> findByAccount_AccountId(UUID accountId);
 }
