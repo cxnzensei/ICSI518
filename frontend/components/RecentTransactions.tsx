@@ -7,6 +7,10 @@ import { BankTabItem } from './BankTabItem'
 import BankInfo from './BankInfo'
 import TransactionsTable from './TransactionsTable'
 import { RecentTransactionsProps, Account } from '@/types'
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select"; // Adjust import based on your setup
+import { Button } from "@/components/ui/button";
+import { request } from '@/lib/utils'
+
 
 const RecentTransactions = ({
     accounts,
@@ -14,6 +18,7 @@ const RecentTransactions = ({
     page = 1
 }: RecentTransactionsProps) => {
     const [activeTab, setActiveTab] = useState(''); // useState to dynamically update id
+    const [selectedAccount, setSelectedAccount] = useState('');
 
     // Filter transactions for the currently active account
     const filterTransactionsForAccount = (accountId: string) => {

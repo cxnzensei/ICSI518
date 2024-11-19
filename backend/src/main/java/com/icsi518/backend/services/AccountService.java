@@ -7,10 +7,12 @@ import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icsi518.backend.dtos.AccountDto;
 import com.icsi518.backend.entities.Account;
+import com.icsi518.backend.entities.Transaction;
 import com.icsi518.backend.entities.User;
 import com.icsi518.backend.exceptions.ApplicationException;
 import com.icsi518.backend.mappers.AccountMapper;
 import com.icsi518.backend.repositories.AccountRepository;
+import com.icsi518.backend.repositories.TransactionRepository;
 import com.icsi518.backend.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -28,12 +30,14 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
     private final AccountMapper accountMapper;
+    private final TransactionRepository transactionRepository;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository, UserRepository userRepository, AccountMapper accountMapper) {
+    public AccountService(AccountRepository accountRepository, UserRepository userRepository, AccountMapper accountMapper, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
         this.accountMapper = accountMapper;
+        this.transactionRepository = transactionRepository;
     }
 
     @Transactional
@@ -72,7 +76,10 @@ public class AccountService {
     public void deleteAccount(UUID accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ApplicationException("The account does not exist", HttpStatus.NOT_FOUND));
-
+        List<Transaction> transactions = transactionRepository.findByAccount_AccountId(accountId);
+        transactions.forEach(transaction -> transaction.setAccount(null));
+        transactionRepository.saveAll(transactions);
+        transactionRepository.deleteAll(transactions);
         account.setUser(null);
         accountRepository.deleteById(accountId);
     }
