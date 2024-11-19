@@ -34,6 +34,7 @@ const TransactionHistory = () => {
         const fetchTransactionsForUser = async () => {
             try {
                 const response = await request('GET', `/api/v1/transactions/account-all?userId=${loggedInUser.userId}`);
+                console.log(response?.data);
                 setTransactions(response?.data)
             } catch (error: any) {
                 console.error(error)
@@ -42,15 +43,6 @@ const TransactionHistory = () => {
 
         fetchTransactionsForUser();
     }, [])
-
-    const fetchTransactionsByAccountId = async (accountId: string) => {
-        try {
-            const response = await request('GET', `/api/v1/transactions/account/${accountId}`);
-            setTransactions(response?.data)
-        } catch (error: any) {
-            console.error(error)
-        }
-    }
 
     return (
         <Suspense fallback={<div>Loading ...</div>}>
