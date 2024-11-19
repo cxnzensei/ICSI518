@@ -14,6 +14,7 @@ public interface BalanceSheetItemMapper {
 
     @Mapping(source = "account.accountId", target = "account.accountId")
     @Mapping(source = "account.name", target = "account.name")
+    @Mapping(target = "accountId", ignore = true)
     BalanceSheetItemDto toDto(BalanceSheetItem balanceSheetItem);
 
     @Mapping(target = "account", ignore = true)
