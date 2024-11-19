@@ -48,7 +48,7 @@ const WelcomePage = ({ navigateTo }: PageProps) => {
   return (
     <div className="welcome-container">
       <h1>Welcome to Family Goals</h1>
-      <p>Manage your family's financial goals effectively.</p>
+      <p>Manage your family&apos;s financial goals effectively.</p>
       <div className="button-group">
         <button className="button" onClick={() => navigateTo("create-goal")}>
           Create Goal
@@ -175,7 +175,7 @@ const CreateGoalPage = ({
         </select>
         {selectedFamilyMember && (
           <div className="family-member">
-            <label>{selectedFamilyMember}'s Contribution Percentage:</label>
+            <label>{selectedFamilyMember}&apos;s Contribution Percentage:</label>
             <input
               type="number"
               value={
@@ -196,16 +196,16 @@ const CreateGoalPage = ({
           <ul>
             {familyMembersList.map((member) => (
               <li key={member.emailId}>
-                <strong>{member.name}</strong> ({member.emailId}): 
+                <strong>{member.name}</strong> ({member.emailId}):
                 ${calculateMonthlyContribution(Number(yearlyGoal), member.contribution).toFixed(2)} per month
               </li>
             ))}
           </ul>
           {selectedFamilyMember && (
             <div>
-              <p><strong>{familyMembersList.find((member) => member.emailId === selectedFamilyMember)?.name}</strong> 
-                ({selectedFamilyMember}) will contribute 
-                {familyMembersList.find((member) => member.emailId === selectedFamilyMember)?.contribution}% 
+              <p><strong>{familyMembersList.find((member) => member.emailId === selectedFamilyMember)?.name}</strong>
+                ({selectedFamilyMember}) will contribute
+                {familyMembersList.find((member) => member.emailId === selectedFamilyMember)?.contribution}%
                 of the goal.</p>
             </div>
           )}
@@ -313,7 +313,7 @@ const CheckStatusPage = ({ navigateTo, savedGoals, familyMembersList }: CheckSta
     const totalContribution = familyMembersList.reduce((sum, member) => {
       return sum + Number(goal.goal) * (member.contribution / 100);
     }, 0);
-    const paid = Math.min(totalContribution, Number(goal.goal)); 
+    const paid = Math.min(totalContribution, Number(goal.goal));
     const remaining = Number(goal.goal) - paid;
 
     return { paid, remaining };
