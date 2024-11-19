@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class AccountDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private UUID accountId;
-    
+
     private String name;
     private AccountType type;
     private Double availableBalance;

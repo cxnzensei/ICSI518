@@ -85,6 +85,23 @@ declare type Transaction = {
   accountId: string;
 };
 
+declare type AccountMinimal = {
+  accountId: string;
+  name: string;
+}
+
+declare type BalanceSheetItemDto = {
+  itemId: string;
+  name: string;
+  type: string;
+  description: string;
+  amount: number;
+  frequencyNumber: number;
+  frequency: string;
+  account: AccountMinimal;
+}
+
+
 declare type Bank = {
   $id: string;
   accountId: string;

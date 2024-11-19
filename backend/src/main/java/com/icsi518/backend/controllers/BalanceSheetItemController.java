@@ -21,6 +21,9 @@ import com.icsi518.backend.dtos.BalanceSheetItemDto;
 import com.icsi518.backend.entities.BalanceSheetItem.BalanceSheetItemView;
 import com.icsi518.backend.services.BalanceSheetItemService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/balance-sheet-items")
 public class BalanceSheetItemController {
@@ -36,7 +39,8 @@ public class BalanceSheetItemController {
     @PostMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BalanceSheetItemDto> createBalanceSheetItem(@RequestParam UUID accountId,
             @RequestBody BalanceSheetItemDto balanceSheetItemDto) {
-        BalanceSheetItemDto savedItem = balanceSheetItemService.createBalanceSheetItem(accountId, balanceSheetItemDto);
+        BalanceSheetItemDto savedItem = balanceSheetItemService.createBalanceSheetItem(accountId,
+                balanceSheetItemDto);
         return ResponseEntity.ok(savedItem);
     }
 
