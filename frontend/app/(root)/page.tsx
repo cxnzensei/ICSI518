@@ -89,7 +89,7 @@ const Home = () => {
             <TotalBalanceBox
               accounts={accounts}
               totalBanks={accounts.length}
-              totalCurrentBalance={accounts.reduce((total, account) => total + account.availableBalance, 0)}
+              totalCurrentBalance={accounts.reduce((total, account) => total + account.currentBalance, 0)}
             />
             <TotalExpenseBox
               category={categorycount}
@@ -100,7 +100,6 @@ const Home = () => {
           <RecentTransactions
             accounts={accounts}
             transactions={transactions}
-            appwriteItemId={'1'}
             page={1}
           />
           <MakeTransaction

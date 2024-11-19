@@ -11,17 +11,10 @@ import { BankTabItem } from '@/components/BankTabItem';
 import BankInfo from '@/components/BankInfo';
 import { loginResponse, Account, Transaction } from '@/types';
 
+import { columns } from "./columns"
+import { DataTable } from "./data-table"
+
 const TransactionHistory = () => {
-    const [activeTab, setActiveTab] = useState(''); // useState to dynamically update id
-
-    // const filterTransactionsForAccount = (accountId: string) => {
-    //     return transactions.filter(transaction => transaction.accountId === accountId);
-    // };
-
-    const handleTabChange = (newId: React.SetStateAction<string>) => {
-        setActiveTab(newId);
-    };
-
     const [user, setUser] = useState<loginResponse>({
         emailId: "",
         firstName: "",
@@ -32,26 +25,22 @@ const TransactionHistory = () => {
         familyId: ""
     });
 
-    const [accounts, setAccounts] = useState<Account[]>([]);
-
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
     useEffect(() => {
         const loggedInUser = getLoggedInUser();
         setUser(loggedInUser);
 
-        const fetchAccountsForUser = async () => {
+        const fetchTransactionsForUser = async () => {
             try {
-                const response = await request('GET', `/api/v1/accounts/user/${loggedInUser.userId}`);
-                setAccounts(response?.data)
-                setActiveTab(accounts[0]?.accountId)
+                const response = await request('GET', `/api/v1/transactions/account-all?userId=${loggedInUser.userId}`);
+                setTransactions(response?.data)
             } catch (error: any) {
                 console.error(error)
             }
         }
 
-        fetchAccountsForUser();
-        
+        fetchTransactionsForUser();
     }, [])
 
     const fetchTransactionsByAccountId = async (accountId: string) => {
@@ -74,28 +63,9 @@ const TransactionHistory = () => {
                         subtext="See your bank details and Transactions."
                     />
                 </div>
-                <Tabs value={activeTab} onValueChange={handleTabChange} defaultValue={accounts[0]?.accountId} className="w-full">
-                    <TabsList className='recent-transactions-tablist'>
-                        {accounts.map((account: Account) => (
-                            <div key={account.accountId}>
-                                <TabsTrigger value={account.accountId} onClick={() => fetchTransactionsByAccountId(account.accountId)}>
-                                    <BankTabItem key={account.accountId} account={account} accountId={account.accountId} />
-                                </TabsTrigger>
-                            </div>
-                        ))}
-                    </TabsList>
-
-                    {accounts.map((account: Account) => (
-                        <TabsContent
-                            value={account.accountId}
-                            key={account.accountId}
-                            className='space-y-4'
-                        >
-                            <BankInfo account={account} appwriteItemId={account.appwriteItemId} type='full' />
-                            <TransactionsTable transactions={transactions} />
-                        </TabsContent>
-                    ))}
-                </Tabs>
+                <div className="container mx-auto py-10">
+                    <DataTable columns={columns} data={transactions} />
+                </div>
             </div>
         </Suspense>
     )

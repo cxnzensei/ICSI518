@@ -11,14 +11,18 @@ import { RecentTransactionsProps, Account } from '@/types'
 const RecentTransactions = ({
     accounts,
     transactions = [],
-    appwriteItemId,
     page = 1
 }: RecentTransactionsProps) => {
     const [activeTab, setActiveTab] = useState(''); // useState to dynamically update id
 
     // Filter transactions for the currently active account
     const filterTransactionsForAccount = (accountId: string) => {
-        return transactions.filter(transaction => transaction.accountId === accountId);
+        console.log('transactions in recent transactions:', transactions);
+        console.log('accountId in recent transactions:', accountId);
+
+        const filteredTransactions = transactions.filter(transaction => transaction.accountId === accountId);
+
+        return filteredTransactions.slice(0, 4);
     };
 
     const handleTabChange = (newId: React.SetStateAction<string>) => {
@@ -55,7 +59,7 @@ const RecentTransactions = ({
                     >
                         <BankInfo
                             account={account}
-                            appwriteItemId={activeTab}
+                            accountId={activeTab}
                             type='full'
                         />
                         <TransactionsTable transactions={filterTransactionsForAccount(account.accountId)} />

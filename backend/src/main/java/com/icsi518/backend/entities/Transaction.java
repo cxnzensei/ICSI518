@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+
+import java.util.Date;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.icsi518.backend.entities.Account.MinimalAccountView;
 import com.icsi518.backend.enums.TransactionCategory;
 import com.icsi518.backend.enums.TransactionType;
 
@@ -25,7 +28,7 @@ public class Transaction {
     private String name;
 
     @Column(nullable = false)
-    private String date;
+    private Date date;
 
     @Column(nullable = false)
     private Double amount;
@@ -34,7 +37,7 @@ public class Transaction {
     private TransactionType type;
 
     @Column(nullable = false)
-    private TransactionCategory category; // if this is enum TransactionCategory then categories will be static (potential problem: i`` then user will only be able to filter by GOALS rather than specific goal (ex: GOAL 1, GOAL 2, etc))
+    private TransactionCategory category;
 
     @Column(nullable = false)
     private Boolean pending;
@@ -44,13 +47,22 @@ public class Transaction {
     @JsonIgnore
     private Account account;
 
-    @Transient
-    private UUID accountId;
+    public interface TransactionView {
+        
+        UUID getTransactionId();
 
-    @PostLoad
-    private void setAccountId() {
-        if (account != null) {
-            this.accountId = account.getAccountId();
-        }
+        String getName();
+
+        Date getDate();
+
+        Double getAmount();
+
+        TransactionType getType();
+
+        TransactionCategory getCategory();
+
+        Boolean getPending();
+
+        MinimalAccountView getAccount();
     }
 }

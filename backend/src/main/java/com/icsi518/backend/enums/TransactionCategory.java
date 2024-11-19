@@ -6,20 +6,21 @@ public enum TransactionCategory {
     ASSETS,
     LIABILITIES,
     GROCERIES,
-    DINING_AND_RESTAURANTS,
+    RESTAURANTS,
     UTILITIES, // liability?
-    RENT_MORTGAGE, // liability?
+    RENT,
+    MORTGAGE, // liability?
     TRANSPORTATION,
     ENTERTAINMENT,
     HEALTHCARE,
-    PERSONAL_CARE,
+    PERSONALCARE,
     SHOPPING,
-    INSURANCE, // liablity too maybe?
+    INSURANCE, // liability too maybe?
     EDUCATION,
     SUBSCRIPTIONS, // could be liability?
     TRAVEL,
     INCOME, // could be asset?
     INVESTMENTS, // could also be asset
-    GIFTS_AND_DONATIONS,
     MISCELLANEOUS
+    // Asset/Liability UI needs to choose one of these cateofires (drop down), asset should automatically be credit etcs
 }

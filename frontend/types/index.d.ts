@@ -148,7 +148,7 @@ declare interface CreditCardProps {
 
 declare interface BankInfoProps {
   account: Account;
-  appwriteItemId?: string;
+  accountId?: string;
   type: "full" | "card";
 }
 
@@ -238,7 +238,6 @@ declare interface SidebarProps {
 declare interface RecentTransactionsProps {
   accounts: Account[];
   transactions: Transaction[];
-  appwriteItemId: string;
   page: number;
 }
 
