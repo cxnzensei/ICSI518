@@ -3,7 +3,7 @@ import { CreditCardProps } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const BankCard = ({ account, userName, showBalance = true }: CreditCardProps) => {
+const BankCard = ({ account, userName }: CreditCardProps) => {
     return (
         <div className='flex flex-col'>
             <Link href='/' className='bank-card'>
@@ -26,7 +26,7 @@ const BankCard = ({ account, userName, showBalance = true }: CreditCardProps) =>
                             </h2>
                         </div>
                         <p className='text-14 font-semibold tracking-[1.1px] text-white'>
-                            ●●●● ●●●● ●●●● <span className='text-16'>{1234}</span>
+                            ●●●● ●●●● ●●●● <span className='text-16'>{account.accountNumber.substring(12, 16)}</span>
                         </p>
                     </article>
                 </div>

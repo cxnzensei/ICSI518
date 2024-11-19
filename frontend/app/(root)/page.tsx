@@ -9,6 +9,8 @@ import { getLoggedInUser, request } from '@/lib/utils';
 import { Account, CategoryCount, loginResponse, Transaction } from '@/types';
 
 import { Suspense, useEffect, useState } from 'react';
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select"; // Adjust import based on your setup
+import { Button } from "@/components/ui/button";
 
 import MakeTransaction from '@/components/MakeTransaction';
 import BalanceSheet from '@/components/BalanceSheet';
@@ -19,6 +21,7 @@ const Home = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categorycount, setCategoryCount] = useState<CategoryCount[]>([]);
+  const [selectedAccountToRemove, setSelectedAccountToRemove] = useState('');
 
   useEffect(() => {
     const loggedInUser = getLoggedInUser();
@@ -74,6 +77,20 @@ const Home = () => {
     }
   };
 
+  const handleRemoveAccount = async () => {
+    console.log('selected account to remove is:', selectedAccountToRemove);
+    try {
+      const response = await request('DELETE', `/api/v1/accounts/${selectedAccountToRemove}`);
+      if (loggedInUser?.userId) {
+        fetchAccounts(loggedInUser.userId);
+      } else {
+        console.error("User ID is undefined, cannot fetch accounts.");
+      }
+      setSelectedAccountToRemove('Select an account');
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -89,7 +106,7 @@ const Home = () => {
             <TotalBalanceBox
               accounts={accounts}
               totalBanks={accounts.length}
-              totalCurrentBalance={accounts.reduce((total, account) => total + account.availableBalance, 0)}
+              totalCurrentBalance={accounts.reduce((total, account) => total + account.currentBalance, 0)}
             />
             <TotalExpenseBox
               category={categorycount}
@@ -100,9 +117,34 @@ const Home = () => {
           <RecentTransactions
             accounts={accounts}
             transactions={transactions}
-            appwriteItemId={'1'}
             page={1}
           />
+          <div className="space-y-4">
+            <div>
+                <Select
+                value={selectedAccountToRemove}
+                onValueChange={(value) => setSelectedAccountToRemove(value)}
+                >
+                <SelectTrigger className="w-full bg-white">
+                    {selectedAccountToRemove ? (
+                    accounts.find((account) => account.accountId === selectedAccountToRemove)?.name
+                    ) : (
+                    "Select an account"
+                    )}
+                </SelectTrigger>
+                <SelectContent className='bg-white'>
+                    {accounts.map((account) => (
+                    <SelectItem key={account.accountId} value={account.accountId}>
+                        {account.name}
+                    </SelectItem>
+                    ))}
+                </SelectContent>
+                </Select>
+            </div>
+            <Button onClick={handleRemoveAccount} disabled={!selectedAccountToRemove}>
+                Remove Account
+            </Button>
+          </div>
           <MakeTransaction
             accounts={accounts}
             onTransactionAdded={() => {

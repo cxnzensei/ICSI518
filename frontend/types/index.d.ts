@@ -68,33 +68,39 @@ declare type Account = {
   accountId: string;
   availableBalance: number;
   currentBalance: number;
-  officialName: string;
-  mask: string;
-  institutionId: string;
   name: string;
+  institution: string;
   type: string;
-  subtype: string;
-  appwriteItemId: string;
-  sharableId: string;
+  accountNumber: string;
 };
 
 declare type Transaction = {
   transactionId: string;
-  appwriteId: string;
   name: string;
-  paymentChannel: string;
-  type: string;
-  amount: number;
-  pending: boolean;
-  category: string;
   date: string;
-  image: string;
-  createdAt: string;
-  channel: string;
-  senderBankId: string;
-  receiverBankId: string;
+  amount: number;
+  type: string;
+  category: string;
+  pending: boolean;
   accountId: string;
 };
+
+declare type AccountMinimal = {
+  accountId: string;
+  name: string;
+}
+
+declare type BalanceSheetItemDto = {
+  itemId: string;
+  name: string;
+  type: string;
+  description: string;
+  amount: number;
+  frequencyNumber: number;
+  frequency: string;
+  account: AccountMinimal;
+}
+
 
 declare type Bank = {
   $id: string;
@@ -159,7 +165,7 @@ declare interface CreditCardProps {
 
 declare interface BankInfoProps {
   account: Account;
-  appwriteItemId?: string;
+  accountId?: string;
   type: "full" | "card";
 }
 
@@ -249,7 +255,6 @@ declare interface SidebarProps {
 declare interface RecentTransactionsProps {
   accounts: Account[];
   transactions: Transaction[];
-  appwriteItemId: string;
   page: number;
 }
 

@@ -29,6 +29,7 @@ const CategoryBadge = ({ category }: CategoryBadgeProps) => {
 }
 
 const TransactionsTable = ({ transactions }: TransactionTableProps) => {
+    console.log('transactions is:', transactions);
     return (
         <Table>
             <TableHeader className='bg-[f9fafb]'>
@@ -37,7 +38,7 @@ const TransactionsTable = ({ transactions }: TransactionTableProps) => {
                     <TableHead className="px-2">Amount</TableHead>
                     <TableHead className="px-2">Status</TableHead>
                     <TableHead className="px-2">Date</TableHead>
-                    <TableHead className="px-2 max-md:hidden">Channel</TableHead>
+                    {/* <TableHead className="px-2 max-md:hidden">Channel</TableHead> */}
                     <TableHead className="px-2 max-md:hidden">Category</TableHead>
                 </TableRow>
             </TableHeader>
@@ -45,8 +46,8 @@ const TransactionsTable = ({ transactions }: TransactionTableProps) => {
                 {transactions.map((t: Transaction) => {
                     const status = getTransactionStatus(new Date(t.date))
                     const amount = formatAmount(t.amount)
-                    const isDebit = t.type === 'debit';
-                    const isCredit = t.type === 'credit';
+                    const isDebit = t.type === 'DEBIT';
+                    const isCredit = t.type === 'CREDIT';
 
                     return (
                         <TableRow key={t.transactionId} className={`${isDebit || amount[0] === '-' ? 'bg-[#FFFBFA]' : 'bg-[#F6FEF9]'} !over:bg-none !border-b-DEFAULT`}>
@@ -65,11 +66,11 @@ const TransactionsTable = ({ transactions }: TransactionTableProps) => {
                                 <CategoryBadge category={status} />
                             </TableCell>
                             <TableCell className='min-w-32 pl-2 pr-10'>
-                                {t.date}
+                                {new Date(t.date).toLocaleDateString()}
                             </TableCell>
-                            <TableCell className='pl-2 pr-10 capitalize min-w-24'>
+                            {/* <TableCell className='pl-2 pr-10 capitalize min-w-24'>
                                 {t.paymentChannel}
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell className='pl-2 pr-10 max-md:hidden'>
                                 <CategoryBadge category={t.category} />
                             </TableCell>

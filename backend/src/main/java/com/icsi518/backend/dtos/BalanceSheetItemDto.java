@@ -2,6 +2,7 @@ package com.icsi518.backend.dtos;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.icsi518.backend.enums.Frequency;
 import com.icsi518.backend.enums.ItemType;
@@ -31,4 +32,8 @@ public class BalanceSheetItemDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private MinimalAccountDto account;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnore
+    private UUID accountId;
 }

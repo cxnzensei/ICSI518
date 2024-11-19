@@ -4,9 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+
+import java.util.Date;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.icsi518.backend.entities.Account.MinimalAccountView;
+import com.icsi518.backend.enums.TransactionCategory;
+import com.icsi518.backend.enums.TransactionType;
 
 @Data
 @NoArgsConstructor
@@ -20,50 +25,44 @@ public class Transaction {
     private UUID transactionId;
 
     @Column(nullable = false)
-    private String appwriteId;
-
-    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private String paymentChannel;
-
-    @Column(nullable = false)
-    private String type;
+    private Date date;
 
     @Column(nullable = false)
     private Double amount;
 
     @Column(nullable = false)
-    private Boolean pending;
+    private TransactionType type;
 
     @Column(nullable = false)
-    private String category;
+    private TransactionCategory category;
 
-    private String date;
-
-    private String image;
-
-    private String createdAt;
-
-    private String channel;
-
-    private String senderBankId;
-
-    private String receiverBankId;
+    @Column(nullable = false)
+    private Boolean pending;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", referencedColumnName = "accountId")
     @JsonIgnore
     private Account account;
 
-    @Transient
-    private UUID accountId;
+    public interface TransactionView {
+        
+        UUID getTransactionId();
 
-    @PostLoad
-    private void setAccountId() {
-        if (account != null) {
-            this.accountId = account.getAccountId();
-        }
+        String getName();
+
+        Date getDate();
+
+        Double getAmount();
+
+        TransactionType getType();
+
+        TransactionCategory getCategory();
+
+        Boolean getPending();
+
+        MinimalAccountView getAccount();
     }
 }

@@ -23,6 +23,11 @@ export const sidebarLinks = [
     imgURL:"/icons/goal.svg",
     route: "/goals",
     label: "Goals"
+  },
+  {
+    imgURL:"/icons/goal.svg",
+    route: "/balance-sheet-items",
+    label: "Balance Sheet Items"
   }
 ];
 

@@ -3,12 +3,16 @@ package com.icsi518.backend.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.icsi518.backend.entities.Account;
+
+import com.icsi518.backend.dtos.AccountDto;
+import com.icsi518.backend.entities.Account.MinimalAccountView;
+import com.icsi518.backend.repositories.AccountRepository;
 import com.icsi518.backend.services.AccountService;
 
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -19,20 +23,28 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     @PostMapping("/{userId}")
-    public ResponseEntity<Account> createAccount(@PathVariable UUID userId, @RequestBody Account account) {
-        return ResponseEntity.ok(accountService.createAccount(userId, account));
+    public ResponseEntity<AccountDto> createAccount(@PathVariable UUID userId, @RequestBody AccountDto accountDto) {
+        return ResponseEntity.ok(accountService.createAccount(userId, accountDto));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Account>> getAllAccountsByUserId(@PathVariable("userId") UUID userId) {
-        List<Account> accounts = accountService.getAllAccountsByUserId(userId);
+    public ResponseEntity<List<AccountDto>> getAllAccountsByUserId(@PathVariable("userId") UUID userId) {
+        List<AccountDto> accounts = accountService.getAllAccountsByUserId(userId);
         return ResponseEntity.ok(accounts);
     }
 
+    @GetMapping("/user-minimal/{userId}")
+    public ResponseEntity<List<MinimalAccountView>> getAccountsByUserId(@PathVariable("userId") UUID userId) {
+        return ResponseEntity.ok(accountRepository.findMinimalAccountsByUser_UserId(userId));
+    }
+
     @PutMapping("/{accountId}")
-    public ResponseEntity<Account> updateAccount(@PathVariable UUID accountId, @RequestBody Account accountDetails) {
-        return ResponseEntity.ok(accountService.updateAccount(accountId, accountDetails));
+    public ResponseEntity<AccountDto> updateAccount(@PathVariable UUID accountId, @RequestBody Map<String, Object> updateMap) {
+        return ResponseEntity.ok(accountService.updateAccount(accountId, updateMap));
     }
 
     @DeleteMapping("/{accountId}")
