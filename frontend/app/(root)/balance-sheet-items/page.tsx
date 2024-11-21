@@ -60,9 +60,7 @@ const BalanceSheetItem = () => {
     const [editingItemId, setEditingItemId] = useState(null);
     const [formData, setFormData] = useState({
         itemId: '',
-        name: '',
         type: '',
-        description: '',
         amount: '',
         frequencyNumber: '',
         frequency: '',
@@ -132,9 +130,7 @@ const BalanceSheetItem = () => {
 
     const handleEditSave = async () => {
         const payload = {
-            name: formData.name,
             type: formData.type,
-            description: formData.description,
             amount: formData.amount,
             frequencyNumber: formData.frequencyNumber,
             frequency: formData.frequency,

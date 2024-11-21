@@ -102,6 +102,21 @@ declare type BalanceSheetItemDto = {
 }
 
 
+declare type IndividualGoalsDto = {
+  individualGoalId: string;
+  name: string;
+  goalAmount: number;
+  amountContributed: number;
+  description: string;
+  frequencyNumber: number;
+  frequency: string;
+  autoContribute: boolean;
+  status: string;
+  createdDate: Date;
+  targetDate: Date;
+  account: AccountMinimal;
+}
+
 declare type Bank = {
   $id: string;
   accountId: string;
