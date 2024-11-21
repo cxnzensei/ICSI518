@@ -126,7 +126,7 @@ public class BalanceSheetItemService {
                 }
                 break;
 
-            case NOTHING:
+            case EMPTY:
                 break;
 
             default:

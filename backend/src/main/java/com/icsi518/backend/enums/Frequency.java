@@ -5,5 +5,5 @@ public enum Frequency {
     BIWEEKLY,
     WEEKLY,
     MONTHLY,
-    NOTHING
+    EMPTY
 }
