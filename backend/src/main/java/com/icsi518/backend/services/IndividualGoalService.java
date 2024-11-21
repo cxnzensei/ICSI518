@@ -57,12 +57,14 @@ public class IndividualGoalService {
 
     @Transactional
     public IndividualGoalDto createIndividualGoal(UUID userId, IndividualGoalDto individualGoalDto) {
-        balanceSheetItemService.validateFrequency(individualGoalDto.getFrequency(),
-                individualGoalDto.getFrequencyNumber());
-
+        if (individualGoalDto.getAutoContribute()) {
+            balanceSheetItemService.validateFrequency(individualGoalDto.getFrequency(),
+            individualGoalDto.getFrequencyNumber());
+        }
+    
         Account account = null;
         User user = null;
-
+    
         if (individualGoalDto.getAccountId() != null) {
             account = accountRepository.findById(individualGoalDto.getAccountId())
                     .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
@@ -70,7 +72,7 @@ public class IndividualGoalService {
             user = userRepository.findById(userId)
                     .orElseThrow(() -> new ApplicationException("User not found", HttpStatus.NOT_FOUND));
         }
-
+    
         IndividualGoal individualGoal = individualGoalMapper.toEntity(individualGoalDto);
         if (account != null) {
             individualGoal.setAccount(account);

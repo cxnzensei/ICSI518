@@ -382,4 +382,13 @@
   .sidebar-label {
     @apply text-16 font-semibold text-black-2 max-xl:hidden;
   }
+
+  .card-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
 }

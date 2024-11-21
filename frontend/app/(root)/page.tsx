@@ -101,7 +101,7 @@ const Home = () => {
               type="greeting"
               title="Welcome"
               user={loggedInUser?.firstName || 'Guest'}
-              subtext="Manag your funds wisely. Access your transactions, goals and get insights towards them."
+              subtext="Manage your funds wisely. Access your transactions, goals and get insights towards them."
             />
             <TotalBalanceBox
               accounts={accounts}

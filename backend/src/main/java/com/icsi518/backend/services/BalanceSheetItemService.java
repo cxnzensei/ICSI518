@@ -126,6 +126,9 @@ public class BalanceSheetItemService {
                 }
                 break;
 
+            case NOTHING:
+                break;
+
             default:
                 throw new ApplicationException(
                         "Unsupported Frequency type",

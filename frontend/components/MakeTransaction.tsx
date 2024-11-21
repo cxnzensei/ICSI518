@@ -22,6 +22,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { Label } from "@/components/ui/label"
+
 
 const MakeTransaction = ({ accounts, onTransactionAdded }: MakeTransactionProps) => {
   const [name, setName] = useState('');
@@ -30,6 +32,7 @@ const MakeTransaction = ({ accounts, onTransactionAdded }: MakeTransactionProps)
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [date, setDate] = React.useState<Date>();
+  const [open, setOpen] = useState(false);
 
   const credits = ['INCOME', 'INVESTMENTS', 'MISCELLANEOUS']
   const debits = [
@@ -80,7 +83,7 @@ const MakeTransaction = ({ accounts, onTransactionAdded }: MakeTransactionProps)
   return (
     <div>
       <div>
-        <h2>Make Transaction</h2>
+        <Label>Make Transactions</Label>
       </div>
         <form
         style={{
@@ -116,11 +119,12 @@ const MakeTransaction = ({ accounts, onTransactionAdded }: MakeTransactionProps)
             ))}
           </SelectContent>
         </Select>
-
-        <Popover>
+            
+        <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               variant={"outline"}
+              onClick={() => setOpen(true)}
               className={cn(
                 "w-[280px] justify-start text-left font-normal",
                 !date && "text-muted-foreground"
@@ -130,11 +134,14 @@ const MakeTransaction = ({ accounts, onTransactionAdded }: MakeTransactionProps)
               {date ? format(date, "PPP") : <span>Pick a date</span>}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0 bg-white">
+          <PopoverContent className="w-auto p-0 bg-white" onClick={() => setOpen(false)}>
             <Calendar
               mode="single"
               selected={date}
-              onSelect={setDate}
+              onSelect={(selectedDate) => {
+                setDate(selectedDate);
+                setOpen(false);
+              }}
               initialFocus
             />
           </PopoverContent>
