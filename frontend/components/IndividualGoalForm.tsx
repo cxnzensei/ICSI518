@@ -58,7 +58,7 @@ const IndividualGoalForm = ({ user, accounts, onIndividualGoalAdded }: Individua
           frequencyNumber: autoContribute ? Number(frequencyNumber) : 0,
           autoContribute,
           targetDate: new Date(String(targetDate)).toISOString().slice(0, 19),
-          ...(autoContribute && { account: { accountId: account, name: accountName } }),    
+          ...(autoContribute && { accountId: account }),    
         }
     
         console.log('goal details:', goalDetails);
