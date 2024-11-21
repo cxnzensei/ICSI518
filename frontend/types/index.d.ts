@@ -278,6 +278,12 @@ declare interface MakeTransactionProps {
   onTransactionAdded: () => void;
 }
 
+declare interface IndividualGoalFormProps {
+  user: loginResponse;
+  accounts: AccountMinimal[];
+  onIndividualGoalAdded: () => void;
+}
+
 declare interface TransactionHistoryTableProps {
   transactions: Transaction[];
   page: number;
