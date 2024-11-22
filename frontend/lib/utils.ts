@@ -165,6 +165,7 @@ export function countTransactionCategories(
       name: category,
       count: categoryCounts[category],
       totalCount,
+      totalCost: 0,
     })
   );
 

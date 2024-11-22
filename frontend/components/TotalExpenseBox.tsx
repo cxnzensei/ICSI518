@@ -9,6 +9,9 @@ const TotalExpenseBox = ({
     .sort((a, b) => b.count - a.count)
     .slice(0, 3);
 
+  // Calculate the total cost for the top 3 categories
+  const totalCostTopCategories = topCategories.reduce((total, category) => total + category.totalCost, 0);
+
   return (
     <section className='total-balance'>
       <div className='total-balance-chart'>
@@ -25,10 +28,18 @@ const TotalExpenseBox = ({
           <div className='flex gap-4'>
             {topCategories.map((category, index) => (
               <div key={index}>
-                {category.name}: {category.count}
+                <div>
+                  {category.name}: {category.count} ({((category.count / totalExpenses) * 100).toFixed(2)}%)
+                </div>
+                <div>
+                  Total cost: ${category.totalCost.toFixed(2)}
+                  </div>
               </div>
             ))}
           </div>
+          <p className='total-balance-label'>
+            Total cost for top 3 categories: ${totalCostTopCategories.toFixed(2)}
+          </p>
         </div>
       </div>
     </section>

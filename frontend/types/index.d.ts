@@ -122,6 +122,7 @@ declare type AccountTypes =
 declare type Category = "Food and Drink" | "Travel" | "Transfer";
 
 declare type CategoryCount = {
+  totalCost: number;
   name: string;
   count: number;
   totalCount: number;

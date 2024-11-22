@@ -57,7 +57,7 @@ const Home = () => {
         })
       );
   
-      const transactions = allTransactions.flat();
+      const transactions = allTransactions.flat().filter(transaction => transaction.type.toLowerCase() === 'debit');
       setTransactions(transactions);
   
       const categoryCount = transactions.reduce((acc: CategoryCount[], transaction: Transaction) => {
@@ -65,8 +65,12 @@ const Home = () => {
         const category = acc.find(cat => cat.name === normalizedCategory);
         if (category) {
           category.count += 1;
+          category.totalCost += transaction.amount;
         } else {
-          acc.push({ name: normalizedCategory, count: 1, totalCount: 0 });
+          acc.push({
+            name: normalizedCategory, count: 1, totalCost: transaction.amount,
+            totalCount: 0
+          });
         }
         return acc;
       }, []);
