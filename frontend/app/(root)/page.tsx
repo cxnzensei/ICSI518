@@ -14,14 +14,20 @@ import { Button } from "@/components/ui/button";
 
 import MakeTransaction from '@/components/MakeTransaction';
 import BalanceSheet from '@/components/BalanceSheet';
+import TotalIncomeBox from '@/components/TotalIncomeBox';
 
 const Home = () => {
 
   const [loggedInUser, setLoggedInUser] = useState<loginResponse | null>(null);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [categorycount, setCategoryCount] = useState<CategoryCount[]>([]);
   const [selectedAccountToRemove, setSelectedAccountToRemove] = useState('');
+  const [incomeTransactions, setIncomeTransactions] = useState<Transaction[]>([]);
+  const [expenseTransactions, setExpenseTransactions] = useState<Transaction[]>([]);
+  const [incomeCategoryCount, setIncomeCategoryCount] = useState<CategoryCount[]>([]);
+  const [categoryCount, setCategoryCount] = useState<CategoryCount[]>([]);
+
+
 
   useEffect(() => {
     const loggedInUser = getLoggedInUser();
@@ -44,7 +50,7 @@ const Home = () => {
       const response = await request('GET', `/api/v1/accounts/user/${userId}`);
       const userAccounts = response?.data;
       setAccounts(userAccounts);
-  
+
       const allTransactions = await Promise.all(
         userAccounts.map(async (account: Account) => {
           try {
@@ -56,11 +62,17 @@ const Home = () => {
           }
         })
       );
-  
-      const transactions = allTransactions.flat().filter(transaction => transaction.type.toLowerCase() === 'debit');
+
+      const transactions = allTransactions.flat();
       setTransactions(transactions);
-  
-      const categoryCount = transactions.reduce((acc: CategoryCount[], transaction: Transaction) => {
+
+      const incomeTransactions = transactions.filter(transaction => transaction.type.toLowerCase() === 'credit');
+      setIncomeTransactions(incomeTransactions);
+
+      const expenseTransactions = transactions.filter(transaction => transaction.type.toLowerCase() === 'debit');
+      setExpenseTransactions(expenseTransactions);
+
+      const categoryCount = expenseTransactions.reduce((acc: CategoryCount[], transaction: Transaction) => {
         const normalizedCategory = transaction.category.toLowerCase();
         const category = acc.find(cat => cat.name === normalizedCategory);
         if (category) {
@@ -74,8 +86,25 @@ const Home = () => {
         }
         return acc;
       }, []);
-  
+
       setCategoryCount(categoryCount);
+
+      const incomeCategoryCount = incomeTransactions.reduce((acc: CategoryCount[], transaction: Transaction) => {
+        const normalizedCategory = transaction.category.toLowerCase();
+        const category = acc.find(cat => cat.name === normalizedCategory);
+        if (category) {
+          category.count += 1;
+          category.totalCost += transaction.amount;
+        } else {
+          acc.push({
+            name: normalizedCategory, count: 1, totalCost: transaction.amount,
+            totalCount: 0
+          });
+        }
+        return acc;
+      }, []);
+
+      setIncomeCategoryCount(incomeCategoryCount);
     } catch (error) {
       console.error(error);
     }
@@ -112,10 +141,15 @@ const Home = () => {
               totalBanks={accounts.length}
               totalCurrentBalance={accounts.reduce((total, account) => total + account.currentBalance, 0)}
             />
-            <TotalExpenseBox
-              category={categorycount}
-              totalExpenses={transactions.length}
-              categoryCount={categorycount}
+             <TotalExpenseBox
+              category={categoryCount}
+              totalExpenses={expenseTransactions.length}
+              categoryCount={categoryCount}
+            />
+            <TotalIncomeBox
+              category={incomeCategoryCount}
+              totalIncomes={incomeTransactions.length}
+              categoryCount={incomeCategoryCount}
             />
           </header>
           <RecentTransactions
@@ -125,28 +159,28 @@ const Home = () => {
           />
           <div className="space-y-4">
             <div>
-                <Select
+              <Select
                 value={selectedAccountToRemove}
                 onValueChange={(value) => setSelectedAccountToRemove(value)}
-                >
+              >
                 <SelectTrigger className="w-full bg-white">
-                    {selectedAccountToRemove ? (
+                  {selectedAccountToRemove ? (
                     accounts.find((account) => account.accountId === selectedAccountToRemove)?.name
-                    ) : (
+                  ) : (
                     "Select an account"
-                    )}
+                  )}
                 </SelectTrigger>
                 <SelectContent className='bg-white'>
-                    {accounts.map((account) => (
+                  {accounts.map((account) => (
                     <SelectItem key={account.accountId} value={account.accountId}>
-                        {account.name}
+                      {account.name}
                     </SelectItem>
-                    ))}
+                  ))}
                 </SelectContent>
-                </Select>
+              </Select>
             </div>
             <Button onClick={handleRemoveAccount} disabled={!selectedAccountToRemove}>
-                Remove Account
+              Remove Account
             </Button>
           </div>
           <MakeTransaction
