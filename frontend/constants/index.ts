@@ -20,12 +20,12 @@ export const sidebarLinks = [
     label: "Family"
   },
   {
-    imgURL:"/icons/goal.svg",
+    imgURL: "/icons/goal.svg",
     route: "/goals",
     label: "Goals"
   },
   {
-    imgURL:"/icons/goal.svg",
+    imgURL: "/icons/balance-sheet-item.svg",
     route: "/balance-sheet-items",
     label: "Balance Sheet Items"
   }

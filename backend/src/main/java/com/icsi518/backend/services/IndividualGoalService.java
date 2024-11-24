@@ -46,14 +46,17 @@ public class IndividualGoalService {
 
     public List<IndividualGoalView> getIndividualGoalsByUserId(UUID userId) {
         // List<Account> accounts = accountRepository.findByUser_UserId(userId);
-        // List<UUID> accountIds = accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
+        // List<UUID> accountIds =
+        // accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
 
         // if (accounts.isEmpty()) {
-        //     return List.of();
+        // return List.of();
         // } else {
-        //     return individualGoalRepository.findByAccount_AccountIdInAndFamilyGoalIsNull(accountIds);
+        // return
+        // individualGoalRepository.findByAccount_AccountIdInAndFamilyGoalIsNull(accountIds);
         // }
-        // return individualGoalRepository.findByUser_UserIdInAndFamilyGoalIsNull(userId);
+        // return
+        // individualGoalRepository.findByUser_UserIdInAndFamilyGoalIsNull(userId);
         return individualGoalRepository.findIndividualGoalsByUserId(userId);
     }
 
@@ -94,6 +97,7 @@ public class IndividualGoalService {
         IndividualGoal individualGoal = individualGoalRepository.findById(goalId)
                 .orElseThrow(() -> new ApplicationException("Individual goal not found", HttpStatus.NOT_FOUND));
         individualGoal.setAccount(null);
+        individualGoal.setUser(null);
         individualGoalRepository.deleteById(goalId);
     }
 
