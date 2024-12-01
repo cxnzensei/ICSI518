@@ -14,6 +14,7 @@ import com.icsi518.backend.dtos.TransactionDto;
 import com.icsi518.backend.entities.Account;
 import com.icsi518.backend.entities.IndividualGoal;
 import com.icsi518.backend.enums.Frequency;
+import com.icsi518.backend.enums.GoalStatus;
 import com.icsi518.backend.enums.TransactionCategory;
 import com.icsi518.backend.enums.TransactionType;
 import com.icsi518.backend.repositories.AccountRepository;
@@ -40,7 +41,7 @@ public class IndividualGoalScheduler {
 
         List<IndividualGoal> individualGoals = individualGoalRepository.findAll();
         for (IndividualGoal goal : individualGoals) {
-            if (goal.getAutoContribute() && shouldRun(goal)) {
+            if (goal.getAutoContribute() && shouldRun(goal) && goal.getStatus() == GoalStatus.ACTIVE) {
                 processIndividualGoal(goal);
             }
         }
@@ -76,7 +77,7 @@ public class IndividualGoalScheduler {
             individualGoalRepository.save(goal);
             accountRepository.save(account);
 
-            TransactionDto transactionDto = TransactionDto.builder().name(goal.getName()).date(new Date())
+            TransactionDto transactionDto = TransactionDto.builder().name(goal.getName() + "(goal)").date(new Date())
                     .amount(amount).type(TransactionType.DEBIT).category(TransactionCategory.GOALS).pending(false)
                     .accountId(account.getAccountId()).build();
 

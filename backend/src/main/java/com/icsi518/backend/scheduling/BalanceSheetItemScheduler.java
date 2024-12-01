@@ -84,7 +84,8 @@ public class BalanceSheetItemScheduler {
             }
             accountRepository.save(account);
 
-            TransactionDto transactionDto = TransactionDto.builder().name("Balance Sheet Update").date(new Date())
+            TransactionDto transactionDto = TransactionDto.builder().name(item.getName() + "(Balance sheet item)")
+                    .date(new Date())
                     .amount(amount).type(type).category(category).pending(false)
                     .accountId(account.getAccountId()).build();
             transactionService.createTransaction(account.getAccountId(),
