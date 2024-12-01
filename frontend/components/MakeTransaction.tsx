@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button"
 import * as React from "react"
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
- 
+
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -38,18 +38,18 @@ const MakeTransaction = ({ accounts, onTransactionAdded }: MakeTransactionProps)
   const debits = [
     'GROCERIES',
     'RESTAURANTS',
-    'UTILITIES', 
+    'UTILITIES',
     'RENT',
-    'MORTGAGE', 
+    'MORTGAGE',
     'TRANSPORTATION',
     'ENTERTAINMENT',
     'HEALTHCARE',
     'PERSONALCARE',
     'SHOPPING',
-    'INSURANCE', 
+    'INSURANCE',
     'EDUCATION',
     'SUBSCRIPTIONS',
-    'TRAVEL', 
+    'TRAVEL',
     'MISCELLANEOUS']
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -85,84 +85,75 @@ const MakeTransaction = ({ accounts, onTransactionAdded }: MakeTransactionProps)
       <div>
         <Label>Make Transactions</Label>
       </div>
-        <form
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "1rem",
-          padding: "1rem",
-        }}
-        >
-        <Input type="name" value={name} placeholder="Transaction Name" onChange={(e) => setName(e.target.value)} style={{ flex: 1 }} />
-
-        <Input type="amount" value={amount} placeholder="Amount" onChange={(e) => setAmount(e.target.value)} style={{ flex: 1 }} />
-
-        <Select value={type} onValueChange={(value) => setType(value)}>
-          <SelectTrigger className="w-[180px] bg-white">
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
-          <SelectContent className='bg-white'>
-            <SelectItem value="DEBIT">Debit</SelectItem>
-            <SelectItem value="CREDIT">Credit</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select onValueChange={(value) => setAccountId(value)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select Account" />
-          </SelectTrigger>
-          <SelectContent className='bg-white'>
-            {accounts.map((account) => (
-              <SelectItem key={account.accountId} value={account.accountId}>
-                {account.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-            
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant={"outline"}
-              onClick={() => setOpen(true)}
-              className={cn(
-                "w-[280px] justify-start text-left font-normal",
-                !date && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? format(date, "PPP") : <span>Pick a date</span>}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0 bg-white" onClick={() => setOpen(false)}>
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={(selectedDate) => {
-                setDate(selectedDate);
-                setOpen(false);
-              }}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-
-        <Select value={category} onValueChange={(value) => setCategory(value)}>
-          <SelectTrigger className="w-[180px] bg-white">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent className='bg-white'>
-            {(type === "CREDIT" ? credits : debits).map((item) => (
-              <SelectItem key={item} value={item}>
-                {item}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Button type="submit" onClick={handleSubmit} style={{ flexShrink: 0 }}>
-          Add Transaction
-        </Button>
+      <form className='flex flex-col gap-5 my-5'>
+        <div className='grid grid-cols-3 gap-3'>
+          <Input type="name" value={name} placeholder="Transaction Name" onChange={(e) => setName(e.target.value)} style={{ flex: 1 }} />
+          <Input type="amount" value={amount} placeholder="Amount" onChange={(e) => setAmount(e.target.value)} style={{ flex: 1 }} />
+          <Select value={type} onValueChange={(value) => setType(value)}>
+            <SelectTrigger className="w-[180px] bg-white">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent className='bg-white'>
+              <SelectItem value="DEBIT">Debit</SelectItem>
+              <SelectItem value="CREDIT">Credit</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select onValueChange={(value) => setAccountId(value)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Account" />
+            </SelectTrigger>
+            <SelectContent className='bg-white'>
+              {accounts.map((account) => (
+                <SelectItem key={account.accountId} value={account.accountId}>
+                  {account.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                onClick={() => setOpen(true)}
+                className={cn(
+                  "w-[280px] justify-start text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date ? format(date, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 bg-white" onClick={() => setOpen(false)}>
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={(selectedDate) => {
+                  setDate(selectedDate);
+                  setOpen(false);
+                }}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+          <Select value={category} onValueChange={(value) => setCategory(value)}>
+            <SelectTrigger className="w-[180px] bg-white">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent className='bg-white'>
+              {(type === "CREDIT" ? credits : debits).map((item) => (
+                <SelectItem key={item} value={item}>
+                  {item}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Button type="submit" onClick={handleSubmit} style={{ flexShrink: 0 }}>
+            Add Transaction
+          </Button>
+        </div>
       </form>
     </div>
   );

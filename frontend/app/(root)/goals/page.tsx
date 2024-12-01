@@ -100,11 +100,9 @@ export default function Goals() {
       try {
         const response2 = await request('get', `/api/v1/accounts/user-minimal/${loggedInUser?.userId}`);
         setAccounts(response2?.data);
-        console.log(response2?.data);
 
         const response = await request('get', `/api/v1/individual-goals?userId=${loggedInUser?.userId}`);
         setIndividualGoals(response?.data);
-        console.log(response?.data);
 
 
       } catch (error) {
@@ -113,8 +111,6 @@ export default function Goals() {
     }
 
     initialize();
-    console.log('accounts:', accounts);
-    console.log('individual goals:', individualGoals);
   }, [])
 
   const addGoal = async () => {
@@ -130,11 +126,8 @@ export default function Goals() {
       ...(autoContribute && { account: { accountId: account, name: accountName } }),
     }
 
-    console.log('goal details:', goalDetails);
-
     try {
       const response = await request('POST', `/api/v1/individual-goals/create?userId=${user?.userId}`, goalDetails);
-      console.log(response?.data);
       setIndividualGoals([...individualGoals, response?.data]);
       setOpen(false);
     } catch (error) {
@@ -154,8 +147,6 @@ export default function Goals() {
       targetDate: new Date(String(targetDate)).toISOString(),
       account,
     }
-
-    console.log(familyGoalDetails);
   }
 
   const handleChange = (e: any) => {
@@ -175,7 +166,6 @@ export default function Goals() {
     await request('delete', `/api/v1/individual-goals/delete/${id}`)
     const updatedIndividualGoals = individualGoals.filter(item => item.individualGoalId !== id);
     setIndividualGoals(updatedIndividualGoals);
-    console.log('id of to delete goal:', id);
   }
 
 
@@ -192,7 +182,6 @@ export default function Goals() {
     try {
       // const response = await request('patch', `/api/v1/individual-goals/update/${formData.individualGoalId}`, payload);
       // setIndividualGoals((prevGoals) => prevGoals.map((goal) => (goal.individualGoalId === response?.data.individualGoalId ? response?.data : goal)));
-      console.log('payload of goal to be edited:', payload);
       setEditingIndividualGoalId(null);
     } catch (error) {
       console.log(error)
@@ -230,7 +219,6 @@ export default function Goals() {
             if (user?.userId) {
               try {
                 const response = await request('get', `/api/v1/individual-goals?userId=${user?.userId}`);
-                console.log(response?.data);
                 setIndividualGoals([...response?.data]);
               } catch (error) {
                 console.error(error);
