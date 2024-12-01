@@ -137,6 +137,7 @@ declare type AccountTypes =
 declare type Category = "Food and Drink" | "Travel" | "Transfer";
 
 declare type CategoryCount = {
+  totalCost: number;
   name: string;
   count: number;
   totalCount: number;
@@ -250,6 +251,12 @@ declare interface TotalExpenseBoxProps {
   categoryCount: CategoryCount[];
 }
 
+declare interface TotalIncomeBoxProps {
+  category: CategoryCount[];
+  totalIncomes: number;
+  categoryCount: CategoryCount[];
+}
+
 declare interface FooterProps {
   user: loginResponse | null;
   type?: 'mobile' | 'desktop'
@@ -306,6 +313,10 @@ declare interface DoughnutChartProps {
 }
 
 declare interface DoughnutChartExpensesProps {
+  categoryCount: CategoryCount[];
+}
+
+declare interface DoughnutChartIncomesProps {
   categoryCount: CategoryCount[];
 }
 
