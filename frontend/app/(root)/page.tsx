@@ -13,7 +13,6 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/u
 import { Button } from "@/components/ui/button";
 
 import MakeTransaction from '@/components/MakeTransaction';
-import BalanceSheet from '@/components/BalanceSheet';
 import TotalIncomeBox from '@/components/TotalIncomeBox';
 
 const Home = () => {
@@ -111,7 +110,6 @@ const Home = () => {
   };
 
   const handleRemoveAccount = async () => {
-    console.log('selected account to remove is:', selectedAccountToRemove);
     try {
       const response = await request('DELETE', `/api/v1/accounts/${selectedAccountToRemove}`);
       if (loggedInUser?.userId) {
@@ -134,14 +132,14 @@ const Home = () => {
               type="greeting"
               title="Welcome"
               user={loggedInUser?.firstName || 'Guest'}
-              subtext="Manag your funds wisely. Access your transactions, goals and get insights towards them."
+              subtext="Manage your funds wisely. Access your transactions, goals and get insights towards them."
             />
             <TotalBalanceBox
               accounts={accounts}
               totalBanks={accounts.length}
               totalCurrentBalance={accounts.reduce((total, account) => total + account.currentBalance, 0)}
             />
-             <TotalExpenseBox
+            <TotalExpenseBox
               category={categoryCount}
               totalExpenses={expenseTransactions.length}
               categoryCount={categoryCount}
@@ -152,12 +150,22 @@ const Home = () => {
               categoryCount={incomeCategoryCount}
             />
           </header>
-          <RecentTransactions
-            accounts={accounts}
-            transactions={transactions}
-            page={1}
-          />
           <div className="space-y-4">
+            <MakeTransaction
+              accounts={accounts}
+              onTransactionAdded={() => {
+                if (loggedInUser?.userId) {
+                  fetchTransactions(loggedInUser.userId);
+                } else {
+                  console.error("User ID is undefined, cannot fetch transactions.");
+                }
+              }}
+            />
+            <RecentTransactions
+              accounts={accounts}
+              transactions={transactions}
+              page={1}
+            />
             <div>
               <Select
                 value={selectedAccountToRemove}
@@ -183,17 +191,6 @@ const Home = () => {
               Remove Account
             </Button>
           </div>
-          <MakeTransaction
-            accounts={accounts}
-            onTransactionAdded={() => {
-              if (loggedInUser?.userId) {
-                fetchTransactions(loggedInUser.userId);
-              } else {
-                console.error("User ID is undefined, cannot fetch transactions.");
-              }
-            }}
-          />
-          <BalanceSheet />
         </div>
         <RightSidebar
           user={loggedInUser}

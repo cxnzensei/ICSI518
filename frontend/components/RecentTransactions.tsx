@@ -22,11 +22,7 @@ const RecentTransactions = ({
 
     // Filter transactions for the currently active account
     const filterTransactionsForAccount = (accountId: string) => {
-        console.log('transactions in recent transactions:', transactions);
-        console.log('accountId in recent transactions:', accountId);
-
         const filteredTransactions = transactions.filter(transaction => transaction.accountId === accountId);
-
         return filteredTransactions.slice(0, 4);
     };
 

@@ -34,7 +34,6 @@ const TransactionHistory = () => {
         const fetchTransactionsForUser = async () => {
             try {
                 const response = await request('GET', `/api/v1/transactions/account-all?userId=${loggedInUser.userId}`);
-                console.log(response?.data);
                 setTransactions(response?.data)
             } catch (error: any) {
                 console.error(error)

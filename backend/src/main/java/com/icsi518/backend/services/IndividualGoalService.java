@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,20 +44,27 @@ public class IndividualGoalService {
     private UserRepository userRepository;
 
     public List<IndividualGoalView> getIndividualGoalsByUserId(UUID userId) {
-        List<Account> accounts = accountRepository.findByUser_UserId(userId);
-        List<UUID> accountIds = accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
+        // List<Account> accounts = accountRepository.findByUser_UserId(userId);
+        // List<UUID> accountIds =
+        // accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
 
-        if (accounts.isEmpty()) {
-            return List.of();
-        } else {
-            return individualGoalRepository.findByAccount_AccountIdInAndFamilyGoalIsNull(accountIds);
-        }
+        // if (accounts.isEmpty()) {
+        // return List.of();
+        // } else {
+        // return
+        // individualGoalRepository.findByAccount_AccountIdInAndFamilyGoalIsNull(accountIds);
+        // }
+        // return
+        // individualGoalRepository.findByUser_UserIdInAndFamilyGoalIsNull(userId);
+        return individualGoalRepository.findIndividualGoalsByUserId(userId);
     }
 
     @Transactional
     public IndividualGoalDto createIndividualGoal(UUID userId, IndividualGoalDto individualGoalDto) {
-        balanceSheetItemService.validateFrequency(individualGoalDto.getFrequency(),
-                individualGoalDto.getFrequencyNumber());
+        if (individualGoalDto.getAutoContribute()) {
+            balanceSheetItemService.validateFrequency(individualGoalDto.getFrequency(),
+                    individualGoalDto.getFrequencyNumber());
+        }
 
         Account account = null;
         User user = null;
@@ -90,6 +96,7 @@ public class IndividualGoalService {
         IndividualGoal individualGoal = individualGoalRepository.findById(goalId)
                 .orElseThrow(() -> new ApplicationException("Individual goal not found", HttpStatus.NOT_FOUND));
         individualGoal.setAccount(null);
+        individualGoal.setUser(null);
         individualGoalRepository.deleteById(goalId);
     }
 

@@ -33,6 +33,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
 
 const BalanceSheetItem = () => {
 
@@ -59,9 +60,7 @@ const BalanceSheetItem = () => {
     const [editingItemId, setEditingItemId] = useState(null);
     const [formData, setFormData] = useState({
         itemId: '',
-        name: '',
         type: '',
-        description: '',
         amount: '',
         frequencyNumber: '',
         frequency: '',
@@ -131,9 +130,7 @@ const BalanceSheetItem = () => {
 
     const handleEditSave = async () => {
         const payload = {
-            name: formData.name,
             type: formData.type,
-            description: formData.description,
             amount: formData.amount,
             frequencyNumber: formData.frequencyNumber,
             frequency: formData.frequency,
@@ -202,9 +199,15 @@ const BalanceSheetItem = () => {
                                 <Label htmlFor="description" className="text-right">
                                     Description
                                 </Label>
-                                <Input
+                                {/* <Input
                                     id="description"
                                     value={description} onChange={(e) => setDescription(e.target.value)}
+                                    className="col-span-3"
+                                /> */}
+                                <Textarea
+                                    id="description"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
                                     className="col-span-3"
                                 />
                             </div>
@@ -271,22 +274,21 @@ const BalanceSheetItem = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                         {items.map(item => (
                             <Card key={item.itemId}>
-                                <CardHeader className="h-28">
+                                <CardHeader className="h-32">
                                     <CardTitle>{item.type}: {item.name}</CardTitle>
-                                    <CardDescription className="flex gap-1"><span className="font-semibold">desc./&gt;</span><span>{item.description ? item.description : 'No description provided'}</span></CardDescription>
+                                    <CardDescription className="card-description flex gap-1">
+                                        <span className="font-semibold">desc./&gt;</span>
+                                        <span>{item.description ? item.description : 'No description provided'}</span>
+                                    </CardDescription>
                                 </CardHeader>
                                 <hr className="mb-7" />
-                                <CardContent className="h-52">
+                                <CardContent className="overflow-hidden">
                                     {editingItemId === item.itemId ? (
                                         <form>
                                             <div className="grid grid-cols-2 w-full items-center gap-4">
                                                 <div className="flex flex-col space-y-1.5">
-                                                    <Label htmlFor="name">Name:</Label>
-                                                    <input className="outline-none border px-2" id="name" name="name" value={formData.name} onChange={handleChange} />
-                                                </div>
-                                                <div className="flex flex-col space-y-1.5">
                                                     <Label htmlFor="amount">Amount:</Label>
-                                                    <input className="outline-none border px-2" id="amount" name="amount" value={formData.amount} onChange={handleChange} />
+                                                    <Input className="outline-none border px-2" id="amount" name="amount" value={formData.amount} onChange={handleChange} />
                                                 </div>
                                                 <div className="flex flex-col space-y-1.5">
                                                     <Label htmlFor="account">Account:</Label>
@@ -303,7 +305,7 @@ const BalanceSheetItem = () => {
                                                 </div>
                                                 <div className="flex flex-col space-y-1.5">
                                                     <Label htmlFor="frequencyNumber">Frequency Number:</Label>
-                                                    <input className="outline-none border px-2" id="frequencyNumber" name="frequencyNumber" value={formData.frequencyNumber} onChange={handleChange} />
+                                                    <Input className="outline-none border px-2" id="frequencyNumber" name="frequencyNumber" value={formData.frequencyNumber} onChange={handleChange} />
                                                 </div>
                                                 <div className="flex flex-col space-y-1.5 bg-white">
                                                     <Label htmlFor="frequency">Frequency:</Label>
@@ -326,19 +328,19 @@ const BalanceSheetItem = () => {
                                             <div className="grid grid-cols-2 w-full items-center gap-4">
                                                 <div className="flex flex-col space-y-1.5">
                                                     <Label htmlFor="amount">Amount:</Label>
-                                                    <div id="amount">{item.amount}</div>
+                                                    <div id="amount"><Label>{item.amount}</Label></div>
                                                 </div>
                                                 <div className="flex flex-col space-y-1.5">
                                                     <Label htmlFor="account">Account:</Label>
-                                                    <div id="account">{item.account.name}</div>
+                                                    <div id="account"><Label>{item.account.name}</Label></div>
                                                 </div>
                                                 <div className="flex flex-col space-y-1.5">
                                                     <Label htmlFor="frequencyNumber">Frequency Number:</Label>
-                                                    <div id="frequencyNumber">{item.frequencyNumber}</div>
+                                                    <div id="frequencyNumber"><Label>{item.frequencyNumber}</Label></div>
                                                 </div>
                                                 <div className="flex flex-col space-y-1.5">
                                                     <Label htmlFor="frequency">Frequency:</Label>
-                                                    <div id="frequency">{item.frequency}</div>
+                                                    <div id="frequency"><Label>{item.frequency}</Label></div>
                                                 </div>
                                             </div>
                                         </>
