@@ -1,9 +1,9 @@
-import { TotalExpenseBoxProps } from '@/types';
-import DoughnutChartExpenses from './DoughnutChartExpenses';
+import { TotalIncomeBoxProps } from '@/types';
+import DoughnutChartIncomes from './DoughnutChartIncomes';
 
-const TotalExpenseBox = ({
-  category = [], totalExpenses, categoryCount
-}: TotalExpenseBoxProps) => {
+const TotalIncomeBox = ({
+  category = [], totalIncomes, categoryCount
+}: TotalIncomeBoxProps) => {
   // Sort the categories by count in descending order and get the top 3
   const topCategories = categoryCount
     .sort((a, b) => b.count - a.count)
@@ -15,11 +15,11 @@ const TotalExpenseBox = ({
   return (
     <section className='total-balance'>
       <div className='total-balance-chart'>
-        <DoughnutChartExpenses categoryCount={categoryCount} />
+        <DoughnutChartIncomes categoryCount={categoryCount} />
       </div>
       <div className='flex flex-col gap-6'>
         <h2 className='header-2'>
-          Different Expenses: {totalExpenses}
+          Different Incomes: {totalIncomes}
         </h2>
         <div className='flex flex-col gap-2'>
           <p className='total-balance-label'>
@@ -29,7 +29,7 @@ const TotalExpenseBox = ({
             {topCategories.map((category, index) => (
               <div key={index}>
                 <div>
-                  {category.name}: {category.count} ({((category.count / totalExpenses) * 100).toFixed(2)}%)
+                  {category.name}: {category.count} ({((category.count / totalIncomes) * 100).toFixed(2)}%)
                 </div>
                 <div>
                   Total cost: ${category.totalCost.toFixed(2)}
@@ -46,4 +46,4 @@ const TotalExpenseBox = ({
   );
 };
 
-export default TotalExpenseBox;
+export default TotalIncomeBox;
