@@ -207,6 +207,7 @@ const BalanceSheetItem = () => {
                                 <Textarea
                                     id="description"
                                     value={description}
+                                    placeholder="ex. Land & Building, Auto Loan, etc"
                                     onChange={(e) => setDescription(e.target.value)}
                                     className="col-span-3"
                                 />
@@ -244,6 +245,7 @@ const BalanceSheetItem = () => {
                                         <SelectItem value="WEEKLY">Weekly</SelectItem>
                                         <SelectItem value="BIWEEKLY">Biweekly</SelectItem>
                                         <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                        <SelectItem value="EMPTY">Not Applicable</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -264,7 +266,7 @@ const BalanceSheetItem = () => {
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button onClick={() => addItem()}>Add Item</Button>
+                            <Button style={{ backgroundColor: '#14F57F' }} onClick={() => addItem()}>Add Item</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
@@ -318,6 +320,7 @@ const BalanceSheetItem = () => {
                                                             <SelectItem value="WEEKLY">Weekly</SelectItem>
                                                             <SelectItem value="BIWEEKLY">Biweekly</SelectItem>
                                                             <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                                            <SelectItem value="EMPTY">Not Applicable</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 </div>
@@ -349,13 +352,13 @@ const BalanceSheetItem = () => {
                                 <CardFooter className="flex justify-between">
                                     {editingItemId === item.itemId ? (
                                         <>
-                                            <Button variant="outline" onClick={() => setEditingItemId(null)}>Cancel</Button>
-                                            <Button onClick={handleEditSave}>Save</Button>
+                                            <Button variant="outline" style={{ backgroundColor: '#F52B13' }} onClick={() => setEditingItemId(null)}>Cancel</Button>
+                                            <Button style={{ backgroundColor: '#14F57F' }} onClick={handleEditSave}>Save</Button>
                                         </>
                                     ) : (
                                         <>
-                                            <Button variant="outline" onClick={() => handleEditClick(item)}>Edit</Button>
-                                            <Button variant="outline" onClick={() => handleItemDelete(item.itemId)}>Delete</Button>
+                                            <Button variant="outline" style={{ backgroundColor: '#14ECF5', marginRight: '2%'}} onClick={() => handleEditClick(item)}>Edit</Button>
+                                            <Button variant="outline" style={{ backgroundColor: '#F52B13' }} onClick={() => handleItemDelete(item.itemId)}>Delete</Button>
                                         </>
                                     )}
                                 </CardFooter>
