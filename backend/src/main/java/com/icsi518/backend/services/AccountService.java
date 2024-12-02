@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+
 @Slf4j
 @Service
 public class AccountService {
@@ -31,6 +32,7 @@ public class AccountService {
     private final UserRepository userRepository;
     private final AccountMapper accountMapper;
     private final TransactionRepository transactionRepository;
+    private EmailService emailService;
 
     @Autowired
     public AccountService(AccountRepository accountRepository, UserRepository userRepository, AccountMapper accountMapper, TransactionRepository transactionRepository) {
@@ -45,8 +47,13 @@ public class AccountService {
         try {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new ApplicationException("User not found", HttpStatus.NOT_FOUND));
+            
+            String userEmail = user.getEmailId();
+            String userName = user.getFirstName();
             Account account2 = accountMapper.toEntity(account);
             account2.setUser(user);
+            String emailBody = "Hey "+ userName + ",\n\nYour account with AccountID: " + account.getAccountId() + "created successfully.\n\n Thanks,\n Team WealthWise"; 
+            emailService.sendEmail(userEmail, "Account Creation Update", emailBody);
             return accountMapper.toAccountDto(accountRepository.save(account2));
         } catch (Exception e) {
             throw new ApplicationException(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
@@ -63,12 +70,14 @@ public class AccountService {
     public AccountDto updateAccount(UUID accountId, Map<String, Object> updateMap) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ApplicationException("Account not found", HttpStatus.NOT_FOUND));
-
+        String userEmail = account.getUser().getEmailId();
+        String userName = account.getUser().getFirstName();
         ObjectMapper objectMapper = new ObjectMapper();
         AccountDto accountDto = objectMapper.convertValue(updateMap, AccountDto.class);
         accountMapper.updateEntityFromDto(accountDto, account);
-
         Account updatedAccount = accountRepository.save(account);
+        String emailBody = "Hey "+ userName + ",\n\nYour account with AccountID: " + accountId + "updated successfully.\n\n Thanks,\n Team WealthWise"; 
+        emailService.sendEmail(userEmail, "Account Updation", emailBody);
         return accountMapper.toAccountDto(updatedAccount);
     }
 
@@ -76,11 +85,16 @@ public class AccountService {
     public void deleteAccount(UUID accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ApplicationException("The account does not exist", HttpStatus.NOT_FOUND));
+        String userEmail = account.getUser().getEmailId();
+        String userName = account.getUser().getFirstName();
         List<Transaction> transactions = transactionRepository.findByAccount_AccountId(accountId);
         transactions.forEach(transaction -> transaction.setAccount(null));
         transactionRepository.saveAll(transactions);
         transactionRepository.deleteAll(transactions);
         account.setUser(null);
         accountRepository.deleteById(accountId);
+        String emailBody = "Hey "+ userName + ",\n\nYour account with AccountID: " + accountId + "deleted successfully.\n\n Thanks,\n Team WealthWise"; 
+        emailService.sendEmail(userEmail, "Account Deletion Update", emailBody);
     }
+
 }

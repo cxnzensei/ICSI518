@@ -101,6 +101,15 @@
     		<artifactId>plaid-java</artifactId>
     		<version>8.1.0</version>
 		</dependency>
+				<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<dependency>
+    		<groupId>javax.mail</groupId>
+    		<artifactId>mail</artifactId>
+    		<version>1.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>
