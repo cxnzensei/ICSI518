@@ -139,16 +139,20 @@ const Home = () => {
               totalBanks={accounts.length}
               totalCurrentBalance={accounts.reduce((total, account) => total + account.currentBalance, 0)}
             />
-            <TotalExpenseBox
-              category={categoryCount}
-              totalExpenses={expenseTransactions.length}
-              categoryCount={categoryCount}
-            />
-            <TotalIncomeBox
-              category={incomeCategoryCount}
-              totalIncomes={incomeTransactions.length}
-              categoryCount={incomeCategoryCount}
-            />
+            {expenseTransactions.length > 0 && (
+              <TotalExpenseBox
+                category={categoryCount}
+                totalExpenses={expenseTransactions.length}
+                categoryCount={categoryCount}
+              />
+            )}
+            {incomeTransactions.length > 0 && (
+              <TotalIncomeBox
+                category={incomeCategoryCount}
+                totalIncomes={incomeTransactions.length}
+                categoryCount={incomeCategoryCount}
+              />
+            )}
           </header>
           <div className="space-y-4">
             <MakeTransaction

@@ -2,7 +2,7 @@
 
 import HeaderBox from '@/components/HeaderBox';
 import { getLoggedInUser, request } from '@/lib/utils';
-import { AccountMinimal, IndividualGoalsDto, loginResponse } from '@/types';
+import { AccountMinimal, FamilyGoalDto, IndividualGoalsDto, loginResponse } from '@/types';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -47,6 +47,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import IndividualGoalForm from '@/components/IndividualGoalForm';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@radix-ui/react-accordion';
+import { Progress } from "@/components/ui/progress"
 
 
 export default function Goals() {
@@ -76,6 +78,7 @@ export default function Goals() {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [familyGoalsFormOpen, setFamilyGoalsFormOpen] = useState(false);
   const [individualGoals, setIndividualGoals] = useState<IndividualGoalsDto[]>([]);
+  const [familyGoals, setFamilyGoals] = useState<FamilyGoalDto[]>([]);
   const [editingIndividualGoalId, setEditingIndividualGoalId] = useState(null);
   const [formData, setFormData] = useState({
     individualGoalId: '',
@@ -91,6 +94,14 @@ export default function Goals() {
     }
   })
 
+  const [editGoalAmount, setEditGoalAmount] = useState('');
+  const [editTargetDate, setEditTargetDate] = React.useState<Date>();
+  const [editAutoContribute, setEditAutoContribute] = useState(false);
+  const [editGoalAccountID, setEditGoalAccountID] = useState('');
+  const [editFrequencyNumnber, setEditFrequencyNumber] = useState('');
+  const [editFrequency, setEditFrequency] = useState('');
+  const [editStatus, setEditStatus] = useState('');
+
   useEffect(() => {
 
     const initialize = async () => {
@@ -103,7 +114,11 @@ export default function Goals() {
 
         const response = await request('get', `/api/v1/individual-goals?userId=${loggedInUser?.userId}`);
         setIndividualGoals(response?.data);
-
+        
+        if(loggedInUser?.familyId) {
+          const response3 = await request('get', `/api/v1/family-goals/?familyId=${loggedInUser?.familyId}`)
+          setFamilyGoals(response3?.data)
+        }
 
       } catch (error) {
         console.error(error);
@@ -113,40 +128,17 @@ export default function Goals() {
     initialize();
   }, [])
 
-  const addGoal = async () => {
-    const goalDetails = {
-      name,
-      goalAmount: Number(goalAmount),
-      amountContributed: Number(amountContributed),
-      description,
-      frequency: autoContribute ? frequency : 'EMPTY',
-      frequencyNumber: autoContribute ? Number(frequencyNumber) : 0,
-      autoContribute,
-      targetDate: new Date(String(targetDate)).toISOString().slice(0, 19),
-      ...(autoContribute && { account: { accountId: account, name: accountName } }),
-    }
-
-    try {
-      const response = await request('POST', `/api/v1/individual-goals/create?userId=${user?.userId}`, goalDetails);
-      setIndividualGoals([...individualGoals, response?.data]);
-      setOpen(false);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  const addFamilyGoal = () => {
+  const addFamilyGoal = async () => {
     const familyGoalDetails = {
       name,
       goalAmount,
-      amountContributed,
-      description,
-      frequency,
       frequencyNumber,
-      autoContribute,
+      frequency,
+      description,
       targetDate: new Date(String(targetDate)).toISOString(),
-      account,
     }
+    const response = await request('POST', `/api/v1/family-goals/create?familyId=${user.familyId}`, familyGoalDetails)
+    setFamilyGoals(prevGoals => [...prevGoals, response.data])
   }
 
   const handleChange = (e: any) => {
@@ -169,20 +161,43 @@ export default function Goals() {
   }
 
 
-  const handleEditSave = async () => {
+  const handleEditSave = async (item: any) => {
+
+    const goalAmountToSave = editGoalAmount === '' ? item.goalAmount.toString() : editGoalAmount;
+    let targetDateToSave = '';
+    if(editTargetDate === undefined) {
+      console.log(item.targetDate);
+      targetDateToSave = new Date(item.targetDate).toISOString();
+    }
+    else {
+      console.log(editTargetDate);
+      targetDateToSave = new Date(editTargetDate).toISOString();
+    }
+    const accountIDToSave = editGoalAccountID === '' ? item?.account?.accountId : editGoalAccountID;
+    const frequencyNumberToSave = editFrequencyNumnber === '' ? item.frequencyNumber : editFrequencyNumnber;
+    const frequencyToSave = editFrequency === '' ? item.frequency : editFrequency;
+    const statusToSave = editStatus === '' ? item.status : editStatus;
+
     const payload = {
-      goalAmount: formData.goalAmount,
-      autoContribute: formData.autoContribute,
-      frequencyNumber: formData.frequencyNumber,
-      frequency: formData.frequency,
-      status: formData.status,
-      targetDate: formData.targetDate,
-      accountId: formData.account.accountId
+      goalAmount: goalAmountToSave,
+      autoContribute: editAutoContribute,
+      frequencyNumber: frequencyNumberToSave,
+      frequency: frequencyToSave,
+      status: statusToSave,
+      targetDate: targetDateToSave,
+      ...(accountIDToSave !== undefined && { accountId: accountIDToSave })
+
     }
     try {
-      // const response = await request('patch', `/api/v1/individual-goals/update/${formData.individualGoalId}`, payload);
-      // setIndividualGoals((prevGoals) => prevGoals.map((goal) => (goal.individualGoalId === response?.data.individualGoalId ? response?.data : goal)));
+      // console.log(payload);
+      const response = await request('patch', `/api/v1/individual-goals/update/${item.individualGoalId}`, payload);
+      if(!response?.data.familyId) {
+        setIndividualGoals((prevGoals) => prevGoals.map((goal) => (goal.individualGoalId === response?.data.individualGoalId ? response?.data : goal)));
+      }
+      // console.log(response?.data);
       setEditingIndividualGoalId(null);
+      setEditGoalAmount('');
+      setEditAutoContribute(false);
     } catch (error) {
       console.log(error)
     }
@@ -226,10 +241,8 @@ export default function Goals() {
             }
           }}
         />
-
-
         <>
-          {user?.role === "ADMIN" && (
+          {(user?.role === "ADMIN" && user?.familyId != null) && (
             <Dialog open={familyGoalsFormOpen} onOpenChange={setFamilyGoalsFormOpen}>
               <DialogTrigger asChild>
                 <h2
@@ -303,6 +316,33 @@ export default function Goals() {
                       </PopoverContent>
                     </Popover>
                   </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="frequency" className="text-right">
+                      Frequency
+                    </Label>
+                    <Select onValueChange={(value) => setFrequency(value)}>
+                      <SelectTrigger className="w-[180px] bg-white">
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="DAILY">Daily</SelectItem>
+                        <SelectItem value="WEEKLY">Weekly</SelectItem>
+                        <SelectItem value="BIWEEKLY">Biweekly</SelectItem>
+                        <SelectItem value="MONTHLY">Monthly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="frequencyNumber" className="text-right">
+                      Frequency Number
+                    </Label>
+                    <Input
+                      id="frequencyNumber"
+                      value={frequencyNumber}
+                      onChange={(e) => setFrequencyNumber(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
                 </div>
                 <DialogFooter>
                   <Button onClick={() => addFamilyGoal()}>Add Family Goal</Button>
@@ -311,9 +351,6 @@ export default function Goals() {
             </Dialog>
           )}
         </>
-
-
-
 
         <div>
           <h2 className='text-xl'>Individual Goals</h2>
@@ -328,14 +365,21 @@ export default function Goals() {
                     <span>{item.description ? item.description : 'No description provided'}</span>
                   </CardDescription>
                 </CardHeader>
-                <hr className="mb-7" />
+                <hr className="mb-2" />
                 <CardContent className="overflow-hidden">
                   {editingIndividualGoalId === item.individualGoalId ? (
                     <form>
                       <div className="grid grid-cols-2 w-full items-center gap-4">
                         <div className="flex flex-col space-y-1.5">
                           <Label htmlFor="amount">Goal Amount:</Label>
-                          <Input className="outline-none border px-2" id="amount" name="amount" value={formData.goalAmount} onChange={handleChange} />
+                          <Input 
+                            className="outline-none border px-2" 
+                            id="editGoalAmount" 
+                            name="editGoalAmount" 
+                            placeholder={item.goalAmount.toString()} 
+                            value={editGoalAmount} 
+                            onChange={(e) => setEditGoalAmount(e.target.value)} 
+                          />
                         </div>
                         <div className="flex flex-col space-y-1.5">
                           <Label htmlFor="targetDate">Target Date:</Label>
@@ -346,21 +390,20 @@ export default function Goals() {
                                 onClick={() => setCalendarOpen(true)}
                                 className={cn(
                                   "w-[280px] justify-start text-left font-normal",
-                                  !targetDate && "text-muted-foreground"
+                                  !editTargetDate && "text-muted-foreground"
                                 )}
                               >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
-                                {targetDate ? format(targetDate, "PPP") : <span>Pick a date</span>}
+                                {editTargetDate ? format(editTargetDate, "PPP") : <span>Pick a date</span>}
                               </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0 bg-white">
                               <Calendar
                                 mode="single"
-                                selected={targetDate}
+                                selected={editTargetDate}
                                 onSelect={(selectedDate) => {
-                                  setTargetDate(selectedDate);
+                                  setEditTargetDate(selectedDate);
                                   setCalendarOpen(false);
-                                  handleChange({ target: { name: "targetDate", value: selectedDate } });
                                 }}
                                 initialFocus
                               />
@@ -370,15 +413,14 @@ export default function Goals() {
                         <div className="flex flex-col space-y-1.5">
                           <Label htmlFor="autoContribute">Auto Contribute:</Label>
                           <Checkbox id="autoContribute" name="autoContribute" onClick={() => {
-                            setAutoContribute(!autoContribute);
-                            handleChange({ target: { name: "autoContribute", value: autoContribute } });
+                            setEditAutoContribute(!editAutoContribute);
                           }} />
                         </div>
-                        {autoContribute && (
+                        {editAutoContribute && (
                           <>
                             <div className="flex flex-col space-y-1.5">
                               <Label htmlFor="account">Account:</Label>
-                              <Select onValueChange={handleChange}>
+                              <Select onValueChange={(value) => setEditGoalAccountID(value)}>
                                 <SelectTrigger id="account" className="bg-white">
                                   <SelectValue placeholder="Select" />
                                 </SelectTrigger>
@@ -391,11 +433,11 @@ export default function Goals() {
                             </div>
                             <div className="flex flex-col space-y-1.5">
                               <Label htmlFor="frequencyNumber">Frequency Number:</Label>
-                              <Input className="outline-none border px-2" id="frequencyNumber" name="frequencyNumber" value={formData.frequencyNumber} onChange={handleChange} />
+                              <Input className="outline-none border px-2" id="frequencyNumber" name="frequencyNumber" value={editFrequencyNumnber} onChange={(e) => setEditFrequencyNumber(e.target.value)} />
                             </div>
                             <div className="flex flex-col space-y-1.5 bg-white">
                               <Label htmlFor="frequency">Frequency:</Label>
-                              <Select onValueChange={handleChange}>
+                              <Select onValueChange={(value) => setEditFrequency(value)}>
                                 <SelectTrigger id="frequency" className="bg-white">
                                   <SelectValue placeholder="Select" />
                                 </SelectTrigger>
@@ -411,7 +453,7 @@ export default function Goals() {
                         )}
                         <div className="flex flex-col space-y-1.5 bg-white">
                           <Label htmlFor="status">Status:</Label>
-                          <Select onValueChange={handleChange}>
+                          <Select onValueChange={(value) => setEditStatus(value)}>
                             <SelectTrigger id="status" className="bg-white">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
@@ -460,6 +502,10 @@ export default function Goals() {
                           <Label htmlFor="status">Status:</Label>
                           <div id="status"><Label>{item.status}</Label></div>
                         </div>
+                        <div className="flex flex-col space-y-1.5">
+                          <Label htmlFor="progress">Progress:</Label>
+                          <div id="progress"><Progress value={33} /></div>
+                        </div>
                       </div>
                     </>
                   )}
@@ -468,7 +514,7 @@ export default function Goals() {
                   {editingIndividualGoalId === item.individualGoalId ? (
                     <>
                       <Button variant="outline" onClick={() => setEditingIndividualGoalId(null)}>Cancel</Button>
-                      <Button onClick={handleEditSave}>Save</Button>
+                      <Button onClick={() => handleEditSave(item)}>Save</Button>
                     </>
                   ) : (
                     <>
@@ -481,7 +527,202 @@ export default function Goals() {
             ))}
           </div>
         </div>
-
+        <div>
+          <h2 className='text-xl'>Family Goals</h2>
+          <hr className='my-5' />
+          {familyGoals.map(goal => (
+            <div key={goal.familyGoalId}>
+              <Accordion className='p-2 mb-2' type="single" collapsible>
+                <AccordionItem value="item-1">
+                  <AccordionTrigger>
+                    <div className="text-lg pb-5">
+                      {goal.name}
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <div>description: {goal.description}</div>
+                      <div>
+                        Created on: {goal?.createdDate ? new Date(goal.createdDate).toLocaleTimeString() : "Date not available"}
+                      </div>
+                      <div>Goal: ${goal.goalAmount}</div>
+                    </div>
+                    <div className='text-lg font-semibold'>Individual Goals for this family goal</div>
+                    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3'>
+                      {goal.individualGoals?.map(item => (
+                                      <Card key={item.individualGoalId}>
+                                      <CardHeader className="h-32">
+                                        <CardTitle>{item.name}</CardTitle>
+                                        <CardDescription className="card-description flex gap-1">
+                                          <span className="font-semibold">desc./&gt; </span>
+                                          <span>{item.description ? item.description : 'No description provided'}</span>
+                                        </CardDescription>
+                                      </CardHeader>
+                                      <hr className="mb-2" />
+                                      <CardContent className="overflow-hidden">
+                                        {editingIndividualGoalId === item.individualGoalId ? (
+                                          <form>
+                                            <div className="grid grid-cols-2 w-full items-center gap-4">
+                                              <div className="flex flex-col space-y-1.5">
+                                                <Label htmlFor="amount">Goal Amount:</Label>
+                                                <Input 
+                                                  className="outline-none border px-2" 
+                                                  id="editGoalAmount" 
+                                                  name="editGoalAmount" 
+                                                  placeholder={item.goalAmount.toString()} 
+                                                  value={editGoalAmount} 
+                                                  onChange={(e) => setEditGoalAmount(e.target.value)} 
+                                                />
+                                              </div>
+                                              <div className="flex flex-col space-y-1.5">
+                                                <Label htmlFor="targetDate">Target Date:</Label>
+                                                <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                                                  <PopoverTrigger asChild>
+                                                    <Button
+                                                      variant={"outline"}
+                                                      onClick={() => setCalendarOpen(true)}
+                                                      className={cn(
+                                                        "w-[280px] justify-start text-left font-normal",
+                                                        !editTargetDate && "text-muted-foreground"
+                                                      )}
+                                                    >
+                                                      <CalendarIcon className="mr-2 h-4 w-4" />
+                                                      {editTargetDate ? format(editTargetDate, "PPP") : <span>Pick a date</span>}
+                                                    </Button>
+                                                  </PopoverTrigger>
+                                                  <PopoverContent className="w-auto p-0 bg-white">
+                                                    <Calendar
+                                                      mode="single"
+                                                      selected={editTargetDate}
+                                                      onSelect={(selectedDate) => {
+                                                        setEditTargetDate(selectedDate);
+                                                        setCalendarOpen(false);
+                                                      }}
+                                                      initialFocus
+                                                    />
+                                                  </PopoverContent>
+                                                </Popover>
+                                              </div>
+                                              <div className="flex flex-col space-y-1.5">
+                                                <Label htmlFor="autoContribute">Auto Contribute:</Label>
+                                                <Checkbox id="autoContribute" name="autoContribute" onClick={() => {
+                                                  setEditAutoContribute(!editAutoContribute);
+                                                }} />
+                                              </div>
+                                              {editAutoContribute && (
+                                                <>
+                                                  <div className="flex flex-col space-y-1.5">
+                                                    <Label htmlFor="account">Account:</Label>
+                                                    <Select onValueChange={(value) => setEditGoalAccountID(value)}>
+                                                      <SelectTrigger id="account" className="bg-white">
+                                                        <SelectValue placeholder="Select" />
+                                                      </SelectTrigger>
+                                                      <SelectContent className="bg-white" position="popper">
+                                                        {accounts.map((account: any) => (
+                                                          <SelectItem key={account.accountId} value={account.accountId}>{account.name}</SelectItem>
+                                                        ))}
+                                                      </SelectContent>
+                                                    </Select>
+                                                  </div>
+                                                  <div className="flex flex-col space-y-1.5">
+                                                    <Label htmlFor="frequencyNumber">Frequency Number:</Label>
+                                                    <Input className="outline-none border px-2" id="frequencyNumber" name="frequencyNumber" value={editFrequencyNumnber} onChange={(e) => setEditFrequencyNumber(e.target.value)} />
+                                                  </div>
+                                                  <div className="flex flex-col space-y-1.5 bg-white">
+                                                    <Label htmlFor="frequency">Frequency:</Label>
+                                                    <Select onValueChange={(value) => setEditFrequency(value)}>
+                                                      <SelectTrigger id="frequency" className="bg-white">
+                                                        <SelectValue placeholder="Select" />
+                                                      </SelectTrigger>
+                                                      <SelectContent className="bg-white" position="popper">
+                                                        <SelectItem value="DAILY">Daily</SelectItem>
+                                                        <SelectItem value="WEEKLY">Weekly</SelectItem>
+                                                        <SelectItem value="BIWEEKLY">Biweekly</SelectItem>
+                                                        <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                                      </SelectContent>
+                                                    </Select>
+                                                  </div>
+                                                </>
+                                              )}
+                                              <div className="flex flex-col space-y-1.5 bg-white">
+                                                <Label htmlFor="status">Status:</Label>
+                                                <Select onValueChange={(value) => setEditStatus(value)}>
+                                                  <SelectTrigger id="status" className="bg-white">
+                                                    <SelectValue placeholder="Select" />
+                                                  </SelectTrigger>
+                                                  <SelectContent className="bg-white" position="popper">
+                                                    <SelectItem value="ACTIVE">Active</SelectItem>
+                                                    <SelectItem value="PAUSED">Paused</SelectItem>
+                                                    <SelectItem value="COMPLETED">Completed</SelectItem>
+                                                    <SelectItem value="CANCELED">Canceled</SelectItem>
+                                                  </SelectContent>
+                                                </Select>
+                                              </div>
+                                            </div>
+                                          </form>
+                                        ) : (
+                                          <>
+                                            <div className="grid grid-cols-2 w-full items-center gap-4">
+                                              <div className="flex flex-col space-y-1.5">
+                                                <Label htmlFor="amount">Goal Amount:</Label>
+                                                <div id="amount"><Label>{item.goalAmount}</Label></div>
+                                              </div>
+                                              <div className="flex flex-col space-y-1.5">
+                                                <Label htmlFor="account">Account:</Label>
+                                                <div id="account"><Label>{item?.account?.name}</Label></div>
+                                              </div>
+                                              <div className="flex flex-col space-y-1.5">
+                                                <Label htmlFor="frequencyNumber">Frequency Number:</Label>
+                                                <div id="frequencyNumber"><Label>{item.frequencyNumber}</Label></div>
+                                              </div>
+                                              <div className="flex flex-col space-y-1.5">
+                                                <Label htmlFor="frequency">Frequency:</Label>
+                                                <div id="frequency"><Label>{item.frequency}</Label></div>
+                                              </div>
+                                              <div className="flex flex-col space-y-1.5">
+                                                <Label htmlFor="autoContribute">Auto Contribute:</Label>
+                                                <div id="frequency"><Label>{item.autoContribute}</Label></div>
+                                              </div>
+                                              <div className="flex flex-col space-y-1.5">
+                                                <Label htmlFor="amountContributed">Amount Contributed:</Label>
+                                                <div id="amountContributed"><Label>{item.amountContributed}</Label></div>
+                                              </div>
+                                              <div className="flex flex-col space-y-1.5">
+                                                <Label htmlFor="targetDate">Target Date:</Label>
+                                                <div id="targetDate"><Label>{new Date(item.targetDate).toLocaleDateString()}</Label></div>
+                                              </div>
+                                              <div className="flex flex-col space-y-1.5">
+                                                <Label htmlFor="status">Status:</Label>
+                                                <div id="status"><Label>{item.status}</Label></div>
+                                              </div>
+                                            </div>
+                                          </>
+                                        )}
+                                      </CardContent>
+                                      <CardFooter className="flex justify-between">
+                                        {editingIndividualGoalId === item.individualGoalId ? (
+                                          <>
+                                            <Button variant="outline" onClick={() => setEditingIndividualGoalId(null)}>Cancel</Button>
+                                            <Button onClick={() => handleEditSave(item)}>Save</Button>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Button variant="outline" onClick={() => handleEditClick(item)}>Edit</Button>
+                                            <Button variant="outline" onClick={() => handleInidividualGoalDelete(item.individualGoalId)}>Delete</Button>
+                                          </>
+                                        )}
+                                      </CardFooter>
+                                    </Card>
+                      
+                      ))}
+                    </div>
+                  </AccordionContent>
+                  <hr className='my-5' />
+                </AccordionItem>
+              </Accordion>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

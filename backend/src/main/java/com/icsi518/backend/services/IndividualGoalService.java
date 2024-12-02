@@ -44,18 +44,6 @@ public class IndividualGoalService {
     private UserRepository userRepository;
 
     public List<IndividualGoalView> getIndividualGoalsByUserId(UUID userId) {
-        // List<Account> accounts = accountRepository.findByUser_UserId(userId);
-        // List<UUID> accountIds =
-        // accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
-
-        // if (accounts.isEmpty()) {
-        // return List.of();
-        // } else {
-        // return
-        // individualGoalRepository.findByAccount_AccountIdInAndFamilyGoalIsNull(accountIds);
-        // }
-        // return
-        // individualGoalRepository.findByUser_UserIdInAndFamilyGoalIsNull(userId);
         return individualGoalRepository.findIndividualGoalsByUserId(userId);
     }
 
@@ -105,10 +93,10 @@ public class IndividualGoalService {
         IndividualGoal individualGoal = individualGoalRepository.findById(goalId)
                 .orElseThrow(() -> new ApplicationException("Individual goal not found", HttpStatus.NOT_FOUND));
 
-        if (individualGoal.getFamilyGoal().getFamilyGoalId().toString() != null) {
-            throw new ApplicationException("Individual goals belonging to family goals cannot be updated",
-                    HttpStatus.CONFLICT);
-        }
+        // if (individualGoal.getFamilyGoal().getFamilyGoalId().toString() != null) {
+        //     throw new ApplicationException("Individual goals belonging to family goals cannot be updated",
+        //             HttpStatus.CONFLICT);
+        // }
 
         if (updates.containsKey("accountId")) {
             UUID accountId = UUID.fromString((String) updates.get("accountId"));
