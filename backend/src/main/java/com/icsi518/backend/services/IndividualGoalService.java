@@ -44,18 +44,6 @@ public class IndividualGoalService {
     private UserRepository userRepository;
 
     public List<IndividualGoalView> getIndividualGoalsByUserId(UUID userId) {
-        // List<Account> accounts = accountRepository.findByUser_UserId(userId);
-        // List<UUID> accountIds =
-        // accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
-
-        // if (accounts.isEmpty()) {
-        // return List.of();
-        // } else {
-        // return
-        // individualGoalRepository.findByAccount_AccountIdInAndFamilyGoalIsNull(accountIds);
-        // }
-        // return
-        // individualGoalRepository.findByUser_UserIdInAndFamilyGoalIsNull(userId);
         return individualGoalRepository.findIndividualGoalsByUserId(userId);
     }
 

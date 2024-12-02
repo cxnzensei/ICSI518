@@ -117,6 +117,19 @@ declare type IndividualGoalsDto = {
   account: AccountMinimal;
 }
 
+declare type FamilyGoalDto = {
+  familyGoalId?: string;
+  name: string;
+  goalAmount: number;
+  frequencyNumber: number;
+  frequency: string;
+  description?: string;
+  status?: string;
+  createdDate?: string;
+  targetDate: string;
+  individualGoals?: IndividualGoalDto[];
+}
+
 declare type Bank = {
   $id: string;
   accountId: string;

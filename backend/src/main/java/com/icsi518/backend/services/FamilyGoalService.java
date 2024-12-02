@@ -26,7 +26,10 @@ import com.icsi518.backend.repositories.FamilyRepository;
 import com.icsi518.backend.repositories.IndividualGoalRepository;
 import com.icsi518.backend.repositories.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class FamilyGoalService {
 
         @Autowired
@@ -50,7 +53,6 @@ public class FamilyGoalService {
         @Autowired
         private BalanceSheetItemService balanceSheetItemService;
 
-        @Transactional(readOnly = true)
         public List<FamilyGoalView> getFamilyGoalsByFamilyId(UUID familyId) {
                 return familyGoalRepository.findByFamily_FamilyId(familyId);
         }

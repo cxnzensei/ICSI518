@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.icsi518.backend.enums.Frequency;
 import com.icsi518.backend.enums.GoalStatus;
@@ -47,6 +46,5 @@ public class IndividualGoalDto {
     private Date targetDate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonIgnore
     private UUID accountId;
 }

@@ -16,7 +16,7 @@ public interface IndividualGoalRepository extends JpaRepository<IndividualGoal, 
     List<IndividualGoalView> findByAccount_AccountIdInAndFamilyGoalIsNull(List<UUID> accountIds);
     // List<IndividualGoalView> findByUser_UserIdInAndFamilyGoalIsNull(UUID userId);
 
-    @Query("SELECT i FROM IndividualGoal i WHERE i.user.userId = :userId")
+    @Query("SELECT i FROM IndividualGoal i WHERE i.user.userId = :userId AND i.familyGoal.familyGoalId IS NULL")
     List<IndividualGoalView> findIndividualGoalsByUserId(UUID userId);
 
 }
